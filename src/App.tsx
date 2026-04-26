@@ -584,6 +584,21 @@ function Notes() {
         </div>
       </div>
       <div className="note-card pullupso-card">
+        <div className="note-title">Risk management</div>
+        <div className="note-body">
+          Source: <a href="https://x.com/tradingpepefrog" target="_blank" rel="noopener noreferrer">@tradingpepefrog on X</a>
+          <div className="pullupso-quote">
+            <p>
+              <a href="https://x.com/tradingpepefrog/status/2048446835577201069?s=46" target="_blank" rel="noopener noreferrer">
+                Risk management is 2 sided.
+                <br /><br />
+                If you did not bet HUGE enough on something with fantastic odds and payoff, you have terrible risk management.
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="note-card pullupso-card">
         <div className="note-title">Narrative selection guide</div>
         <div className="note-body">
           <strong>CORTA</strong><br />
