@@ -85,6 +85,9 @@ export default function App({ auth, remoteCheckedDays, remoteLoading = false, on
               1 SOL → <span>5,000 SOL</span>
             </h1>
             <p className="subtitle">Best case · 12-15 hrs/day · QB 0.04 → 4.5 SOL cap · 73 trading days</p>
+            <a className="rules-link" href="https://trading-rules.vercel.app/" rel="noopener noreferrer" target="_blank">
+              Trading rules
+            </a>
           </div>
           <AuthControls auth={auth} remoteLoading={remoteLoading} />
         </div>

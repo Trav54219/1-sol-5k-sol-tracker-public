@@ -128,6 +128,30 @@ h1 span {
   margin-top: 20px;
 }
 
+.rules-link {
+  align-items: center;
+  background: var(--bg2);
+  border: 0.5px solid var(--border2);
+  border-radius: 6px;
+  color: var(--green);
+  display: inline-flex;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  margin-top: 14px;
+  padding: 7px 12px;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: all 0.12s;
+}
+
+.rules-link:hover {
+  background: var(--bg3);
+  border-color: var(--green-mid);
+  color: var(--text);
+}
+
 .stat,
 .auth-card,
 .tracker,
