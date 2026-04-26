@@ -39,15 +39,20 @@ function RemoteApp() {
     <App
       auth={{
         configured: true,
+        canSync: convexAuth.isAuthenticated,
         isLoading: auth.isLoading || convexAuth.isLoading,
-        isSignedIn: Boolean(auth.user && convexAuth.isAuthenticated),
+        isSignedIn: Boolean(auth.user),
         userLabel,
         signIn: auth.signIn,
         signOut: auth.signOut,
       }}
-      onRemoteChange={async (checkedDays) => {
-        await setProgress({ checkedDays });
-      }}
+      onRemoteChange={
+        convexAuth.isAuthenticated
+          ? async (checkedDays) => {
+              await setProgress({ checkedDays });
+            }
+          : undefined
+      }
       remoteCheckedDays={convexAuth.isAuthenticated ? remoteCheckedDays : undefined}
       remoteLoading={convexAuth.isAuthenticated && remoteCheckedDays === undefined}
     />
@@ -56,7 +61,7 @@ function RemoteApp() {
 
 function Root() {
   if (!authConfigured || !convexUrl || !workosClientId || !workosRedirectUri) {
-    return <App auth={{ configured: false, isLoading: false, isSignedIn: false, userLabel: null }} />;
+    return <App auth={{ configured: false, canSync: false, isLoading: false, isSignedIn: false, userLabel: null }} />;
   }
 
   const convex = new ConvexReactClient(convexUrl);

@@ -3,6 +3,7 @@ import { days, FINAL, fmt, getQB, LS_KEY, phases, TOTAL_DAYS } from "./trackerDa
 
 type AuthState = {
   configured: boolean;
+  canSync: boolean;
   isLoading: boolean;
   isSignedIn: boolean;
   userLabel: string | null;
@@ -213,7 +214,10 @@ function AuthControls({ auth, remoteLoading }: { auth?: AuthState; remoteLoading
     return (
       <div className="auth-card">
         <div className="auth-title">Signed in</div>
-        <p>{auth.userLabel}{remoteLoading ? " · syncing..." : " · progress synced"}</p>
+        <p>
+          {auth.userLabel}
+          {auth.canSync ? (remoteLoading ? " · syncing..." : " · progress synced") : " · sync connecting..."}
+        </p>
         <button className="auth-btn secondary" onClick={() => void auth.signOut?.()} type="button">
           Sign out
         </button>
