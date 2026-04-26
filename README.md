@@ -38,4 +38,6 @@ npx convex env set WORKOS_CLIENT_ID client_...
 
 When signed in, checked days are saved to the Convex `progress` table by authenticated user. Any existing guest progress in the browser is migrated to the account the first time the signed-in account has no saved progress.
 
+This is a client-only Vite app, so AuthKit is configured with `devMode` to store the refresh token in browser storage. For a larger production app, replace this with a custom WorkOS auth domain and cookie-based sessions.
+
 This uses WorkOS AuthKit for login and Convex JWT validation for backend auth. The optional `@convex-dev/workos-authkit` sync/webhook component is not required for progress saving; add it later only if you want Convex to mirror WorkOS user records and handle WorkOS webhook events.

@@ -68,6 +68,7 @@ function Root() {
   return (
     <AuthKitProvider
       clientId={workosClientId}
+      devMode
       onRedirectCallback={({ state }) => {
         const returnTo = typeof state?.returnTo === "string" ? state.returnTo : null;
         if (!returnTo) return;
