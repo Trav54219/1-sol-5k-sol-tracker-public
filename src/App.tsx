@@ -570,6 +570,30 @@ function Notes() {
           ) : null}
         </div>
       </div>
+      <div className="note-card pullupso-card">
+        <div className="note-title">Bear market tip</div>
+        <div className="note-body">
+          Source: <a href="https://x.com/0xIT4I" target="_blank" rel="noopener noreferrer">@0xIT4I on X</a>
+          <div className="pullupso-quote">
+            <p>
+              <a href="https://x.com/0xIT4I/status/2048425543696101776?s=20" target="_blank" rel="noopener noreferrer">
+                Easiest way to survive a bear market as an onchain trader is to only touch coins which are dramatically different.
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="note-card pullupso-card">
+        <div className="note-title">Narrative selection guide</div>
+        <div className="note-body">
+          <strong>CORTA</strong><br />
+          C - Community<br />
+          O - Original<br />
+          R - Relevant<br />
+          T - Tech<br />
+          A - Animal
+        </div>
+      </div>
     </section>
   );
 }
