@@ -89,6 +89,8 @@ input {
 .note-title,
 .auth-title,
 .auth-btn,
+.guide-toggle,
+.sizing-option,
 .progress-label,
 .sync-debug {
   font-family: "IBM Plex Mono", monospace;
@@ -126,6 +128,60 @@ h1 span {
   flex-wrap: wrap;
   gap: 12px;
   margin-top: 20px;
+}
+
+.sizing-toggle {
+  background: var(--bg2);
+  border: 0.5px solid var(--border2);
+  border-radius: 12px;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, 1fr);
+  margin-top: 16px;
+  padding: 8px;
+}
+
+.sizing-option {
+  background: transparent;
+  border: 0.5px solid transparent;
+  border-radius: 9px;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 10px 12px;
+  text-align: left;
+  transition: all 0.12s;
+}
+
+.sizing-option span,
+.sizing-option small {
+  display: block;
+}
+
+.sizing-option span {
+  color: var(--muted2);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sizing-option small {
+  font-size: 11px;
+  line-height: 1.4;
+  margin-top: 3px;
+}
+
+.sizing-option:hover {
+  background: var(--bg3);
+}
+
+.sizing-option.active {
+  background: rgba(10, 124, 82, 0.07);
+  border-color: rgba(10, 124, 82, 0.28);
+}
+
+.sizing-option.active span {
+  color: var(--green);
 }
 
 .rules-link {
@@ -596,6 +652,53 @@ tbody td.cb-col {
   font-weight: 500;
 }
 
+.note-body a {
+  border-bottom: 0.5px solid rgba(10, 124, 82, 0.35);
+  color: var(--green);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.note-body a:hover {
+  border-bottom-color: var(--green);
+}
+
+.pullupso-card {
+  grid-column: 1 / -1;
+}
+
+.guide-toggle {
+  background: var(--bg3);
+  border: 0.5px solid var(--border2);
+  border-radius: 6px;
+  color: var(--muted2);
+  cursor: pointer;
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  margin-top: 10px;
+  padding: 6px 10px;
+  text-transform: uppercase;
+}
+
+.guide-toggle:hover {
+  border-color: var(--green-mid);
+  color: var(--text);
+}
+
+.pullupso-quote {
+  color: var(--text);
+  margin-top: 12px;
+}
+
+.pullupso-quote p {
+  margin: 0 0 10px;
+}
+
+.pullupso-quote p:last-child {
+  margin-bottom: 0;
+}
+
 .sync-debug {
   color: var(--muted);
   font-size: 10px;
@@ -615,6 +718,10 @@ tbody td.cb-col {
   .auth-card {
     flex: auto;
     width: 100%;
+  }
+
+  .sizing-toggle {
+    grid-template-columns: 1fr;
   }
 
   h1 {

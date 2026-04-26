@@ -2,6 +2,8 @@ export const FINAL = 5000;
 export const TOTAL_DAYS = 73;
 export const LS_KEY = "sol_speedrun_checked";
 
+export type SizingMode = "conservative" | "pullupso";
+
 export type Phase = {
   id: number;
   label: string;
@@ -79,12 +81,42 @@ const qbByDay = [
   { from: 57, qb: "4.5 SOL" },
 ];
 
-export function getQB(day: number) {
-  let quickBuy = "0.04 SOL";
+export function getQBValue(day: number) {
+  let quickBuy = 0.04;
   for (const entry of qbByDay) {
-    if (day >= entry.from) quickBuy = entry.qb;
+    if (day >= entry.from) quickBuy = parseFloat(entry.qb);
   }
   return quickBuy;
+}
+
+export function getQB(day: number) {
+  return `${fmtSizing(getQBValue(day))} SOL`;
+}
+
+export function getSizingAmount(day: number, stack: number, mode: SizingMode) {
+  if (mode === "conservative") return getQBValue(day);
+  return getPullupsoSizing(stack);
+}
+
+function getPullupsoSizing(stack: number) {
+  if (stack < 2) return clamp(stack * 0.12, 0.04, 0.2);
+  if (stack < 5) return clamp(stack * 0.24, 0.5, 1);
+  if (stack < 20) return clamp(stack * 0.15, 0.5, 3);
+  if (stack < 50) return clamp(stack * 0.12, 2, 5);
+  if (stack < 100) return clamp(stack * 0.1, 5, 8);
+  if (stack < 300) return clamp(stack * 0.08, 8, 20);
+  if (stack < 1000) return clamp(stack * 0.05, 20, 35);
+  return clamp(stack * 0.025, 35, 50);
+}
+
+export function fmtSizing(n: number) {
+  if (n >= 10) return n.toFixed(1).replace(/\.0$/, "");
+  if (n >= 1) return n.toFixed(2).replace(/0$/, "").replace(/\.0$/, "");
+  return n.toFixed(2).replace(/0$/, "");
+}
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max);
 }
 
 export function fmt(n: number) {
