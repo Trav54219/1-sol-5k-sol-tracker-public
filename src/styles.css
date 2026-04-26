@@ -75,6 +75,11 @@ input {
 .tracker-title,
 .tracker-count,
 .tracker-sub,
+.completion-label,
+.completion-copy strong,
+.completion-hint,
+.completion-btn,
+.completion-adjust,
 .phase-bar-label,
 .reset-btn,
 .pnav,
@@ -334,6 +339,136 @@ h1 span {
 
 .main-fill {
   background: var(--green);
+}
+
+.completion-counter {
+  align-items: center;
+  background: rgba(10, 124, 82, 0.035);
+  border: 0.5px solid var(--border);
+  border-radius: 10px;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding: 12px 14px;
+}
+
+.completion-counter.ready {
+  background: rgba(10, 124, 82, 0.08);
+  border-color: rgba(10, 124, 82, 0.3);
+}
+
+.completion-copy {
+  display: grid;
+  gap: 5px;
+}
+
+.completion-label {
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.completion-copy strong {
+  color: var(--green);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.completion-hint {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.completion-action {
+  align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 170px;
+}
+
+.completion-mini-track {
+  background: var(--bg3);
+  border-radius: 999px;
+  display: block;
+  height: 5px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.completion-mini-fill {
+  background: var(--green);
+  border-radius: inherit;
+  display: block;
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.completion-btn {
+  background: var(--green);
+  border: 0;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  padding: 7px 11px;
+  text-transform: uppercase;
+}
+
+.completion-btn:disabled {
+  background: var(--bg3);
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+.completion-adjust {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-start;
+  margin: 3px 0;
+}
+
+.completion-adjust button {
+  background: var(--bg2);
+  border: 0.5px solid var(--border2);
+  border-radius: 5px;
+  color: var(--muted2);
+  cursor: pointer;
+  font-size: 10px;
+  padding: 5px 8px;
+}
+
+.completion-adjust button:hover {
+  border-color: var(--green-mid);
+  color: var(--text);
+}
+
+.completion-adjust label {
+  align-items: center;
+  color: var(--muted);
+  display: inline-flex;
+  font-size: 10px;
+  gap: 5px;
+}
+
+.completion-adjust input {
+  background: var(--bg2);
+  border: 0.5px solid var(--border2);
+  border-radius: 5px;
+  color: var(--text);
+  font-size: 11px;
+  padding: 4px 6px;
+  width: 48px;
+}
+
+.completion-adjust .completion-reset-btn {
+  color: var(--muted);
 }
 
 .phase-bars {
@@ -718,6 +853,15 @@ tbody td.cb-col {
   .auth-card {
     flex: auto;
     width: 100%;
+  }
+
+  .completion-counter {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .completion-action {
+    min-width: 0;
   }
 
   .sizing-toggle {

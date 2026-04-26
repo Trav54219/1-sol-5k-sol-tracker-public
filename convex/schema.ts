@@ -4,6 +4,7 @@ import { v } from "convex/values";
 export default defineSchema({
   progress: defineTable({
     checkedDays: v.array(v.number()),
+    completions: v.optional(v.number()),
     updatedAt: v.number(),
     userIdentifier: v.optional(v.string()),
     userSubject: v.string(),

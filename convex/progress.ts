@@ -30,24 +30,30 @@ export const get = query({
     const identity = await requireUserIdentity(ctx);
     const progress = await getProgressForUser(ctx, identity);
 
-    return progress?.checkedDays ?? [];
+    return {
+      checkedDays: progress?.checkedDays ?? [],
+      completions: progress?.completions ?? 0,
+    };
   },
 });
 
 export const set = mutation({
   args: {
     checkedDays: v.array(v.number()),
+    completions: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     const identity = await requireUserIdentity(ctx);
     const checkedDays = [...new Set(args.checkedDays)]
       .filter((day) => Number.isInteger(day) && day >= 1 && day <= 73)
       .sort((a, b) => a - b);
+    const completions = clampCompletions(args.completions ?? 0);
     const existing = await getProgressForUser(ctx, identity);
 
     if (existing) {
       await ctx.db.patch(existing._id, {
         checkedDays,
+        completions,
         updatedAt: Date.now(),
         userIdentifier: identity.tokenIdentifier,
         userSubject: identity.subject,
@@ -55,6 +61,7 @@ export const set = mutation({
     } else {
       await ctx.db.insert("progress", {
         checkedDays,
+        completions,
         updatedAt: Date.now(),
         userIdentifier: identity.tokenIdentifier,
         userSubject: identity.subject,
@@ -64,3 +71,8 @@ export const set = mutation({
     return null;
   },
 });
+
+function clampCompletions(value: number) {
+  if (!Number.isFinite(value)) return 0;
+  return Math.min(Math.max(Math.trunc(value), 0), 100);
+}

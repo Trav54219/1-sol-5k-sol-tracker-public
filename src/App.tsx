@@ -2,6 +2,8 @@ import { Fragment, useEffect, useMemo, useState } from "react";
 import { days, FINAL, fmt, fmtSizing, getSizingAmount, LS_KEY, phases, type SizingMode, TOTAL_DAYS } from "./trackerData";
 
 const SIZING_MODE_KEY = "sol_speedrun_sizing_mode";
+const COMPLETIONS_KEY = "sol_speedrun_completions";
+const COMPLETION_GOAL = 100;
 
 type AuthState = {
   configured: boolean;
@@ -15,9 +17,14 @@ type AuthState = {
 
 type AppProps = {
   auth?: AuthState;
-  remoteCheckedDays?: number[];
+  remoteProgress?: ProgressSnapshot;
   remoteLoading?: boolean;
-  onRemoteChange?: (checkedDays: number[]) => void | Promise<void>;
+  onRemoteChange?: (progress: ProgressSnapshot) => void | Promise<void>;
+};
+
+export type ProgressSnapshot = {
+  checkedDays: number[];
+  completions: number;
 };
 
 function loadLocalChecked() {
@@ -36,6 +43,27 @@ function saveLocalChecked(checked: Set<number>) {
   }
 }
 
+function loadLocalCompletions() {
+  try {
+    return clampCompletions(Number(JSON.parse(localStorage.getItem(COMPLETIONS_KEY) || "0")));
+  } catch {
+    return 0;
+  }
+}
+
+function saveLocalCompletions(completions: number) {
+  try {
+    localStorage.setItem(COMPLETIONS_KEY, JSON.stringify(clampCompletions(completions)));
+  } catch {
+    // Local storage can be unavailable in private or restricted browser modes.
+  }
+}
+
+function clampCompletions(value: number) {
+  if (!Number.isFinite(value)) return 0;
+  return Math.min(Math.max(Math.trunc(value), 0), COMPLETION_GOAL);
+}
+
 function loadSizingMode(): SizingMode {
   try {
     return localStorage.getItem(SIZING_MODE_KEY) === "pullupso" ? "pullupso" : "conservative";
@@ -48,24 +76,37 @@ export function getLocalCheckedDays() {
   return [...loadLocalChecked()].sort((a, b) => a - b);
 }
 
-export default function App({ auth, remoteCheckedDays, remoteLoading = false, onRemoteChange }: AppProps) {
+export function getLocalProgress(): ProgressSnapshot {
+  return {
+    checkedDays: getLocalCheckedDays(),
+    completions: loadLocalCompletions(),
+  };
+}
+
+export default function App({ auth, remoteProgress, remoteLoading = false, onRemoteChange }: AppProps) {
   const [localChecked, setLocalChecked] = useState(() => loadLocalChecked());
+  const [localCompletions, setLocalCompletions] = useState(() => loadLocalCompletions());
   const [currentPhase, setCurrentPhase] = useState(0);
   const [sizingMode, setSizingMode] = useState<SizingMode>(() => loadSizingMode());
   const checked = useMemo(
-    () => new Set(remoteCheckedDays ?? [...localChecked]),
-    [localChecked, remoteCheckedDays],
+    () => new Set(remoteProgress?.checkedDays ?? [...localChecked]),
+    [localChecked, remoteProgress],
   );
+  const completions = remoteProgress?.completions ?? localCompletions;
   const checkedList = useMemo(() => [...checked].sort((a, b) => a - b), [checked]);
   const totalDone = checked.size;
   const overallPct = ((totalDone / TOTAL_DAYS) * 100).toFixed(1);
+  const isChallengeComplete = totalDone === TOTAL_DAYS;
 
   useEffect(() => {
-    if (remoteCheckedDays) {
-      setLocalChecked(new Set(remoteCheckedDays));
-      saveLocalChecked(new Set(remoteCheckedDays));
+    if (remoteProgress) {
+      const nextChecked = new Set(remoteProgress.checkedDays);
+      setLocalChecked(nextChecked);
+      setLocalCompletions(remoteProgress.completions);
+      saveLocalChecked(nextChecked);
+      saveLocalCompletions(remoteProgress.completions);
     }
-  }, [remoteCheckedDays]);
+  }, [remoteProgress]);
 
   useEffect(() => {
     try {
@@ -75,11 +116,14 @@ export default function App({ auth, remoteCheckedDays, remoteLoading = false, on
     }
   }, [sizingMode]);
 
-  const persist = (next: Set<number>) => {
+  const persist = (next: Set<number>, nextCompletions = completions) => {
     const nextList = [...next].sort((a, b) => a - b);
+    const sanitizedCompletions = clampCompletions(nextCompletions);
     setLocalChecked(next);
+    setLocalCompletions(sanitizedCompletions);
     saveLocalChecked(next);
-    void onRemoteChange?.(nextList);
+    saveLocalCompletions(sanitizedCompletions);
+    void onRemoteChange?.({ checkedDays: nextList, completions: sanitizedCompletions });
   };
 
   const toggleDay = (day: number, isChecked: boolean) => {
@@ -90,6 +134,16 @@ export default function App({ auth, remoteCheckedDays, remoteLoading = false, on
   };
 
   const resetAll = () => persist(new Set());
+  const logCompletion = () => {
+    if (!isChallengeComplete || completions >= COMPLETION_GOAL) return;
+    persist(new Set(), completions + 1);
+  };
+  const adjustCompletions = (delta: number) => {
+    persist(checked, completions + delta);
+  };
+  const resetCompletions = () => {
+    persist(checked, 0);
+  };
   const visibleDays = currentPhase === 0 ? days : days.filter((day) => day.phase === currentPhase);
 
   return (
@@ -117,7 +171,7 @@ export default function App({ auth, remoteCheckedDays, remoteLoading = false, on
           <Stat label="Final goal" value="5,000 SOL" />
           <Stat label="3 SOL QB" value="Day 42" />
           <Stat label="4.5 cap" value="Day 57" />
-          <Stat label="Total gain" value="~5,000x" />
+          <Stat label="5K completed" value={`${completions}/${COMPLETION_GOAL}`} />
         </div>
         <SizingToggle mode={sizingMode} onChange={setSizingMode} />
       </header>
@@ -136,6 +190,13 @@ export default function App({ auth, remoteCheckedDays, remoteLoading = false, on
         <div className="main-track">
           <div className="main-fill" style={{ width: `${overallPct}%` }} />
         </div>
+        <CompletionCounter
+          completions={completions}
+          isComplete={isChallengeComplete}
+          onAdjustCompletions={adjustCompletions}
+          onLogCompletion={logCompletion}
+          onResetCompletions={resetCompletions}
+        />
         <div className="phase-bars">
           {phases.map((phase) => {
             const phaseDays = days.filter((day) => day.phase === phase.id);
@@ -201,9 +262,64 @@ export default function App({ auth, remoteCheckedDays, remoteLoading = false, on
 
       <Notes />
       <div className="sync-debug" aria-live="polite">
-        {auth?.isSignedIn ? `Synced days: ${checkedList.length}` : "Guest progress is saved in this browser until you sign in."}
+        {auth?.isSignedIn ? `Synced days: ${checkedList.length} · completions: ${completions}/${COMPLETION_GOAL}` : "Guest progress is saved in this browser until you sign in."}
       </div>
     </>
+  );
+}
+
+function CompletionCounter({
+  completions,
+  isComplete,
+  onAdjustCompletions,
+  onLogCompletion,
+  onResetCompletions,
+}: {
+  completions: number;
+  isComplete: boolean;
+  onAdjustCompletions: (delta: number) => void;
+  onLogCompletion: () => void;
+  onResetCompletions: () => void;
+}) {
+  const [adjustBy, setAdjustBy] = useState(1);
+  const pct = Math.min((completions / COMPLETION_GOAL) * 100, 100);
+  const sanitizedAdjustBy = Math.min(Math.max(Math.trunc(adjustBy) || 1, 1), COMPLETION_GOAL);
+
+  return (
+    <div className={isComplete ? "completion-counter ready" : "completion-counter"}>
+      <div className="completion-copy">
+        <span className="completion-label">5k SOL completed</span>
+        <strong>{completions}/{COMPLETION_GOAL}</strong>
+        <div className="completion-adjust" aria-label="Adjust completion count">
+          <button onClick={() => onAdjustCompletions(-sanitizedAdjustBy)} type="button">-{sanitizedAdjustBy}</button>
+          <label>
+            <span>adjust by</span>
+            <input
+              min={1}
+              max={COMPLETION_GOAL}
+              onChange={(event) => setAdjustBy(Number(event.currentTarget.value))}
+              type="number"
+              value={adjustBy}
+            />
+          </label>
+          <button onClick={() => onAdjustCompletions(sanitizedAdjustBy)} type="button">+{sanitizedAdjustBy}</button>
+          <button className="completion-reset-btn" onClick={onResetCompletions} type="button">reset</button>
+        </div>
+        <span className="completion-hint">
+          {isComplete ? "All 73 days checked. Log this run and start the next one." : `${COMPLETION_GOAL - completions} runs left to master the challenge.`}
+        </span>
+      </div>
+      <div className="completion-action">
+        <span className="completion-mini-track">
+          <span className="completion-mini-fill" style={{ width: `${pct}%` }} />
+        </span>
+        {isComplete ? (
+          <button className="completion-btn" disabled={completions >= COMPLETION_GOAL} onClick={onLogCompletion} type="button">
+            log completion
+          </button>
+        ) : null}
+      </div>
+    </div>
   );
 }
 

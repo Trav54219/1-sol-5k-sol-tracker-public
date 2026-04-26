@@ -4,7 +4,7 @@ import { AuthKitProvider, useAuth } from "@workos-inc/authkit-react";
 import { ConvexReactClient, useConvexAuth, useMutation, useQuery } from "convex/react";
 import { makeFunctionReference } from "convex/server";
 import { ConvexProviderWithAuthKit } from "@convex-dev/workos";
-import App, { getLocalCheckedDays } from "./App";
+import App, { getLocalProgress, type ProgressSnapshot } from "./App";
 import "./styles.css";
 
 const convexUrl = import.meta.env.VITE_CONVEX_URL as string | undefined;
@@ -12,26 +12,29 @@ const workosClientId = import.meta.env.VITE_WORKOS_CLIENT_ID as string | undefin
 const workosRedirectUri = import.meta.env.VITE_WORKOS_REDIRECT_URI as string | undefined;
 const authConfigured = Boolean(convexUrl && workosClientId);
 const progressApi = {
-  get: makeFunctionReference<"query", Record<string, never>, number[]>("progress:get"),
-  set: makeFunctionReference<"mutation", { checkedDays: number[] }, null>("progress:set"),
+  get: makeFunctionReference<"query", Record<string, never>, ProgressSnapshot>("progress:get"),
+  set: makeFunctionReference<"mutation", ProgressSnapshot, null>("progress:set"),
 };
 
 function RemoteApp() {
   const auth = useAuth();
   const convexAuth = useConvexAuth();
-  const remoteCheckedDays = useQuery(progressApi.get, convexAuth.isAuthenticated ? {} : "skip");
+  const remoteProgress = useQuery(progressApi.get, convexAuth.isAuthenticated ? {} : "skip");
   const setProgress = useMutation(progressApi.set);
   const migratedLocal = useRef(false);
 
   useEffect(() => {
-    if (!convexAuth.isAuthenticated || remoteCheckedDays === undefined || migratedLocal.current) return;
+    if (!convexAuth.isAuthenticated || remoteProgress === undefined || migratedLocal.current) return;
 
-    const localCheckedDays = getLocalCheckedDays();
-    if (remoteCheckedDays.length === 0 && localCheckedDays.length > 0) {
+    const localProgress = getLocalProgress();
+    const shouldUseLocalChecked = remoteProgress.checkedDays.length === 0 && localProgress.checkedDays.length > 0;
+    const checkedDays = shouldUseLocalChecked ? localProgress.checkedDays : remoteProgress.checkedDays;
+    const completions = Math.max(remoteProgress.completions, localProgress.completions);
+    if (shouldUseLocalChecked || completions !== remoteProgress.completions) {
       migratedLocal.current = true;
-      void setProgress({ checkedDays: localCheckedDays });
+      void setProgress({ checkedDays, completions });
     }
-  }, [convexAuth.isAuthenticated, remoteCheckedDays, setProgress]);
+  }, [convexAuth.isAuthenticated, remoteProgress, setProgress]);
 
   const userLabel = auth.user?.email ?? auth.user?.firstName ?? "your account";
 
@@ -48,13 +51,13 @@ function RemoteApp() {
       }}
       onRemoteChange={
         convexAuth.isAuthenticated
-          ? async (checkedDays) => {
-              await setProgress({ checkedDays });
+          ? async (progress) => {
+              await setProgress(progress);
             }
           : undefined
       }
-      remoteCheckedDays={convexAuth.isAuthenticated ? remoteCheckedDays : undefined}
-      remoteLoading={convexAuth.isAuthenticated && remoteCheckedDays === undefined}
+      remoteProgress={convexAuth.isAuthenticated ? remoteProgress : undefined}
+      remoteLoading={convexAuth.isAuthenticated && remoteProgress === undefined}
     />
   );
 }
