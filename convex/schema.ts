@@ -5,6 +5,9 @@ export default defineSchema({
   progress: defineTable({
     checkedDays: v.array(v.number()),
     updatedAt: v.number(),
+    userIdentifier: v.optional(v.string()),
     userSubject: v.string(),
-  }).index("by_user_subject", ["userSubject"]),
+  })
+    .index("by_user_identifier", ["userIdentifier"])
+    .index("by_user_subject", ["userSubject"]),
 });

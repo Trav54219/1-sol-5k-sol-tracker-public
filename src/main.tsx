@@ -34,7 +34,6 @@ function RemoteApp() {
   }, [convexAuth.isAuthenticated, remoteCheckedDays, setProgress]);
 
   const userLabel = auth.user?.email ?? auth.user?.firstName ?? "your account";
-  const redirectUri = getWorkOSRedirectUri();
 
   return (
     <App
@@ -44,8 +43,8 @@ function RemoteApp() {
         isLoading: auth.isLoading,
         isSignedIn: Boolean(auth.user),
         userLabel,
-        signIn: () => auth.signIn({ state: { returnTo: redirectUri } }),
-        signOut: () => auth.signOut({ returnTo: redirectUri }),
+        signIn: () => auth.signIn({ state: { returnTo: getReturnToUrl() } }),
+        signOut: () => auth.signOut({ returnTo: window.location.origin }),
       }}
       onRemoteChange={
         convexAuth.isAuthenticated
@@ -71,7 +70,7 @@ function Root() {
   return (
     <AuthKitProvider
       clientId={workosClientId}
-      devMode
+      devMode={isLocalOrigin()}
       onRedirectCallback={({ state }) => {
         const returnTo = typeof state?.returnTo === "string" ? state.returnTo : null;
         if (!returnTo) return;
@@ -93,7 +92,40 @@ function Root() {
 }
 
 function getWorkOSRedirectUri() {
-  return workosRedirectUri || window.location.origin;
+  if (!workosRedirectUri) return window.location.origin;
+
+  try {
+    const configured = new URL(workosRedirectUri, window.location.origin);
+
+    // AuthKit's SPA flow stores the PKCE verifier in sessionStorage. Redirecting
+    // back to a different origin loses it, so the auth code cannot be exchanged.
+    if (configured.origin === window.location.origin) {
+      return normalizeRedirectUri(configured);
+    }
+  } catch {
+    // Fall back to the current origin if the env var is malformed.
+  }
+
+  return window.location.origin;
+}
+
+function normalizeRedirectUri(url: URL) {
+  if (url.pathname === "/" && !url.search && !url.hash) {
+    return url.origin;
+  }
+
+  return url.toString();
+}
+
+function isLocalOrigin() {
+  return window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+}
+
+function getReturnToUrl() {
+  const url = new URL(window.location.href);
+  url.searchParams.delete("code");
+  url.searchParams.delete("state");
+  return url.toString();
 }
 
 createRoot(document.getElementById("root")!).render(
