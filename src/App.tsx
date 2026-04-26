@@ -197,6 +197,8 @@ function Stat({ label, value }: { label: string; value: string }) {
 }
 
 function AuthControls({ auth, remoteLoading }: { auth?: AuthState; remoteLoading: boolean }) {
+  const [authError, setAuthError] = useState<string | null>(null);
+
   if (!auth?.configured) {
     return (
       <div className="auth-card">
@@ -225,13 +227,25 @@ function AuthControls({ auth, remoteLoading }: { auth?: AuthState; remoteLoading
     );
   }
 
+  const handleSignIn = async () => {
+    setAuthError(null);
+
+    try {
+      await auth.signIn?.();
+    } catch (error) {
+      console.error(error);
+      setAuthError("Sign-in could not start. Add this exact site URL to WorkOS Redirect URIs and Allowed Origins.");
+    }
+  };
+
   return (
     <div className="auth-card">
       <div className="auth-title">Save your progress</div>
       <p>Sign in to sync checked days across devices.</p>
-      <button className="auth-btn" onClick={() => void auth.signIn?.()} type="button">
+      <button className="auth-btn" onClick={() => void handleSignIn()} type="button">
         Sign in
       </button>
+      {authError ? <p className="auth-error">{authError}</p> : null}
     </div>
   );
 }

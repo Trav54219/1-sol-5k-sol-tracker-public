@@ -217,6 +217,12 @@ h1 span {
   color: var(--muted2);
 }
 
+.auth-error {
+  color: #a05f00;
+  font-size: 11px;
+  margin-top: 8px;
+}
+
 .tracker {
   border-radius: 12px;
   margin: 0 auto 24px;

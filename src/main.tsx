@@ -9,8 +9,7 @@ import "./styles.css";
 
 const convexUrl = import.meta.env.VITE_CONVEX_URL as string | undefined;
 const workosClientId = import.meta.env.VITE_WORKOS_CLIENT_ID as string | undefined;
-const workosRedirectUri = import.meta.env.VITE_WORKOS_REDIRECT_URI as string | undefined;
-const authConfigured = Boolean(convexUrl && workosClientId && workosRedirectUri);
+const authConfigured = Boolean(convexUrl && workosClientId);
 const progressApi = {
   get: makeFunctionReference<"query", Record<string, never>, number[]>("progress:get"),
   set: makeFunctionReference<"mutation", { checkedDays: number[] }, null>("progress:set"),
@@ -40,11 +39,11 @@ function RemoteApp() {
       auth={{
         configured: true,
         canSync: convexAuth.isAuthenticated,
-        isLoading: auth.isLoading || convexAuth.isLoading,
+        isLoading: auth.isLoading,
         isSignedIn: Boolean(auth.user),
         userLabel,
-        signIn: auth.signIn,
-        signOut: auth.signOut,
+        signIn: () => auth.signIn({ state: { returnTo: window.location.href } }),
+        signOut: () => auth.signOut({ returnTo: window.location.origin }),
       }}
       onRemoteChange={
         convexAuth.isAuthenticated
@@ -60,14 +59,26 @@ function RemoteApp() {
 }
 
 function Root() {
-  if (!authConfigured || !convexUrl || !workosClientId || !workosRedirectUri) {
+  if (!authConfigured || !convexUrl || !workosClientId) {
     return <App auth={{ configured: false, canSync: false, isLoading: false, isSignedIn: false, userLabel: null }} />;
   }
 
   const convex = new ConvexReactClient(convexUrl);
 
   return (
-    <AuthKitProvider clientId={workosClientId} redirectUri={workosRedirectUri}>
+    <AuthKitProvider
+      clientId={workosClientId}
+      onRedirectCallback={({ state }) => {
+        const returnTo = typeof state?.returnTo === "string" ? state.returnTo : null;
+        if (!returnTo) return;
+
+        const target = new URL(returnTo, window.location.origin);
+        if (target.origin === window.location.origin) {
+          window.history.replaceState({}, "", `${target.pathname}${target.search}${target.hash}`);
+        }
+      }}
+      redirectUri={window.location.origin}
+    >
       <ConvexProviderWithAuthKit client={convex} useAuth={useAuth}>
         <RemoteApp />
       </ConvexProviderWithAuthKit>
