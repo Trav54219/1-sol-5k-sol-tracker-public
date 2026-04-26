@@ -64,6 +64,12 @@ function Root() {
     return <App auth={{ configured: false, canSync: false, isLoading: false, isSignedIn: false, userLabel: null }} />;
   }
 
+  const canonicalUrl = getCanonicalAppUrl();
+  if (canonicalUrl && shouldRedirectToCanonical(canonicalUrl)) {
+    window.location.replace(`${canonicalUrl.origin}${window.location.pathname}${window.location.search}${window.location.hash}`);
+    return null;
+  }
+
   const convex = new ConvexReactClient(convexUrl);
   const redirectUri = getWorkOSRedirectUri();
 
@@ -92,21 +98,34 @@ function Root() {
 }
 
 function getWorkOSRedirectUri() {
+  if (isLocalOrigin()) return window.location.origin;
   if (!workosRedirectUri) return window.location.origin;
 
   try {
-    const configured = new URL(workosRedirectUri, window.location.origin);
-
-    // AuthKit's SPA flow stores the PKCE verifier in sessionStorage. Redirecting
-    // back to a different origin loses it, so the auth code cannot be exchanged.
-    if (configured.origin === window.location.origin) {
-      return normalizeRedirectUri(configured);
-    }
+    return normalizeRedirectUri(new URL(workosRedirectUri, window.location.origin));
   } catch {
     // Fall back to the current origin if the env var is malformed.
   }
 
   return window.location.origin;
+}
+
+function getCanonicalAppUrl() {
+  if (isLocalOrigin() || !workosRedirectUri) return null;
+
+  try {
+    return new URL(workosRedirectUri, window.location.origin);
+  } catch {
+    return null;
+  }
+}
+
+function shouldRedirectToCanonical(canonicalUrl: URL) {
+  if (canonicalUrl.origin === window.location.origin) return false;
+
+  const currentHost = window.location.hostname;
+  const canonicalHost = canonicalUrl.hostname;
+  return currentHost.endsWith(".vercel.app") && canonicalHost.endsWith(".vercel.app");
 }
 
 function normalizeRedirectUri(url: URL) {
