@@ -9,6 +9,7 @@ import "./styles.css";
 
 const convexUrl = import.meta.env.VITE_CONVEX_URL as string | undefined;
 const workosClientId = import.meta.env.VITE_WORKOS_CLIENT_ID as string | undefined;
+const workosRedirectUri = import.meta.env.VITE_WORKOS_REDIRECT_URI as string | undefined;
 const authConfigured = Boolean(convexUrl && workosClientId);
 const progressApi = {
   get: makeFunctionReference<"query", Record<string, never>, number[]>("progress:get"),
@@ -33,6 +34,7 @@ function RemoteApp() {
   }, [convexAuth.isAuthenticated, remoteCheckedDays, setProgress]);
 
   const userLabel = auth.user?.email ?? auth.user?.firstName ?? "your account";
+  const redirectUri = getWorkOSRedirectUri();
 
   return (
     <App
@@ -42,8 +44,8 @@ function RemoteApp() {
         isLoading: auth.isLoading,
         isSignedIn: Boolean(auth.user),
         userLabel,
-        signIn: () => auth.signIn({ state: { returnTo: window.location.href } }),
-        signOut: () => auth.signOut({ returnTo: window.location.origin }),
+        signIn: () => auth.signIn({ state: { returnTo: redirectUri } }),
+        signOut: () => auth.signOut({ returnTo: redirectUri }),
       }}
       onRemoteChange={
         convexAuth.isAuthenticated
@@ -64,6 +66,7 @@ function Root() {
   }
 
   const convex = new ConvexReactClient(convexUrl);
+  const redirectUri = getWorkOSRedirectUri();
 
   return (
     <AuthKitProvider
@@ -73,18 +76,24 @@ function Root() {
         const returnTo = typeof state?.returnTo === "string" ? state.returnTo : null;
         if (!returnTo) return;
 
-        const target = new URL(returnTo, window.location.origin);
+        const target = new URL(returnTo, redirectUri);
         if (target.origin === window.location.origin) {
           window.history.replaceState({}, "", `${target.pathname}${target.search}${target.hash}`);
+        } else {
+          window.location.assign(target.toString());
         }
       }}
-      redirectUri={window.location.origin}
+      redirectUri={redirectUri}
     >
       <ConvexProviderWithAuthKit client={convex} useAuth={useAuth}>
         <RemoteApp />
       </ConvexProviderWithAuthKit>
     </AuthKitProvider>
   );
+}
+
+function getWorkOSRedirectUri() {
+  return workosRedirectUri || window.location.origin;
 }
 
 createRoot(document.getElementById("root")!).render(

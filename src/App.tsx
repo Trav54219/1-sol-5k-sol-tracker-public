@@ -234,7 +234,7 @@ function AuthControls({ auth, remoteLoading }: { auth?: AuthState; remoteLoading
       await auth.signIn?.();
     } catch (error) {
       console.error(error);
-      setAuthError("Sign-in could not start. Add this exact site URL to WorkOS Redirect URIs and Allowed Origins.");
+      setAuthError("Sign-in could not start. Check the configured WorkOS redirect URL and allowed origin.");
     }
   };
 
