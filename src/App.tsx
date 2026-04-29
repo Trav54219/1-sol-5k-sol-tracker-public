@@ -1,19 +1,25 @@
 import { Fragment, useEffect, useMemo, useState } from "react";
 import {
-  FINAL,
+  CHALLENGES,
   TIMEFRAME_OPTIONS,
-  fmt,
-  fmtSizing,
+  formatChallengeAmount,
+  formatChallengeSizing,
+  getChallengeConfig,
+  getMilestoneLabel,
   getTimeframePlan,
   getSizingAmount,
+  isChallengeMode,
   isTimeframeId,
   LS_KEY,
+  type ChallengeConfig,
+  type ChallengeMode,
   type DayPlan,
   type Phase,
   type SizingMode,
   type TimeframeId,
 } from "./trackerData";
 
+const CHALLENGE_MODE_KEY = "sol_speedrun_challenge_mode";
 const SIZING_MODE_KEY = "sol_speedrun_sizing_mode";
 const TIMEFRAME_KEY = "sol_speedrun_timeframe";
 const COMPLETIONS_KEY = "sol_speedrun_completions";
@@ -140,6 +146,15 @@ function loadSizingMode(): SizingMode {
   }
 }
 
+function loadChallengeMode(): ChallengeMode {
+  try {
+    const saved = localStorage.getItem(CHALLENGE_MODE_KEY);
+    return isChallengeMode(saved) ? saved : "sol";
+  } catch {
+    return "sol";
+  }
+}
+
 function loadTimeframe(): TimeframeId {
   try {
     const saved = localStorage.getItem(TIMEFRAME_KEY);
@@ -164,15 +179,19 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
   const [localChecked, setLocalChecked] = useState(() => loadLocalChecked());
   const [localCompletions, setLocalCompletions] = useState(() => loadLocalCompletions());
   const [currentPhase, setCurrentPhase] = useState(0);
+  const [challengeMode, setChallengeMode] = useState<ChallengeMode>(() => loadChallengeMode());
   const [sizingMode, setSizingMode] = useState<SizingMode>(() => loadSizingMode());
   const [timeframe, setTimeframe] = useState<TimeframeId>(() => loadTimeframe());
   const [challengeStartDate, setChallengeStartDate] = useState(() => loadLocalStartDate());
-  const timeframePlan = useMemo(() => getTimeframePlan(timeframe), [timeframe]);
+  const challenge = useMemo(() => getChallengeConfig(challengeMode), [challengeMode]);
+  const timeframePlan = useMemo(() => getTimeframePlan(timeframe, challenge), [timeframe, challenge]);
   const planDays = timeframePlan.days;
   const planPhases = timeframePlan.phases;
   const totalDays = timeframePlan.option.days;
-  const threeSolDay = planDays.find((day) => getSizingAmount(day.day, day.start, "conservative") >= 3)?.day;
-  const capDay = planDays.find((day) => getSizingAmount(day.day, day.start, "conservative") >= 4.5)?.day;
+  const targetBuyAmount = challenge.targetBuyMultiplier * challenge.start;
+  const capAmount = challenge.capMultiplier * challenge.start;
+  const targetBuyDay = planDays.find((day) => getSizingAmount(day.day, day.start, "conservative", challenge) >= targetBuyAmount)?.day;
+  const capDay = planDays.find((day) => getSizingAmount(day.day, day.start, "conservative", challenge) >= capAmount)?.day;
   const checked = useMemo(
     () => new Set(remoteProgress?.checkedDays ?? [...localChecked]),
     [localChecked, remoteProgress],
@@ -201,6 +220,14 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
       // Sizing mode still works for this session if local storage is blocked.
     }
   }, [sizingMode]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(CHALLENGE_MODE_KEY, challengeMode);
+    } catch {
+      // Challenge mode still works for this session if local storage is blocked.
+    }
+  }, [challengeMode]);
 
   useEffect(() => {
     try {
@@ -249,12 +276,12 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
       <header className="header">
         <div className="logo-line">
           <div className="dot" />
-          <span className="logo-text">Full Speedrun · 1 SOL Start</span>
+          <span className="logo-text">Full Speedrun · {challenge.startLabel} Start</span>
         </div>
         <div className="header-main">
           <div>
             <h1>
-              1 SOL → <span>5,000 SOL</span>
+              {challenge.startLabel} → <span>{challenge.finalLabel}</span>
             </h1>
             <p className="subtitle">
               Best case · 12-15 hrs/day · {timeframePlan.option.label} · {(timeframePlan.dailyGrowthRate * 100).toFixed(1)}% daily target
@@ -267,12 +294,13 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
         </div>
         <div className="summary-row">
           <Stat label="Timeline" value={`${totalDays} days`} />
-          <Stat label="Start" value="1 SOL" />
-          <Stat label="Final goal" value="5,000 SOL" />
-          <Stat label="3 SOL MB" value={threeSolDay ? `Day ${threeSolDay}` : "N/A"} />
-          <Stat label="4.5 cap" value={capDay ? `Day ${capDay}` : "N/A"} />
-          <Stat label="5K completed" value={`${completions}/${COMPLETION_GOAL}`} />
+          <Stat label="Start" value={challenge.startLabel} />
+          <Stat label="Final goal" value={challenge.finalLabel} />
+          <Stat label={`${formatChallengeSizing(targetBuyAmount, challenge)} MB`} value={targetBuyDay ? `Day ${targetBuyDay}` : "N/A"} />
+          <Stat label={`${formatChallengeSizing(capAmount, challenge)} cap`} value={capDay ? `Day ${capDay}` : "N/A"} />
+          <Stat label={`${challenge.completedLabel} completed`} value={`${completions}/${COMPLETION_GOAL}`} />
         </div>
+        <ChallengeModeToggle mode={challengeMode} onChange={setChallengeMode} />
         <TimeframeToggle timeframe={timeframe} onChange={setTimeframe} />
         <SizingToggle mode={sizingMode} onChange={setSizingMode} />
       </header>
@@ -298,6 +326,7 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
           onLogCompletion={logCompletion}
           onResetCompletions={resetCompletions}
           totalDays={totalDays}
+          challenge={challenge}
         />
         <ChallengeDatePlanner
           completedDays={totalDone}
@@ -356,11 +385,11 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
             <tr>
               <th className="cb-col" />
               <th>Day</th>
-              <th>SOL range</th>
+              <th>{challenge.unit} range</th>
               <th>Daily gain</th>
               <th>Max buy</th>
               <th>Size % of stack</th>
-              <th>Progress to 5,000</th>
+              <th>Progress to {challenge.finalLabel}</th>
             </tr>
           </thead>
           <tbody>
@@ -371,12 +400,13 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
               phases={planPhases}
               planDays={planDays}
               sizingMode={sizingMode}
+              challenge={challenge}
             />
           </tbody>
         </table>
       </div>
 
-      <Notes dailyGrowthRate={timeframePlan.dailyGrowthRate} phases={planPhases} planDays={planDays} totalDays={totalDays} />
+      <Notes dailyGrowthRate={timeframePlan.dailyGrowthRate} phases={planPhases} planDays={planDays} totalDays={totalDays} challenge={challenge} />
       <div className="sync-debug" aria-live="polite">
         {auth?.isSignedIn ? `Synced days: ${checkedList.length} · completions: ${completions}/${COMPLETION_GOAL}` : "Guest progress is saved in this browser until you sign in."}
       </div>
@@ -391,6 +421,7 @@ function CompletionCounter({
   onLogCompletion,
   onResetCompletions,
   totalDays,
+  challenge,
 }: {
   completions: number;
   isComplete: boolean;
@@ -398,6 +429,7 @@ function CompletionCounter({
   onLogCompletion: () => void;
   onResetCompletions: () => void;
   totalDays: number;
+  challenge: ChallengeConfig;
 }) {
   const [adjustBy, setAdjustBy] = useState(1);
   const pct = Math.min((completions / COMPLETION_GOAL) * 100, 100);
@@ -406,7 +438,7 @@ function CompletionCounter({
   return (
     <div className={isComplete ? "completion-counter ready" : "completion-counter"}>
       <div className="completion-copy">
-        <span className="completion-label">5k SOL completed</span>
+        <span className="completion-label">{challenge.completedLabel} completed</span>
         <strong>{completions}/{COMPLETION_GOAL}</strong>
         <div className="completion-adjust" aria-label="Adjust completion count">
           <button onClick={() => onAdjustCompletions(-sanitizedAdjustBy)} type="button">-{sanitizedAdjustBy}</button>
@@ -527,6 +559,25 @@ function PaceIndicator({ completedDays, startDate, totalDays }: { completedDays:
   );
 }
 
+function ChallengeModeToggle({ mode, onChange }: { mode: ChallengeMode; onChange: (mode: ChallengeMode) => void }) {
+  return (
+    <section className="challenge-toggle" aria-label="Challenge mode">
+      {Object.values(CHALLENGES).map((challenge) => (
+        <button
+          aria-pressed={mode === challenge.mode}
+          className={mode === challenge.mode ? "challenge-option active" : "challenge-option"}
+          key={challenge.mode}
+          onClick={() => onChange(challenge.mode)}
+          type="button"
+        >
+          <span>{challenge.name}</span>
+          <small>{challenge.startLabel} to {challenge.finalLabel}</small>
+        </button>
+      ))}
+    </section>
+  );
+}
+
 function TimeframeToggle({ timeframe, onChange }: { timeframe: TimeframeId; onChange: (timeframe: TimeframeId) => void }) {
   return (
     <section className="timeframe-toggle" aria-label="Timeframe">
@@ -641,6 +692,7 @@ function TrackerRows({
   phases,
   planDays,
   sizingMode,
+  challenge,
 }: {
   daysToRender: DayPlan[];
   checked: Set<number>;
@@ -648,6 +700,7 @@ function TrackerRows({
   phases: Phase[];
   planDays: DayPlan[];
   sizingMode: SizingMode;
+  challenge: ChallengeConfig;
 }) {
   let lastPhase = -1;
 
@@ -661,8 +714,8 @@ function TrackerRows({
         lastPhase = row.phase;
         const gain = row.end - row.start;
         const pct = ((gain / row.start) * 100).toFixed(1);
-        const progress = Math.min((row.end / FINAL) * 100, 100).toFixed(1);
-        const quickBuy = getSizingAmount(row.day, row.start, sizingMode);
+        const progress = Math.min((row.end / challenge.final) * 100, 100).toFixed(1);
+        const quickBuy = getSizingAmount(row.day, row.start, sizingMode, challenge);
         const quickBuyPct = ((quickBuy / row.start) * 100).toFixed(1);
         const isChecked = checked.has(row.day);
 
@@ -701,16 +754,16 @@ function TrackerRows({
               <td><span className="day-num">Day {row.day}</span></td>
               <td>
                 <span className="sol-range">
-                  {fmt(row.start)}<span className="arrow">→</span>
-                  <span className="end-sol" style={{ color: phase.color }}>{fmt(row.end)} SOL</span>
+                  {formatChallengeAmount(row.start, challenge)}<span className="arrow">→</span>
+                  <span className="end-sol" style={{ color: phase.color }}>{formatChallengeAmount(row.end, challenge)}</span>
                 </span>
-                {row.milestone ? <Badge label={row.milestone} phase={phase} /> : row.unlock ? <Badge label={`${fmtSizing(quickBuy)} SOL unlocked`} phase={phase} /> : null}
+                {row.milestone ? <Badge label={getMilestoneLabel(row.milestone, challenge)} phase={phase} /> : row.unlock ? <Badge label={`${formatChallengeSizing(quickBuy, challenge)} unlocked`} phase={phase} /> : null}
               </td>
               <td>
-                <span className="daily-gain" style={{ color: phase.color }}>+{fmt(gain)} SOL</span>
+                <span className="daily-gain" style={{ color: phase.color }}>+{formatChallengeAmount(gain, challenge)}</span>
                 <span className="pct-gain">(+{pct}%)</span>
               </td>
-              <td><span className="mb-cell" style={{ color: phase.color }}>{fmtSizing(quickBuy)} SOL</span></td>
+              <td><span className="mb-cell" style={{ color: phase.color }}>{formatChallengeSizing(quickBuy, challenge)}</span></td>
               <td>
                 <span className="mb-cell" style={{ color: phase.color }}>{quickBuyPct}%</span>
                 <span className="pct-gain"> of stack</span>
@@ -738,22 +791,26 @@ function Notes({
   phases,
   planDays,
   totalDays,
+  challenge,
 }: {
   dailyGrowthRate: number;
   phases: Phase[];
   planDays: DayPlan[];
   totalDays: number;
+  challenge: ChallengeConfig;
 }) {
   const [showSizingGuide, setShowSizingGuide] = useState(false);
-  const threeSolDay = planDays.find((day) => getSizingAmount(day.day, day.start, "conservative") >= 3);
-  const capDay = planDays.find((day) => getSizingAmount(day.day, day.start, "conservative") >= 4.5);
+  const targetBuyAmount = challenge.targetBuyMultiplier * challenge.start;
+  const capAmount = challenge.capMultiplier * challenge.start;
+  const targetBuyDay = planDays.find((day) => getSizingAmount(day.day, day.start, "conservative", challenge) >= targetBuyAmount);
+  const capDay = planDays.find((day) => getSizingAmount(day.day, day.start, "conservative", challenge) >= capAmount);
   const goalDay = planDays[planDays.length - 1];
   const phaseOne = phases[0];
   const phaseOneDays = planDays.filter((day) => day.phase === phaseOne.id);
   const phaseOneStart = phaseOneDays[0];
   const phaseOneEnd = phaseOneDays[phaseOneDays.length - 1];
-  const phaseOneMinBuy = getSizingAmount(phaseOneStart.day, phaseOneStart.start, "conservative");
-  const phaseOneMaxBuy = getSizingAmount(phaseOneEnd.day, phaseOneEnd.start, "conservative");
+  const phaseOneMinBuy = getSizingAmount(phaseOneStart.day, phaseOneStart.start, "conservative", challenge);
+  const phaseOneMaxBuy = getSizingAmount(phaseOneEnd.day, phaseOneEnd.start, "conservative", challenge);
   const phaseFive = phases.find((phase) => phase.id === 5);
   const phaseFiveStartDay = phaseFive ? planDays.find((day) => day.phase === phaseFive.id)?.day : null;
   const bufferMin = Math.max(1, Math.ceil(totalDays * 0.2));
@@ -773,7 +830,7 @@ function Notes({
         <div className="note-body">
           {phaseRates.map(({ phase, first, last, avgRate }) => (
             <Fragment key={phase.id}>
-              Phase {phase.id} ({fmt(first.start)}-{fmt(last.end)} SOL): <strong>~{(avgRate * 100).toFixed(1)}%</strong><br />
+              Phase {phase.id} ({formatChallengeAmount(first.start, challenge)}-{formatChallengeAmount(last.end, challenge)}): <strong>~{(avgRate * 100).toFixed(1)}%</strong><br />
             </Fragment>
           ))}
         </div>
@@ -781,25 +838,25 @@ function Notes({
       <div className="note-card">
         <div className="note-title">3 key milestones</div>
         <div className="note-body">
-          {threeSolDay ? (
+          {targetBuyDay ? (
             <>
-              <strong>Day {threeSolDay.day}</strong> - 3 SOL MB unlocked<br />
-              Portfolio after target: ~{fmt(threeSolDay.end)} SOL<br /><br />
+              <strong>Day {targetBuyDay.day}</strong> - {formatChallengeSizing(targetBuyAmount, challenge)} max buy unlocked<br />
+              Portfolio after target: ~{formatChallengeAmount(targetBuyDay.end, challenge)}<br /><br />
             </>
           ) : null}
           {capDay ? (
             <>
-              <strong>Day {capDay.day}</strong> - 4.5 SOL cap reached<br />
-              Portfolio after target: ~{fmt(capDay.end)} SOL<br /><br />
+              <strong>Day {capDay.day}</strong> - {formatChallengeSizing(capAmount, challenge)} cap reached<br />
+              Portfolio after target: ~{formatChallengeAmount(capDay.end, challenge)}<br /><br />
             </>
           ) : null}
-          <strong>Day {goalDay.day}</strong> - 5,000 SOL reached
+          <strong>Day {goalDay.day}</strong> - {challenge.finalLabel} reached
         </div>
       </div>
       <div className="note-card">
         <div className="note-title">Phase 1 is the grind</div>
         <div className="note-body">
-          Days {phaseOneStart.day}-{phaseOneEnd.day} at {fmtSizing(phaseOneMinBuy)}-{fmtSizing(phaseOneMaxBuy)} SOL MB are the foundation for this {totalDays}-day plan.<br />
+          Days {phaseOneStart.day}-{phaseOneEnd.day} at {formatChallengeSizing(phaseOneMinBuy, challenge)}-{formatChallengeSizing(phaseOneMaxBuy, challenge)} max buys are the foundation for this {totalDays}-day plan.<br />
           The full plan needs about <strong>{(dailyGrowthRate * 100).toFixed(1)}%</strong> per day, so early discipline is <strong>the most important</strong>.<br />
           Every habit you build here - hold discipline, no tilt, cut fast - <strong>carries to every phase after</strong>.
         </div>

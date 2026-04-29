@@ -99,6 +99,7 @@ input[type="date"] {
 .auth-title,
 .auth-btn,
 .guide-toggle,
+.challenge-option,
 .timeframe-option,
 .sizing-option,
 .progress-label,
@@ -140,6 +141,7 @@ h1 span {
   margin-top: 20px;
 }
 
+.challenge-toggle,
 .timeframe-toggle,
 .sizing-toggle {
   background: var(--bg2);
@@ -155,10 +157,12 @@ h1 span {
   grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
 }
 
+.challenge-toggle,
 .sizing-toggle {
   grid-template-columns: repeat(2, 1fr);
 }
 
+.challenge-option,
 .timeframe-option,
 .sizing-option {
   background: transparent;
@@ -171,6 +175,8 @@ h1 span {
   transition: all 0.12s;
 }
 
+.challenge-option span,
+.challenge-option small,
 .timeframe-option span,
 .timeframe-option small,
 .sizing-option span,
@@ -178,6 +184,7 @@ h1 span {
   display: block;
 }
 
+.challenge-option span,
 .timeframe-option span,
 .sizing-option span {
   color: var(--muted2);
@@ -187,6 +194,7 @@ h1 span {
   text-transform: uppercase;
 }
 
+.challenge-option small,
 .timeframe-option small,
 .sizing-option small {
   font-size: 11px;
@@ -194,17 +202,20 @@ h1 span {
   margin-top: 3px;
 }
 
+.challenge-option:hover,
 .timeframe-option:hover,
 .sizing-option:hover {
   background: var(--bg3);
 }
 
+.challenge-option.active,
 .timeframe-option.active,
 .sizing-option.active {
   background: rgba(10, 124, 82, 0.07);
   border-color: rgba(10, 124, 82, 0.28);
 }
 
+.challenge-option.active span,
 .timeframe-option.active span,
 .sizing-option.active span {
   color: var(--green);
@@ -1023,6 +1034,7 @@ tbody td.cb-col {
     min-width: 0;
   }
 
+  .challenge-toggle,
   .sizing-toggle {
     grid-template-columns: 1fr;
   }

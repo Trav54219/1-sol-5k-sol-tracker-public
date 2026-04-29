@@ -2,8 +2,23 @@ export const FINAL = 5000;
 export const TOTAL_DAYS = 73;
 export const LS_KEY = "sol_speedrun_checked";
 
+export type ChallengeMode = "sol" | "usdc";
 export type SizingMode = "conservative" | "pullupso";
 export type TimeframeId = "default" | "7" | "14" | "21" | "30" | "45" | "60" | "75";
+export type MilestoneId = "target-buy" | "cap" | "goal";
+
+export type ChallengeConfig = {
+  mode: ChallengeMode;
+  name: string;
+  start: number;
+  final: number;
+  unit: "SOL" | "USDC";
+  startLabel: string;
+  finalLabel: string;
+  completedLabel: string;
+  targetBuyMultiplier: number;
+  capMultiplier: number;
+};
 
 export type Phase = {
   id: number;
@@ -24,7 +39,7 @@ export type DayPlan = {
   end: number;
   phase: number;
   unlock: string | null;
-  milestone?: string;
+  milestone?: MilestoneId;
 };
 
 export type TimeframeOption = {
@@ -52,11 +67,38 @@ export const TIMEFRAME_OPTIONS: TimeframeOption[] = [
   { id: "75", label: "75 days", days: 75, detail: "Slightly slower plan" },
 ];
 
+export const CHALLENGES: Record<ChallengeMode, ChallengeConfig> = {
+  sol: {
+    mode: "sol",
+    name: "SOL mode",
+    start: 1,
+    final: FINAL,
+    unit: "SOL",
+    startLabel: "1 SOL",
+    finalLabel: "5,000 SOL",
+    completedLabel: "5k SOL",
+    targetBuyMultiplier: 3,
+    capMultiplier: 4.5,
+  },
+  usdc: {
+    mode: "usdc",
+    name: "USDC mode",
+    start: 100,
+    final: 500000,
+    unit: "USDC",
+    startLabel: "$100 USDC",
+    finalLabel: "$500,000 USDC",
+    completedLabel: "$500k USDC",
+    targetBuyMultiplier: 3,
+    capMultiplier: 4.5,
+  },
+};
+
 const phaseBases: PhaseBase[] = [
   { id: 1, name: "Micro grind", color: "#0a7c52", bg: "rgba(10,124,82,0.06)", border: "rgba(10,124,82,0.22)" },
   { id: 2, name: "Building base", color: "#1a56a0", bg: "rgba(26,86,160,0.06)", border: "rgba(26,86,160,0.22)" },
   { id: 3, name: "Scaling up", color: "#a05f00", bg: "rgba(160,95,0,0.06)", border: "rgba(160,95,0,0.22)" },
-  { id: 4, name: "3 SOL target", color: "#7c1fa0", bg: "rgba(124,31,160,0.06)", border: "rgba(124,31,160,0.22)" },
+  { id: 4, name: "Target size", color: "#7c1fa0", bg: "rgba(124,31,160,0.06)", border: "rgba(124,31,160,0.22)" },
   { id: 5, name: "Upper tier", color: "#0e7490", bg: "rgba(14,116,144,0.06)", border: "rgba(14,116,144,0.22)" },
   { id: 6, name: "Endgame", color: "#8a6800", bg: "rgba(138,104,0,0.06)", border: "rgba(138,104,0,0.22)" },
 ];
@@ -82,7 +124,7 @@ export const days: DayPlan[] = [
   { day: 35, start: 220.19, end: 251.02, phase: 3, unlock: "2 SOL" }, { day: 36, start: 251.02, end: 284.65, phase: 3, unlock: null },
   { day: 37, start: 284.65, end: 322.46, phase: 3, unlock: "2.25 SOL" }, { day: 38, start: 322.46, end: 364.38, phase: 3, unlock: null },
   { day: 39, start: 364.38, end: 407.31, phase: 4, unlock: "2.5 SOL" }, { day: 40, start: 407.31, end: 455.39, phase: 4, unlock: null },
-  { day: 41, start: 455.39, end: 509.24, phase: 4, unlock: "2.75 SOL" }, { day: 42, start: 509.24, end: 569.35, phase: 4, unlock: "3 SOL", milestone: "3 SOL MB" },
+  { day: 41, start: 455.39, end: 509.24, phase: 4, unlock: "2.75 SOL" }, { day: 42, start: 509.24, end: 569.35, phase: 4, unlock: "3 SOL", milestone: "target-buy" },
   { day: 43, start: 569.35, end: 626.29, phase: 5, unlock: null }, { day: 44, start: 626.29, end: 688.92, phase: 5, unlock: "3.25 SOL" },
   { day: 45, start: 688.92, end: 757.81, phase: 5, unlock: null }, { day: 46, start: 757.81, end: 826.01, phase: 5, unlock: "3.5 SOL" },
   { day: 47, start: 826.01, end: 900.35, phase: 5, unlock: null }, { day: 48, start: 900.35, end: 981.38, phase: 5, unlock: "3.75 SOL" },
@@ -90,7 +132,7 @@ export const days: DayPlan[] = [
   { day: 51, start: 1155.28, end: 1247.7, phase: 5, unlock: "4 SOL" }, { day: 52, start: 1247.7, end: 1347.52, phase: 5, unlock: null },
   { day: 53, start: 1347.52, end: 1455.32, phase: 5, unlock: null }, { day: 54, start: 1455.32, end: 1571.75, phase: 5, unlock: "4.25 SOL" },
   { day: 55, start: 1571.75, end: 1697.49, phase: 5, unlock: null }, { day: 56, start: 1697.49, end: 1833.29, phase: 5, unlock: null },
-  { day: 57, start: 1833.29, end: 1979.95, phase: 5, unlock: "4.5 SOL", milestone: "4.5 SOL cap" },
+  { day: 57, start: 1833.29, end: 1979.95, phase: 5, unlock: "4.5 SOL", milestone: "cap" },
   { day: 58, start: 1979.95, end: 2098.75, phase: 6, unlock: null }, { day: 59, start: 2098.75, end: 2224.67, phase: 6, unlock: null },
   { day: 60, start: 2224.67, end: 2358.15, phase: 6, unlock: null }, { day: 61, start: 2358.15, end: 2499.64, phase: 6, unlock: null },
   { day: 62, start: 2499.64, end: 2649.61, phase: 6, unlock: null }, { day: 63, start: 2649.61, end: 2808.59, phase: 6, unlock: null },
@@ -98,10 +140,10 @@ export const days: DayPlan[] = [
   { day: 66, start: 3155.73, end: 3345.07, phase: 6, unlock: null }, { day: 67, start: 3345.07, end: 3545.78, phase: 6, unlock: null },
   { day: 68, start: 3545.78, end: 3758.52, phase: 6, unlock: null }, { day: 69, start: 3758.52, end: 3984.03, phase: 6, unlock: null },
   { day: 70, start: 3984.03, end: 4223.07, phase: 6, unlock: null }, { day: 71, start: 4223.07, end: 4476.46, phase: 6, unlock: null },
-  { day: 72, start: 4476.46, end: 4745.04, phase: 6, unlock: null }, { day: 73, start: 4745.04, end: 5029.74, phase: 6, unlock: null, milestone: "Goal reached" },
+  { day: 72, start: 4476.46, end: 4745.04, phase: 6, unlock: null }, { day: 73, start: 4745.04, end: 5029.74, phase: 6, unlock: null, milestone: "goal" },
 ];
 
-export const phases = buildPhases(days, TOTAL_DAYS);
+export const phases = buildPhases(days, TOTAL_DAYS, CHALLENGES.sol);
 
 const conservativeLadder = [
   { minStack: 1, mb: 0.04 }, { minStack: 1.73, mb: 0.06 }, { minStack: 3.51, mb: 0.1 }, { minStack: 6.97, mb: 0.15 },
@@ -113,17 +155,18 @@ const conservativeLadder = [
   { minStack: 1833.29, mb: 4.5 },
 ];
 
-export function getMBValue(day: number) {
-  return getConservativeSizing(days[Math.max(day - 1, 0)]?.start ?? 1);
+export function getMBValue(day: number, challenge: ChallengeConfig = CHALLENGES.sol) {
+  return getConservativeSizing(days[Math.max(day - 1, 0)]?.start ?? 1) * challenge.start;
 }
 
-export function getMB(day: number) {
-  return `${fmtSizing(getMBValue(day))} SOL`;
+export function getMB(day: number, challenge: ChallengeConfig = CHALLENGES.sol) {
+  return formatChallengeSizing(getMBValue(day, challenge), challenge);
 }
 
-export function getSizingAmount(_day: number, stack: number, mode: SizingMode) {
-  if (mode === "conservative") return getConservativeSizing(stack);
-  return getPullupsoSizing(stack);
+export function getSizingAmount(_day: number, stack: number, mode: SizingMode, challenge: ChallengeConfig = CHALLENGES.sol) {
+  const normalizedStack = stack / challenge.start;
+  const normalizedSizing = mode === "conservative" ? getConservativeSizing(normalizedStack) : getPullupsoSizing(normalizedStack);
+  return normalizedSizing * challenge.start;
 }
 
 export function getConservativeSizing(stack: number) {
@@ -142,14 +185,14 @@ export function getConservativeSizingEntry(stack: number) {
   return { mb: maxBuy, threshold };
 }
 
-export function getTimeframePlan(timeframeId: TimeframeId): TimeframePlan {
+export function getTimeframePlan(timeframeId: TimeframeId, challenge: ChallengeConfig = CHALLENGES.sol): TimeframePlan {
   const option = TIMEFRAME_OPTIONS.find((candidate) => candidate.id === timeframeId) ?? TIMEFRAME_OPTIONS[0];
-  const planDays = option.id === "default" ? days : generateDays(option.days);
+  const planDays = option.id === "default" ? scaleDays(days, challenge.start) : generateDays(option.days, challenge);
   return {
     option,
     days: planDays,
-    phases: buildPhases(planDays, option.days),
-    dailyGrowthRate: getDailyGrowthRate(option.days),
+    phases: buildPhases(planDays, option.days, challenge),
+    dailyGrowthRate: getDailyGrowthRate(option.days, challenge),
   };
 }
 
@@ -157,20 +200,44 @@ export function isTimeframeId(value: string | null): value is TimeframeId {
   return TIMEFRAME_OPTIONS.some((option) => option.id === value);
 }
 
-function generateDays(totalDays: number) {
-  const dailyMultiplier = Math.pow(FINAL, 1 / totalDays);
+export function isChallengeMode(value: string | null): value is ChallengeMode {
+  return value === "sol" || value === "usdc";
+}
+
+export function getChallengeConfig(mode: ChallengeMode) {
+  return CHALLENGES[mode];
+}
+
+export function formatChallengeAmount(value: number, challenge: ChallengeConfig) {
+  const amount = fmt(value);
+  return challenge.unit === "USDC" ? `$${amount} USDC` : `${amount} SOL`;
+}
+
+export function formatChallengeSizing(value: number, challenge: ChallengeConfig) {
+  if (challenge.unit === "USDC") return `$${fmt(value)} USDC`;
+  return `${fmtSizing(value)} SOL`;
+}
+
+export function getMilestoneLabel(milestone: MilestoneId, challenge: ChallengeConfig) {
+  if (milestone === "target-buy") return `${formatChallengeSizing(challenge.targetBuyMultiplier * challenge.start, challenge)} max buy`;
+  if (milestone === "cap") return `${formatChallengeSizing(challenge.capMultiplier * challenge.start, challenge)} cap`;
+  return "Goal reached";
+}
+
+function generateDays(totalDays: number, challenge: ChallengeConfig) {
+  const dailyMultiplier = Math.pow(challenge.final / challenge.start, 1 / totalDays);
   const phaseDayCounts = getPhaseDayCounts(totalDays);
   const planDays: DayPlan[] = [];
-  let previousConservativeSize = getConservativeSizing(1);
+  let previousConservativeSize = getSizingAmount(1, challenge.start, "conservative", challenge);
 
   for (let index = 0; index < totalDays; index += 1) {
     const day = index + 1;
-    const start = day === 1 ? 1 : Math.pow(dailyMultiplier, index);
-    const end = day === totalDays ? FINAL : Math.pow(dailyMultiplier, day);
-    const conservativeSize = getConservativeSizing(start);
+    const start = day === 1 ? challenge.start : challenge.start * Math.pow(dailyMultiplier, index);
+    const end = day === totalDays ? challenge.final : challenge.start * Math.pow(dailyMultiplier, day);
+    const conservativeSize = getSizingAmount(day, start, "conservative", challenge);
     const phase = getPhaseForDay(day, phaseDayCounts);
-    const unlock = conservativeSize > previousConservativeSize ? `${fmtSizing(conservativeSize)} SOL` : null;
-    const milestone = day === totalDays ? "Goal reached" : getMilestone(conservativeSize, previousConservativeSize);
+    const unlock = conservativeSize > previousConservativeSize ? formatChallengeSizing(conservativeSize, challenge) : null;
+    const milestone = day === totalDays ? "goal" : getMilestone(conservativeSize, previousConservativeSize, challenge);
 
     planDays.push({
       day,
@@ -186,7 +253,15 @@ function generateDays(totalDays: number) {
   return planDays;
 }
 
-function buildPhases(planDays: DayPlan[], totalDays: number): Phase[] {
+function scaleDays(planDays: DayPlan[], scale: number) {
+  return planDays.map((day) => ({
+    ...day,
+    start: roundPlanAmount(day.start * scale),
+    end: roundPlanAmount(day.end * scale),
+  }));
+}
+
+function buildPhases(planDays: DayPlan[], totalDays: number, challenge: ChallengeConfig): Phase[] {
   const phaseDayCounts = getPhaseDayCounts(totalDays);
   let startDay = 1;
   return phaseBases.map((base, index) => {
@@ -194,7 +269,7 @@ function buildPhases(planDays: DayPlan[], totalDays: number): Phase[] {
     const endDay = startDay + phaseDays - 1;
     const first = planDays[startDay - 1];
     const last = planDays[endDay - 1];
-    const label = `Phase ${base.id} · Days ${startDay}-${endDay} · ${fmt(first.start)}→${fmt(last.end)} SOL · ${base.name}`;
+    const label = `Phase ${base.id} · Days ${startDay}-${endDay} · ${formatChallengeAmount(first.start, challenge)}→${formatChallengeAmount(last.end, challenge)} · ${base.name}`;
     startDay = endDay + 1;
 
     return {
@@ -249,13 +324,15 @@ function getPhaseForDay(day: number, phaseDayCounts: number[]) {
   return phaseDayCounts.length;
 }
 
-function getDailyGrowthRate(totalDays: number) {
-  return Math.pow(FINAL, 1 / totalDays) - 1;
+function getDailyGrowthRate(totalDays: number, challenge: ChallengeConfig) {
+  return Math.pow(challenge.final / challenge.start, 1 / totalDays) - 1;
 }
 
-function getMilestone(currentSize: number, previousSize: number) {
-  if (currentSize >= 4.5 && previousSize < 4.5) return "4.5 SOL cap";
-  if (currentSize >= 3 && previousSize < 3) return "3 SOL MB";
+function getMilestone(currentSize: number, previousSize: number, challenge: ChallengeConfig): MilestoneId | undefined {
+  const cap = challenge.capMultiplier * challenge.start;
+  const targetBuy = challenge.targetBuyMultiplier * challenge.start;
+  if (currentSize >= cap && previousSize < cap) return "cap";
+  if (currentSize >= targetBuy && previousSize < targetBuy) return "target-buy";
   return undefined;
 }
 
