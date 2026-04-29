@@ -32,6 +32,61 @@ const COMPLETIONS_KEY = "sol_speedrun_completions";
 const CHALLENGE_START_DATE_KEY = "sol_speedrun_challenge_start_date";
 const COMPLETION_GOAL = 100;
 const CHALLENGE_MODES: ChallengeMode[] = ["sol", "usdc"];
+const SOL_MINT = "So11111111111111111111111111111111111111112";
+const SOL_PRICE_URL = `https://lite-api.jup.ag/price/v3?ids=${SOL_MINT}`;
+const SOL_PRICE_REFRESH_MS = 30_000;
+
+type SolPriceStatus = "loading" | "ready" | "error";
+
+type SolPriceState = {
+  price: number | null;
+  status: SolPriceStatus;
+  updatedAt: number | null;
+};
+
+type FeePreset = {
+  name: string;
+  buySize: string;
+  slippage: string;
+  priority: string;
+  bribe: string;
+  autoFee: string;
+  maxFee: string;
+  mevMode: string;
+};
+
+const FEE_PRESETS: FeePreset[] = [
+  {
+    name: "Preset 1",
+    buySize: "Under 0.5 SOL buys",
+    slippage: "100%",
+    priority: "0.0001",
+    bribe: "0.0001",
+    autoFee: "Off",
+    maxFee: "0.01",
+    mevMode: "Off",
+  },
+  {
+    name: "Preset 2",
+    buySize: "0.5-1 SOL buys",
+    slippage: "100%",
+    priority: "0.001",
+    bribe: "0.01",
+    autoFee: "Off",
+    maxFee: "0.1",
+    mevMode: "Reduced",
+  },
+  {
+    name: "Preset 3",
+    buySize: "1+ SOL buys",
+    slippage: "10000%",
+    priority: "0.0001",
+    bribe: "0.0001",
+    autoFee: "On",
+    maxFee: "0.1",
+    mevMode: "Reduced",
+  },
+];
 
 type AuthState = {
   configured: boolean;
@@ -287,6 +342,87 @@ function loadTimeframe(): TimeframeId {
   }
 }
 
+function useSolPrice(): SolPriceState {
+  const [solPrice, setSolPrice] = useState<SolPriceState>({
+    price: null,
+    status: "loading",
+    updatedAt: null,
+  });
+
+  useEffect(() => {
+    let isMounted = true;
+    let timeoutId: number | undefined;
+    let controller: AbortController | null = null;
+
+    const fetchPrice = async () => {
+      controller?.abort();
+      controller = new AbortController();
+
+      try {
+        const response = await fetch(SOL_PRICE_URL, { signal: controller.signal });
+        if (!response.ok) throw new Error(`Jupiter price request failed: ${response.status}`);
+
+        const data = await response.json();
+        const nextPrice = Number(data?.[SOL_MINT]?.usdPrice);
+        if (!Number.isFinite(nextPrice) || nextPrice <= 0) throw new Error("Jupiter price response did not include a valid SOL price.");
+
+        if (isMounted) {
+          setSolPrice({
+            price: nextPrice,
+            status: "ready",
+            updatedAt: Date.now(),
+          });
+        }
+      } catch (error) {
+        if (error instanceof DOMException && error.name === "AbortError") return;
+        console.error(error);
+        if (isMounted) {
+          setSolPrice((current) => ({
+            ...current,
+            status: current.price ? "ready" : "error",
+          }));
+        }
+      } finally {
+        if (isMounted) {
+          timeoutId = window.setTimeout(fetchPrice, SOL_PRICE_REFRESH_MS);
+        }
+      }
+    };
+
+    void fetchPrice();
+
+    return () => {
+      isMounted = false;
+      controller?.abort();
+      if (timeoutId) window.clearTimeout(timeoutId);
+    };
+  }, []);
+
+  return solPrice;
+}
+
+function formatUsd(value: number) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: value >= 100 ? 0 : 2,
+  }).format(value);
+}
+
+function formatSolUsdEquivalent(value: number, challenge: ChallengeConfig, solPrice: number | null) {
+  if (challenge.unit !== "SOL" || !solPrice) return null;
+  return `≈ ${formatUsd(value * solPrice)}`;
+}
+
+function formatSolPriceUpdatedAt(updatedAt: number | null) {
+  if (!updatedAt) return "Waiting for Jupiter";
+  return `Updated ${new Intl.DateTimeFormat(undefined, {
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit",
+  }).format(updatedAt)}`;
+}
+
 export function getLocalCheckedDays() {
   return loadLocalProgressByMode().sol.checkedDays;
 }
@@ -304,6 +440,7 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
   const [sizingMode, setSizingMode] = useState<SizingMode>(() => loadSizingMode());
   const [timeframe, setTimeframe] = useState<TimeframeId>(() => loadTimeframe());
   const [challengeStartDate, setChallengeStartDate] = useState(() => loadLocalStartDate());
+  const solPrice = useSolPrice();
   const challenge = useMemo(
     () => getChallengeConfig(challengeMode, challengeGoals[challengeMode], challengeStarts[challengeMode]),
     [challengeMode, challengeGoals, challengeStarts],
@@ -450,8 +587,9 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
         </div>
         <div className="summary-row">
           <Stat label="Timeline" value={`${totalDays} days`} />
-          <Stat label="Start" value={challenge.startLabel} />
-          <Stat label="Final goal" value={challenge.finalLabel} />
+          <Stat label="Live SOL" value={solPrice.price ? formatUsd(solPrice.price) : solPrice.status === "error" ? "Unavailable" : "Loading..."} hint={formatSolPriceUpdatedAt(solPrice.updatedAt)} />
+          <Stat label="Start" value={challenge.startLabel} hint={formatSolUsdEquivalent(challenge.start, challenge, solPrice.price) ?? undefined} />
+          <Stat label="Final goal" value={challenge.finalLabel} hint={formatSolUsdEquivalent(challenge.final, challenge, solPrice.price) ?? undefined} />
           <Stat label={`${formatChallengeSizing(targetBuyAmount, challenge)} MB`} value={targetBuyDay ? `Day ${targetBuyDay}` : "N/A"} />
           <Stat label={`${formatChallengeSizing(capAmount, challenge)} cap`} value={capDay ? `Day ${capDay}` : "N/A"} />
           <Stat label={`${challenge.completedLabel} completed`} value={`${completions}/${COMPLETION_GOAL}`} />
@@ -493,6 +631,7 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
         />
         <PaceIndicator completedDays={totalDone} startDate={challengeStartDate} totalDays={totalDays} />
         <RequiredGrowthCard challenge={challenge} completedDays={totalDone} planDays={planDays} totalDays={totalDays} />
+        <FeeSettings />
         <div className="phase-bars">
           {planPhases.map((phase) => {
             const phaseDays = planDays.filter((day) => day.phase === phase.id);
@@ -559,6 +698,7 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
               planDays={planDays}
               sizingMode={sizingMode}
               challenge={challenge}
+              solPrice={solPrice.price}
             />
           </tbody>
         </table>
@@ -876,11 +1016,12 @@ function SizingToggle({ mode, onChange }: { mode: SizingMode; onChange: (mode: S
   );
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
+function Stat({ label, value, hint }: { label: string; value: string; hint?: string }) {
   return (
     <div className="stat">
       <span className="stat-label">{label}</span>
       <span className="stat-value">{value}</span>
+      {hint ? <span className="stat-hint">{hint}</span> : null}
     </div>
   );
 }
@@ -947,6 +1088,7 @@ function TrackerRows({
   planDays,
   sizingMode,
   challenge,
+  solPrice,
 }: {
   daysToRender: DayPlan[];
   checked: Set<number>;
@@ -955,6 +1097,7 @@ function TrackerRows({
   planDays: DayPlan[];
   sizingMode: SizingMode;
   challenge: ChallengeConfig;
+  solPrice: number | null;
 }) {
   let lastPhase = -1;
 
@@ -972,6 +1115,10 @@ function TrackerRows({
         const quickBuy = getSizingAmount(row.day, row.start, sizingMode, challenge);
         const quickBuyPct = ((quickBuy / row.start) * 100).toFixed(1);
         const isChecked = checked.has(row.day);
+        const startUsd = formatSolUsdEquivalent(row.start, challenge, solPrice);
+        const endUsd = formatSolUsdEquivalent(row.end, challenge, solPrice);
+        const gainUsd = formatSolUsdEquivalent(gain, challenge, solPrice);
+        const quickBuyUsd = formatSolUsdEquivalent(quickBuy, challenge, solPrice);
 
         return (
           <Fragment key={row.day}>
@@ -1011,13 +1158,18 @@ function TrackerRows({
                   {formatChallengeAmount(row.start, challenge)}<span className="arrow">→</span>
                   <span className="end-sol" style={{ color: phase.color }}>{formatChallengeAmount(row.end, challenge)}</span>
                 </span>
+                {startUsd && endUsd ? <span className="usd-equivalent">{startUsd} → {endUsd}</span> : null}
                 {row.milestone ? <Badge label={getMilestoneLabel(row.milestone, challenge)} phase={phase} /> : row.unlock ? <Badge label={`${formatChallengeSizing(quickBuy, challenge)} unlocked`} phase={phase} /> : null}
               </td>
               <td>
                 <span className="daily-gain" style={{ color: phase.color }}>+{formatChallengeAmount(gain, challenge)}</span>
                 <span className="pct-gain">(+{pct}%)</span>
+                {gainUsd ? <span className="usd-equivalent">{gainUsd}</span> : null}
               </td>
-              <td><span className="mb-cell" style={{ color: phase.color }}>{formatChallengeSizing(quickBuy, challenge)}</span></td>
+              <td>
+                <span className="mb-cell" style={{ color: phase.color }}>{formatChallengeSizing(quickBuy, challenge)}</span>
+                {quickBuyUsd ? <span className="usd-equivalent">{quickBuyUsd}</span> : null}
+              </td>
               <td>
                 <span className="mb-cell" style={{ color: phase.color }}>{quickBuyPct}%</span>
                 <span className="pct-gain"> of stack</span>
@@ -1038,6 +1190,56 @@ function TrackerRows({
 
 function Badge({ label, phase }: { label: string; phase: { bg: string; color: string; border: string } }) {
   return <span className="badge" style={{ background: phase.bg, color: phase.color, border: `0.5px solid ${phase.border}` }}>{label}</span>;
+}
+
+function FeeSettings() {
+  return (
+    <section className="fee-settings" aria-label="Fee settings">
+      <div className="fee-settings-head">
+        <div>
+          <span className="completion-label">Fee settings</span>
+          <strong>Buy preset guide</strong>
+        </div>
+        <span className="completion-hint">Match preset to SOL buy size before entering.</span>
+      </div>
+      <div className="fee-preset-grid">
+        {FEE_PRESETS.map((preset) => (
+          <article className="fee-preset-card" key={preset.name}>
+            <div className="fee-preset-top">
+              <span>{preset.name}</span>
+              <strong>{preset.buySize}</strong>
+            </div>
+            <dl className="fee-preset-values">
+              <div>
+                <dt>Slippage</dt>
+                <dd>{preset.slippage}</dd>
+              </div>
+              <div>
+                <dt>Priority</dt>
+                <dd>{preset.priority}</dd>
+              </div>
+              <div>
+                <dt>Bribe</dt>
+                <dd>{preset.bribe}</dd>
+              </div>
+              <div>
+                <dt>Auto fee</dt>
+                <dd>{preset.autoFee}</dd>
+              </div>
+              <div>
+                <dt>Max fee</dt>
+                <dd>{preset.maxFee}</dd>
+              </div>
+              <div>
+                <dt>MEV</dt>
+                <dd>{preset.mevMode}</dd>
+              </div>
+            </dl>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
 }
 
 function Notes({

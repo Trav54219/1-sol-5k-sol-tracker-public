@@ -322,6 +322,12 @@ h1 span {
   font-weight: 500;
 }
 
+.stat-hint {
+  color: var(--muted);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+}
+
 .auth-card {
   border-radius: 10px;
   color: var(--muted2);
@@ -629,6 +635,83 @@ h1 span {
   color: var(--muted2);
 }
 
+.fee-settings {
+  background: var(--bg2);
+  border: 0.5px solid var(--border);
+  border-radius: 10px;
+  margin-top: 10px;
+  padding: 12px 14px;
+}
+
+.fee-settings-head {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.fee-settings-head strong {
+  color: var(--green);
+  display: block;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.1;
+  margin-top: 4px;
+}
+
+.fee-preset-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 12px;
+}
+
+.fee-preset-card {
+  background: var(--bg3);
+  border: 0.5px solid var(--border2);
+  border-radius: 9px;
+  padding: 10px;
+}
+
+.fee-preset-top {
+  display: grid;
+  gap: 4px;
+}
+
+.fee-preset-top span,
+.fee-preset-values dt {
+  color: var(--muted);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.fee-preset-top strong {
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.fee-preset-values {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, 1fr);
+  margin: 12px 0 0;
+}
+
+.fee-preset-values div {
+  display: grid;
+  gap: 2px;
+}
+
+.fee-preset-values dd {
+  color: var(--green);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px;
+  margin: 0;
+}
+
 .phase-bars {
   display: grid;
   gap: 8px;
@@ -871,6 +954,15 @@ tbody td.cb-col {
   margin-left: 4px;
 }
 
+.usd-equivalent {
+  color: var(--muted);
+  display: block;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
 .mb-cell {
   font-size: 13px;
   font-weight: 600;
@@ -1102,6 +1194,10 @@ tbody td.cb-col {
 
   .phase-bars {
     grid-template-columns: repeat(3, 1fr);
+  }
+
+  .fee-preset-grid {
+    grid-template-columns: 1fr;
   }
 
   .narrative-mini-row {
