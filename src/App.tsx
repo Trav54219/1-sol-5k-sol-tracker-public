@@ -1215,6 +1215,19 @@ function Notes({
         </div>
       </div>
       <div className="note-card pullupso-card">
+        <div className="note-title">Pullupso scanning advice</div>
+        <div className="note-body">
+          Source: <a href="https://x.com/pullupso" target="_blank" rel="noopener noreferrer">@pullupso on X</a>
+          <div className="pullupso-quote">
+            <p><strong>Watch for insta migrates:</strong> buy first, then look at the chart, then sell if it is bad.</p>
+            <p><strong>Scan new pairs:</strong> wait for anything decent instead of forcing trades.</p>
+            <p><strong>Hide bad almost-graduated tokens:</strong> remove weak ABT-to-graduate coins so the decent setups stand out.</p>
+            <p><strong>Look for difference:</strong> wait for something different than the current stock coins and forced meta. You want decent force behind it, or a good meme that is actually showing up.</p>
+            <p><strong>Keep it simple:</strong> if it looks good, buy it. If the deeper check says it is bad, sell it.</p>
+          </div>
+        </div>
+      </div>
+      <div className="note-card pullupso-card">
         <div className="note-title">Narrative selection guide (N.A.R.R.A.T.I.V.E)</div>
         <div className="note-body narrative-mini-guide">
           <div className="narrative-mini-row">
