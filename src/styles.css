@@ -185,8 +185,9 @@ h1 span {
 
 .goal-input-wrap {
   align-items: center;
-  display: flex;
+  display: grid;
   gap: 8px;
+  grid-template-columns: 42px minmax(0, 1fr) 48px;
 }
 
 .goal-input-wrap input {

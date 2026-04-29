@@ -5,6 +5,10 @@ export default defineSchema({
   progress: defineTable({
     checkedDays: v.array(v.number()),
     completions: v.optional(v.number()),
+    solCheckedDays: v.optional(v.array(v.number())),
+    solCompletions: v.optional(v.number()),
+    usdcCheckedDays: v.optional(v.array(v.number())),
+    usdcCompletions: v.optional(v.number()),
     updatedAt: v.number(),
     userIdentifier: v.optional(v.string()),
     userSubject: v.string(),

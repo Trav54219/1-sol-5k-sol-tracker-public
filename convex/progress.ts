@@ -31,37 +31,57 @@ export const get = query({
     const progress = await getProgressForUser(ctx, identity);
 
     return {
-      checkedDays: progress?.checkedDays ?? [],
-      completions: progress?.completions ?? 0,
+      sol: {
+        checkedDays: progress?.solCheckedDays ?? progress?.checkedDays ?? [],
+        completions: progress?.solCompletions ?? progress?.completions ?? 0,
+      },
+      usdc: {
+        checkedDays: progress?.usdcCheckedDays ?? [],
+        completions: progress?.usdcCompletions ?? 0,
+      },
     };
   },
 });
 
 export const set = mutation({
   args: {
-    checkedDays: v.array(v.number()),
-    completions: v.optional(v.number()),
+    sol: v.object({
+      checkedDays: v.array(v.number()),
+      completions: v.number(),
+    }),
+    usdc: v.object({
+      checkedDays: v.array(v.number()),
+      completions: v.number(),
+    }),
   },
   handler: async (ctx, args) => {
     const identity = await requireUserIdentity(ctx);
-    const checkedDays = [...new Set(args.checkedDays)]
-      .filter((day) => Number.isInteger(day) && day >= 1 && day <= 73)
-      .sort((a, b) => a - b);
-    const completions = clampCompletions(args.completions ?? 0);
+    const solCheckedDays = sanitizeCheckedDays(args.sol.checkedDays);
+    const solCompletions = clampCompletions(args.sol.completions);
+    const usdcCheckedDays = sanitizeCheckedDays(args.usdc.checkedDays);
+    const usdcCompletions = clampCompletions(args.usdc.completions);
     const existing = await getProgressForUser(ctx, identity);
 
     if (existing) {
       await ctx.db.patch(existing._id, {
-        checkedDays,
-        completions,
+        checkedDays: solCheckedDays,
+        completions: solCompletions,
+        solCheckedDays,
+        solCompletions,
+        usdcCheckedDays,
+        usdcCompletions,
         updatedAt: Date.now(),
         userIdentifier: identity.tokenIdentifier,
         userSubject: identity.subject,
       });
     } else {
       await ctx.db.insert("progress", {
-        checkedDays,
-        completions,
+        checkedDays: solCheckedDays,
+        completions: solCompletions,
+        solCheckedDays,
+        solCompletions,
+        usdcCheckedDays,
+        usdcCompletions,
         updatedAt: Date.now(),
         userIdentifier: identity.tokenIdentifier,
         userSubject: identity.subject,
@@ -71,6 +91,12 @@ export const set = mutation({
     return null;
   },
 });
+
+function sanitizeCheckedDays(checkedDays: number[]) {
+  return [...new Set(checkedDays)]
+    .filter((day) => Number.isInteger(day) && day >= 1 && day <= 75)
+    .sort((a, b) => a - b);
+}
 
 function clampCompletions(value: number) {
   if (!Number.isFinite(value)) return 0;

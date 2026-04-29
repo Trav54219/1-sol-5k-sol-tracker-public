@@ -4,12 +4,13 @@ export const LS_KEY = "sol_speedrun_checked";
 
 export type ChallengeMode = "sol" | "usdc";
 export type SizingMode = "conservative" | "pullupso";
-export type TimeframeId = "default" | "7" | "14" | "21" | "30" | "45" | "60" | "75";
+export type TimeframeId = "default" | "3" | "5" | "7" | "14" | "21" | "30" | "45" | "60" | "75";
 export type MilestoneId = "target-buy" | "cap" | "goal";
 
 export type ChallengeConfig = {
   mode: ChallengeMode;
   name: string;
+  defaultStart: number;
   start: number;
   defaultFinal: number;
   final: number;
@@ -59,6 +60,8 @@ export type TimeframePlan = {
 
 export const TIMEFRAME_OPTIONS: TimeframeOption[] = [
   { id: "default", label: "Regular", days: TOTAL_DAYS, detail: "Original 73-day curve" },
+  { id: "3", label: "3 days", days: 3, detail: "Ultra sprint" },
+  { id: "5", label: "5 days", days: 5, detail: "Five-day sprint" },
   { id: "7", label: "7 days", days: 7, detail: "Extreme sprint" },
   { id: "14", label: "14 days", days: 14, detail: "Two-week sprint" },
   { id: "21", label: "21 days", days: 21, detail: "Three-week sprint" },
@@ -72,6 +75,7 @@ export const CHALLENGES: Record<ChallengeMode, ChallengeConfig> = {
   sol: {
     mode: "sol",
     name: "SOL mode",
+    defaultStart: 1,
     start: 1,
     defaultFinal: FINAL,
     final: FINAL,
@@ -85,6 +89,7 @@ export const CHALLENGES: Record<ChallengeMode, ChallengeConfig> = {
   usdc: {
     mode: "usdc",
     name: "USDC mode",
+    defaultStart: 100,
     start: 100,
     defaultFinal: 500000,
     final: 500000,
@@ -190,7 +195,7 @@ export function getConservativeSizingEntry(stack: number) {
 
 export function getTimeframePlan(timeframeId: TimeframeId, challenge: ChallengeConfig = CHALLENGES.sol): TimeframePlan {
   const option = TIMEFRAME_OPTIONS.find((candidate) => candidate.id === timeframeId) ?? TIMEFRAME_OPTIONS[0];
-  const shouldUseBaseCurve = option.id === "default" && challenge.final === challenge.defaultFinal;
+  const shouldUseBaseCurve = option.id === "default" && challenge.start === challenge.defaultStart && challenge.final === challenge.defaultFinal;
   const planDays = shouldUseBaseCurve ? scaleDays(days, challenge.start) : generateDays(option.days, challenge);
   return {
     option,
@@ -208,12 +213,15 @@ export function isChallengeMode(value: string | null): value is ChallengeMode {
   return value === "sol" || value === "usdc";
 }
 
-export function getChallengeConfig(mode: ChallengeMode, final = CHALLENGES[mode].final) {
+export function getChallengeConfig(mode: ChallengeMode, final = CHALLENGES[mode].final, start = CHALLENGES[mode].start) {
   const base = CHALLENGES[mode];
-  const sanitizedFinal = sanitizeChallengeFinal(final, base);
+  const sanitizedStart = sanitizeChallengeStart(start, base);
+  const sanitizedFinal = sanitizeChallengeFinal(final, { ...base, start: sanitizedStart });
   return {
     ...base,
+    start: sanitizedStart,
     final: sanitizedFinal,
+    startLabel: formatChallengeAmount(sanitizedStart, base),
     finalLabel: formatChallengeAmount(sanitizedFinal, base),
     completedLabel: formatCompactChallengeAmount(sanitizedFinal, base),
   };
@@ -227,6 +235,11 @@ export function formatChallengeAmount(value: number, challenge: ChallengeConfig)
 export function formatChallengeSizing(value: number, challenge: ChallengeConfig) {
   if (challenge.unit === "USDC") return `$${fmt(value)} USDC`;
   return `${fmtSizing(value)} SOL`;
+}
+
+export function sanitizeChallengeStart(value: number, challenge: Pick<ChallengeConfig, "defaultStart">) {
+  if (!Number.isFinite(value) || value <= 0) return challenge.defaultStart;
+  return value;
 }
 
 export function sanitizeChallengeFinal(value: number, challenge: Pick<ChallengeConfig, "start" | "defaultFinal">) {
@@ -288,8 +301,10 @@ function scaleDays(planDays: DayPlan[], scale: number) {
 function buildPhases(planDays: DayPlan[], totalDays: number, challenge: ChallengeConfig): Phase[] {
   const phaseDayCounts = getPhaseDayCounts(totalDays);
   let startDay = 1;
-  return phaseBases.map((base, index) => {
+  return phaseBases.flatMap((base, index) => {
     const phaseDays = phaseDayCounts[index];
+    if (phaseDays === 0) return [];
+
     const endDay = startDay + phaseDays - 1;
     const first = planDays[startDay - 1];
     const last = planDays[endDay - 1];
@@ -309,6 +324,9 @@ function buildPhases(planDays: DayPlan[], totalDays: number, challenge: Challeng
 
 function getPhaseDayCounts(totalDays: number) {
   if (totalDays === TOTAL_DAYS) return [16, 11, 11, 4, 15, 16];
+  if (totalDays <= phaseBases.length) {
+    return phaseBases.map((_, index) => (index < totalDays ? 1 : 0));
+  }
 
   const ratios = [16, 11, 11, 4, 15, 16].map((count) => count / TOTAL_DAYS);
   const rawCounts = ratios.map((ratio) => ratio * totalDays);

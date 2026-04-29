@@ -12,6 +12,7 @@ import {
   isTimeframeId,
   LS_KEY,
   sanitizeChallengeFinal,
+  sanitizeChallengeStart,
   type ChallengeConfig,
   type ChallengeMode,
   type DayPlan,
@@ -21,6 +22,8 @@ import {
 } from "./trackerData";
 
 const CHALLENGE_MODE_KEY = "sol_speedrun_challenge_mode";
+const SOL_CHALLENGE_START_KEY = "sol_speedrun_sol_start";
+const USDC_CHALLENGE_START_KEY = "sol_speedrun_usdc_start";
 const SOL_CHALLENGE_GOAL_KEY = "sol_speedrun_sol_goal";
 const USDC_CHALLENGE_GOAL_KEY = "sol_speedrun_usdc_goal";
 const SIZING_MODE_KEY = "sol_speedrun_sizing_mode";
@@ -28,6 +31,7 @@ const TIMEFRAME_KEY = "sol_speedrun_timeframe";
 const COMPLETIONS_KEY = "sol_speedrun_completions";
 const CHALLENGE_START_DATE_KEY = "sol_speedrun_challenge_start_date";
 const COMPLETION_GOAL = 100;
+const CHALLENGE_MODES: ChallengeMode[] = ["sol", "usdc"];
 
 type AuthState = {
   configured: boolean;
@@ -47,42 +51,74 @@ type AppProps = {
 };
 
 type ChallengeGoals = Record<ChallengeMode, number>;
-
-export type ProgressSnapshot = {
+type ChallengeStarts = Record<ChallengeMode, number>;
+type ModeProgressSnapshot = {
   checkedDays: number[];
   completions: number;
 };
 
-function loadLocalChecked() {
+export type ProgressSnapshot = Record<ChallengeMode, ModeProgressSnapshot>;
+
+function getCheckedStorageKey(mode: ChallengeMode) {
+  return `${LS_KEY}_${mode}`;
+}
+
+function getCompletionsStorageKey(mode: ChallengeMode) {
+  return `${COMPLETIONS_KEY}_${mode}`;
+}
+
+function loadLocalChecked(mode: ChallengeMode) {
   try {
-    return new Set<number>(JSON.parse(localStorage.getItem(LS_KEY) || "[]"));
+    const saved = localStorage.getItem(getCheckedStorageKey(mode));
+    const fallback = mode === "sol" ? localStorage.getItem(LS_KEY) : null;
+    return new Set<number>(JSON.parse(saved ?? fallback ?? "[]"));
   } catch {
     return new Set<number>();
   }
 }
 
-function saveLocalChecked(checked: Set<number>) {
+function saveLocalChecked(mode: ChallengeMode, checked: Set<number>) {
   try {
-    localStorage.setItem(LS_KEY, JSON.stringify([...checked]));
+    localStorage.setItem(getCheckedStorageKey(mode), JSON.stringify([...checked]));
   } catch {
     // Local storage can be unavailable in private or restricted browser modes.
   }
 }
 
-function loadLocalCompletions() {
+function loadLocalCompletions(mode: ChallengeMode) {
   try {
-    return clampCompletions(Number(JSON.parse(localStorage.getItem(COMPLETIONS_KEY) || "0")));
+    const saved = localStorage.getItem(getCompletionsStorageKey(mode));
+    const fallback = mode === "sol" ? localStorage.getItem(COMPLETIONS_KEY) : null;
+    return clampCompletions(Number(JSON.parse(saved ?? fallback ?? "0")));
   } catch {
     return 0;
   }
 }
 
-function saveLocalCompletions(completions: number) {
+function saveLocalCompletions(mode: ChallengeMode, completions: number) {
   try {
-    localStorage.setItem(COMPLETIONS_KEY, JSON.stringify(clampCompletions(completions)));
+    localStorage.setItem(getCompletionsStorageKey(mode), JSON.stringify(clampCompletions(completions)));
   } catch {
     // Local storage can be unavailable in private or restricted browser modes.
   }
+}
+
+function loadLocalProgressByMode(): ProgressSnapshot {
+  return {
+    sol: {
+      checkedDays: [...loadLocalChecked("sol")].sort((a, b) => a - b),
+      completions: loadLocalCompletions("sol"),
+    },
+    usdc: {
+      checkedDays: [...loadLocalChecked("usdc")].sort((a, b) => a - b),
+      completions: loadLocalCompletions("usdc"),
+    },
+  };
+}
+
+function saveLocalModeProgress(mode: ChallengeMode, progress: ModeProgressSnapshot) {
+  saveLocalChecked(mode, new Set(progress.checkedDays));
+  saveLocalCompletions(mode, progress.completions);
 }
 
 function loadLocalStartDate() {
@@ -164,6 +200,28 @@ function getGoalStorageKey(mode: ChallengeMode) {
   return mode === "sol" ? SOL_CHALLENGE_GOAL_KEY : USDC_CHALLENGE_GOAL_KEY;
 }
 
+function getStartStorageKey(mode: ChallengeMode) {
+  return mode === "sol" ? SOL_CHALLENGE_START_KEY : USDC_CHALLENGE_START_KEY;
+}
+
+function loadChallengeStart(mode: ChallengeMode) {
+  const challenge = CHALLENGES[mode];
+  try {
+    const saved = localStorage.getItem(getStartStorageKey(mode));
+    return sanitizeChallengeStart(saved ? Number(saved) : challenge.defaultStart, challenge);
+  } catch {
+    return challenge.defaultStart;
+  }
+}
+
+function saveChallengeStart(mode: ChallengeMode, start: number) {
+  try {
+    localStorage.setItem(getStartStorageKey(mode), String(start));
+  } catch {
+    // Start edits still work for this session if local storage is blocked.
+  }
+}
+
 function loadChallengeGoal(mode: ChallengeMode) {
   const challenge = CHALLENGES[mode];
   try {
@@ -189,6 +247,13 @@ function loadChallengeGoals(): ChallengeGoals {
   };
 }
 
+function loadChallengeStarts(): ChallengeStarts {
+  return {
+    sol: loadChallengeStart("sol"),
+    usdc: loadChallengeStart("usdc"),
+  };
+}
+
 function loadTimeframe(): TimeframeId {
   try {
     const saved = localStorage.getItem(TIMEFRAME_KEY);
@@ -199,26 +264,26 @@ function loadTimeframe(): TimeframeId {
 }
 
 export function getLocalCheckedDays() {
-  return [...loadLocalChecked()].sort((a, b) => a - b);
+  return loadLocalProgressByMode().sol.checkedDays;
 }
 
 export function getLocalProgress(): ProgressSnapshot {
-  return {
-    checkedDays: getLocalCheckedDays(),
-    completions: loadLocalCompletions(),
-  };
+  return loadLocalProgressByMode();
 }
 
 export default function App({ auth, remoteProgress, remoteLoading = false, onRemoteChange }: AppProps) {
-  const [localChecked, setLocalChecked] = useState(() => loadLocalChecked());
-  const [localCompletions, setLocalCompletions] = useState(() => loadLocalCompletions());
+  const [localProgress, setLocalProgress] = useState(() => loadLocalProgressByMode());
   const [currentPhase, setCurrentPhase] = useState(0);
   const [challengeMode, setChallengeMode] = useState<ChallengeMode>(() => loadChallengeMode());
+  const [challengeStarts, setChallengeStarts] = useState<ChallengeStarts>(() => loadChallengeStarts());
   const [challengeGoals, setChallengeGoals] = useState<ChallengeGoals>(() => loadChallengeGoals());
   const [sizingMode, setSizingMode] = useState<SizingMode>(() => loadSizingMode());
   const [timeframe, setTimeframe] = useState<TimeframeId>(() => loadTimeframe());
   const [challengeStartDate, setChallengeStartDate] = useState(() => loadLocalStartDate());
-  const challenge = useMemo(() => getChallengeConfig(challengeMode, challengeGoals[challengeMode]), [challengeMode, challengeGoals]);
+  const challenge = useMemo(
+    () => getChallengeConfig(challengeMode, challengeGoals[challengeMode], challengeStarts[challengeMode]),
+    [challengeMode, challengeGoals, challengeStarts],
+  );
   const timeframePlan = useMemo(() => getTimeframePlan(timeframe, challenge), [timeframe, challenge]);
   const planDays = timeframePlan.days;
   const planPhases = timeframePlan.phases;
@@ -227,11 +292,9 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
   const capAmount = challenge.capMultiplier * challenge.start;
   const targetBuyDay = planDays.find((day) => getSizingAmount(day.day, day.start, "conservative", challenge) >= targetBuyAmount)?.day;
   const capDay = planDays.find((day) => getSizingAmount(day.day, day.start, "conservative", challenge) >= capAmount)?.day;
-  const checked = useMemo(
-    () => new Set(remoteProgress?.checkedDays ?? [...localChecked]),
-    [localChecked, remoteProgress],
-  );
-  const completions = remoteProgress?.completions ?? localCompletions;
+  const activeProgress = remoteProgress?.[challengeMode] ?? localProgress[challengeMode];
+  const checked = useMemo(() => new Set(activeProgress.checkedDays), [activeProgress]);
+  const completions = activeProgress.completions;
   const checkedList = useMemo(() => [...checked].filter((day) => day <= totalDays).sort((a, b) => a - b), [checked, totalDays]);
   const checkedForPlan = useMemo(() => new Set(checkedList), [checkedList]);
   const totalDone = checkedForPlan.size;
@@ -240,11 +303,10 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
 
   useEffect(() => {
     if (remoteProgress) {
-      const nextChecked = new Set(remoteProgress.checkedDays);
-      setLocalChecked(nextChecked);
-      setLocalCompletions(remoteProgress.completions);
-      saveLocalChecked(nextChecked);
-      saveLocalCompletions(remoteProgress.completions);
+      setLocalProgress(remoteProgress);
+      for (const mode of CHALLENGE_MODES) {
+        saveLocalModeProgress(mode, remoteProgress[mode]);
+      }
     }
   }, [remoteProgress]);
 
@@ -270,6 +332,11 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
   }, [challengeGoals]);
 
   useEffect(() => {
+    saveChallengeStart("sol", challengeStarts.sol);
+    saveChallengeStart("usdc", challengeStarts.usdc);
+  }, [challengeStarts]);
+
+  useEffect(() => {
     try {
       localStorage.setItem(TIMEFRAME_KEY, timeframe);
     } catch {
@@ -284,11 +351,17 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
   const persist = (next: Set<number>, nextCompletions = completions) => {
     const nextList = [...next].sort((a, b) => a - b);
     const sanitizedCompletions = clampCompletions(nextCompletions);
-    setLocalChecked(next);
-    setLocalCompletions(sanitizedCompletions);
-    saveLocalChecked(next);
-    saveLocalCompletions(sanitizedCompletions);
-    void onRemoteChange?.({ checkedDays: nextList, completions: sanitizedCompletions });
+    const nextProgress = {
+      ...localProgress,
+      [challengeMode]: {
+        checkedDays: nextList,
+        completions: sanitizedCompletions,
+      },
+    };
+    setLocalProgress(nextProgress);
+    saveLocalChecked(challengeMode, next);
+    saveLocalCompletions(challengeMode, sanitizedCompletions);
+    void onRemoteChange?.(nextProgress);
   };
 
   const toggleDay = (day: number, isChecked: boolean) => {
@@ -312,7 +385,18 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
   const updateChallengeGoal = (mode: ChallengeMode, goal: number) => {
     setChallengeGoals((current) => ({
       ...current,
-      [mode]: sanitizeChallengeFinal(goal, CHALLENGES[mode]),
+      [mode]: sanitizeChallengeFinal(goal, { ...CHALLENGES[mode], start: challengeStarts[mode] }),
+    }));
+  };
+  const updateChallengeStart = (mode: ChallengeMode, start: number) => {
+    const nextStart = sanitizeChallengeStart(start, CHALLENGES[mode]);
+    setChallengeStarts((current) => ({
+      ...current,
+      [mode]: nextStart,
+    }));
+    setChallengeGoals((current) => ({
+      ...current,
+      [mode]: sanitizeChallengeFinal(current[mode], { ...CHALLENGES[mode], start: nextStart }),
     }));
   };
   const visibleDays = currentPhase === 0 ? planDays : planDays.filter((day) => day.phase === currentPhase);
@@ -346,8 +430,8 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
           <Stat label={`${formatChallengeSizing(capAmount, challenge)} cap`} value={capDay ? `Day ${capDay}` : "N/A"} />
           <Stat label={`${challenge.completedLabel} completed`} value={`${completions}/${COMPLETION_GOAL}`} />
         </div>
-        <ChallengeModeToggle mode={challengeMode} onChange={setChallengeMode} />
-        <ChallengeGoalEditor goals={challengeGoals} onChange={updateChallengeGoal} />
+        <ChallengeModeToggle goals={challengeGoals} mode={challengeMode} onChange={setChallengeMode} starts={challengeStarts} />
+        <ChallengeGoalEditor goals={challengeGoals} onGoalChange={updateChallengeGoal} onStartChange={updateChallengeStart} starts={challengeStarts} />
         <TimeframeToggle timeframe={timeframe} onChange={setTimeframe} />
         <SizingToggle mode={sizingMode} onChange={setSizingMode} />
       </header>
@@ -382,6 +466,7 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
           onStartDateChange={setChallengeStartDate}
         />
         <PaceIndicator completedDays={totalDone} startDate={challengeStartDate} totalDays={totalDays} />
+        <RequiredGrowthCard challenge={challenge} completedDays={totalDone} planDays={planDays} totalDays={totalDays} />
         <div className="phase-bars">
           {planPhases.map((phase) => {
             const phaseDays = planDays.filter((day) => day.phase === phase.id);
@@ -606,38 +691,107 @@ function PaceIndicator({ completedDays, startDate, totalDays }: { completedDays:
   );
 }
 
-function ChallengeModeToggle({ mode, onChange }: { mode: ChallengeMode; onChange: (mode: ChallengeMode) => void }) {
+function RequiredGrowthCard({
+  challenge,
+  completedDays,
+  planDays,
+  totalDays,
+}: {
+  challenge: ChallengeConfig;
+  completedDays: number;
+  planDays: DayPlan[];
+  totalDays: number;
+}) {
+  const currentDay = Math.min(completedDays, planDays.length);
+  const currentBalance = currentDay > 0 ? planDays[currentDay - 1].end : challenge.start;
+  const remainingDays = Math.max(totalDays - completedDays, 0);
+  const requiredDailyRate = remainingDays > 0 ? Math.pow(challenge.final / currentBalance, 1 / remainingDays) - 1 : 0;
+  const nextTarget = remainingDays > 0 ? currentBalance * (1 + requiredDailyRate) : challenge.final;
+  const nextProfit = Math.max(nextTarget - currentBalance, 0);
+  const cardState = requiredDailyRate > 1 ? "behind" : requiredDailyRate < 0.2 ? "ahead" : "neutral";
+
+  return (
+    <div className={`pace-card ${cardState}`}>
+      <div>
+        <span className="completion-label">Needed from here</span>
+        <strong>{remainingDays > 0 ? `${(requiredDailyRate * 100).toFixed(1)}% daily` : "Goal reached"}</strong>
+      </div>
+      <span className="completion-hint">
+        {remainingDays > 0
+          ? `${formatChallengeAmount(currentBalance, challenge)} now. Need about +${formatChallengeAmount(nextProfit, challenge)} next day for ${remainingDays} days.`
+          : `You reached ${challenge.finalLabel} for this run.`}
+      </span>
+    </div>
+  );
+}
+
+function ChallengeModeToggle({
+  goals,
+  mode,
+  onChange,
+  starts,
+}: {
+  goals: ChallengeGoals;
+  mode: ChallengeMode;
+  onChange: (mode: ChallengeMode) => void;
+  starts: ChallengeStarts;
+}) {
   return (
     <section className="challenge-toggle" aria-label="Challenge mode">
-      {Object.values(CHALLENGES).map((challenge) => (
-        <button
-          aria-pressed={mode === challenge.mode}
-          className={mode === challenge.mode ? "challenge-option active" : "challenge-option"}
-          key={challenge.mode}
-          onClick={() => onChange(challenge.mode)}
-          type="button"
-        >
-          <span>{challenge.name}</span>
-          <small>{challenge.startLabel} to {challenge.finalLabel}</small>
-        </button>
-      ))}
+      {(Object.keys(CHALLENGES) as ChallengeMode[]).map((challengeMode) => {
+        const challenge = getChallengeConfig(challengeMode, goals[challengeMode], starts[challengeMode]);
+        return (
+          <button
+            aria-pressed={mode === challenge.mode}
+            className={mode === challenge.mode ? "challenge-option active" : "challenge-option"}
+            key={challenge.mode}
+            onClick={() => onChange(challenge.mode)}
+            type="button"
+          >
+            <span>{challenge.name}</span>
+            <small>{challenge.startLabel} to {challenge.finalLabel}</small>
+          </button>
+        );
+      })}
     </section>
   );
 }
 
-function ChallengeGoalEditor({ goals, onChange }: { goals: ChallengeGoals; onChange: (mode: ChallengeMode, goal: number) => void }) {
+function ChallengeGoalEditor({
+  goals,
+  onGoalChange,
+  onStartChange,
+  starts,
+}: {
+  goals: ChallengeGoals;
+  onGoalChange: (mode: ChallengeMode, goal: number) => void;
+  onStartChange: (mode: ChallengeMode, start: number) => void;
+  starts: ChallengeStarts;
+}) {
   return (
     <section className="goal-editor" aria-label="Challenge goals">
       {(Object.keys(CHALLENGES) as ChallengeMode[]).map((mode) => {
         const base = CHALLENGES[mode];
-        const challenge = getChallengeConfig(mode, goals[mode]);
+        const challenge = getChallengeConfig(mode, goals[mode], starts[mode]);
         return (
           <label className="goal-field" key={mode}>
-            <span>{base.unit} goal</span>
+            <span>{base.unit} challenge</span>
             <div className="goal-input-wrap">
+              <small>Start</small>
               <input
-                min={base.start}
-                onChange={(event) => onChange(mode, Number(event.currentTarget.value))}
+                min={0.000001}
+                onChange={(event) => onStartChange(mode, Number(event.currentTarget.value))}
+                step="any"
+                type="number"
+                value={starts[mode]}
+              />
+              <small>{base.unit}</small>
+            </div>
+            <div className="goal-input-wrap">
+              <small>Goal</small>
+              <input
+                min={starts[mode]}
+                onChange={(event) => onGoalChange(mode, Number(event.currentTarget.value))}
                 step="any"
                 type="number"
                 value={goals[mode]}

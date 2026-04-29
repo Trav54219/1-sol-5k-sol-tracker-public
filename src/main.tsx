@@ -27,12 +27,13 @@ function RemoteApp() {
     if (!convexAuth.isAuthenticated || remoteProgress === undefined || migratedLocal.current) return;
 
     const localProgress = getLocalProgress();
-    const shouldUseLocalChecked = remoteProgress.checkedDays.length === 0 && localProgress.checkedDays.length > 0;
-    const checkedDays = shouldUseLocalChecked ? localProgress.checkedDays : remoteProgress.checkedDays;
-    const completions = Math.max(remoteProgress.completions, localProgress.completions);
-    if (shouldUseLocalChecked || completions !== remoteProgress.completions) {
+    const mergedProgress: ProgressSnapshot = {
+      sol: mergeModeProgress(remoteProgress.sol, localProgress.sol),
+      usdc: mergeModeProgress(remoteProgress.usdc, localProgress.usdc),
+    };
+    if (!isSameProgress(remoteProgress, mergedProgress)) {
       migratedLocal.current = true;
-      void setProgress({ checkedDays, completions });
+      void setProgress(mergedProgress);
     }
   }, [convexAuth.isAuthenticated, remoteProgress, setProgress]);
 
@@ -60,6 +61,22 @@ function RemoteApp() {
       remoteLoading={convexAuth.isAuthenticated && remoteProgress === undefined}
     />
   );
+}
+
+function mergeModeProgress(remote: ProgressSnapshot["sol"], local: ProgressSnapshot["sol"]) {
+  const shouldUseLocalChecked = remote.checkedDays.length === 0 && local.checkedDays.length > 0;
+  return {
+    checkedDays: shouldUseLocalChecked ? local.checkedDays : remote.checkedDays,
+    completions: Math.max(remote.completions, local.completions),
+  };
+}
+
+function isSameProgress(left: ProgressSnapshot, right: ProgressSnapshot) {
+  return isSameModeProgress(left.sol, right.sol) && isSameModeProgress(left.usdc, right.usdc);
+}
+
+function isSameModeProgress(left: ProgressSnapshot["sol"], right: ProgressSnapshot["sol"]) {
+  return left.completions === right.completions && left.checkedDays.join(",") === right.checkedDays.join(",");
 }
 
 function Root() {
