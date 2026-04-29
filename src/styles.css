@@ -1111,23 +1111,38 @@ tbody td.cb-col {
   grid-column: 1 / -1;
 }
 
-.guide-toggle {
-  background: var(--bg3);
-  border: 0.5px solid var(--border2);
-  border-radius: 6px;
-  color: var(--muted2);
-  cursor: pointer;
-  display: block;
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  margin-top: 10px;
-  padding: 6px 10px;
-  text-transform: uppercase;
+.evaluating-coins-card {
+  background: rgba(10, 124, 82, 0.05);
 }
 
-.guide-toggle:hover {
-  border-color: var(--green-mid);
+.evaluating-coins-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.evaluating-coins-row {
+  background: var(--bg3);
+  border: 0.5px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.evaluating-coins-row strong {
+  color: var(--green);
+  display: block;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.evaluating-coins-row p {
+  margin: 0;
+}
+
+.evaluating-coins-row span {
   color: var(--text);
+  font-family: "IBM Plex Mono", monospace;
+  font-weight: 600;
 }
 
 .pullupso-quote {
@@ -1197,6 +1212,10 @@ tbody td.cb-col {
   }
 
   .fee-preset-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .evaluating-coins-grid {
     grid-template-columns: 1fr;
   }
 

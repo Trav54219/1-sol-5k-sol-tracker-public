@@ -1255,7 +1255,6 @@ function Notes({
   totalDays: number;
   challenge: ChallengeConfig;
 }) {
-  const [showSizingGuide, setShowSizingGuide] = useState(false);
   const targetBuyAmount = challenge.targetBuyMultiplier * challenge.start;
   const capAmount = challenge.capMultiplier * challenge.start;
   const targetBuyDay = planDays.find((day) => getSizingAmount(day.day, day.start, "conservative", challenge) >= targetBuyAmount);
@@ -1325,27 +1324,39 @@ function Notes({
           {phaseFiveStartDay ? `At Phase 5+ around Day ${phaseFiveStartDay},` : "At Phase 5+,"} a single tilt day can cost you a week. The stop-loss rule becomes non-negotiable.
         </div>
       </div>
+      <div className="note-card pullupso-card evaluating-coins-card">
+        <div className="note-title">Evaluating coins</div>
+        <div className="note-body evaluating-coins-grid">
+          <div className="evaluating-coins-row">
+            <strong>New pairs</strong>
+            <p>Only buy coins you can see at least going to <span>$10k-$15k</span>.</p>
+          </div>
+          <div className="evaluating-coins-row">
+            <strong>Final stretch</strong>
+            <p>Only buy coins you can see at least going to <span>$40k-$60k</span>.</p>
+          </div>
+          <div className="evaluating-coins-row">
+            <strong>Migrated coins</strong>
+            <p>Only buy coins you can see going to at least <span>$100k-$150k+</span>.</p>
+          </div>
+        </div>
+      </div>
       <div className="note-card pullupso-card">
         <div className="note-title">Pullupso 3 SOL to 2,000 SOL in 7 days tips</div>
         <div className="note-body">
           Source: <a href="https://x.com/pullupso" target="_blank" rel="noopener noreferrer">@pullupso on X</a>
-          <button className="guide-toggle" onClick={() => setShowSizingGuide((current) => !current)} type="button">
-            {showSizingGuide ? "Hide sizing guide" : "Show sizing guide"}
-          </button>
-          {showSizingGuide ? (
-            <div className="pullupso-quote">
-              <p>Sizing and tips/ tricks i used to go from 3 sol to 2000 sol in 7 days.</p>
-              <p>2-5+ Use .5 - 1 sol (scalp pumpfuns for .2-.5 or more just sell when u think chart goes down) DO THIS OVER AND OVER TIL around 10+ SOL or until ur happy or u feel like u get the hang of it, literally just break even or sell in 10-20% losses if ur cutting. ( .3 is also good, but this is my preference to snowball quick early on, and juice out .5-1 sol pnls)</p>
-              <p>5-20+ use .5-3 Scalp and try bid 12-25k mc coins at bottom of abt to grad, method below (20+ category)</p>
-              <p>20+ 2/3 normal bid 5 max bid</p>
-              <p>do this all the way until u can size 5 into potential runners and cut in loss for 1-2 sol or play conviction on fresh migrates but still stick to new pairs on abt to grad and filter coins by spam hiding dogshit (0 min - 120 mins) filter ( THIS IS WHEN U CAN BUY 3-5% OF PUMPFUNS AND MAKE THE MOST MONEY YOU'VE SEEN SO FAR) this is where you predominantly try to catch 150-600k toppers on pump ( 2 sol on 20k entry = 20 sol at 200k)</p>
-              <p>50+ : adopt ur own trading style which u can figure out from ur own mentality, or your emotions towards winning certain amounts and losing (this part is a learning curve and is the difference between hitting 100+ sol PnL's and 20 sol pnls, however )</p>
-              <p>100-300 sol : avoid conviction plays that are off new pairs unless bottomed. Play METAs size 1-10% of ur port into every trade u make and cut in 20-50% losses, YOU SHOULD BE HOLDING MORE AT THIS BALANCE and playing to hit runners.</p>
-              <p>300+ Don't oversize (THIS PORT IS A SIZE TRAP), play ur mentality, WAIT FOR RUNNERS (SOMETHING U SHOULD BE DOING EXCLUSIVELY) Do not overtrade and don't over-size stick to 1-10% rule and in the small circumstance, take a chance on a 30-50 sol bid, I will also note that above 100 sol you SHOULD be DCA'ing with multiple bids and bidding 2-5 times every time u buy, and leave space to DCA (buy lower than ur average to lower ur average entry) into anything.</p>
-              <p>NOTE:</p>
-              <p>A port above 150k USD isn't necessary for this market and u should be stabling into prices u like. When the time comes I'll make another tweet on sizing in current market conditions.</p>
-            </div>
-          ) : null}
+          <div className="pullupso-quote">
+            <p>Sizing and tips/ tricks i used to go from 3 sol to 2000 sol in 7 days.</p>
+            <p>2-5+ Use .5 - 1 sol (scalp pumpfuns for .2-.5 or more just sell when u think chart goes down) DO THIS OVER AND OVER TIL around 10+ SOL or until ur happy or u feel like u get the hang of it, literally just break even or sell in 10-20% losses if ur cutting. ( .3 is also good, but this is my preference to snowball quick early on, and juice out .5-1 sol pnls)</p>
+            <p>5-20+ use .5-3 Scalp and try bid 12-25k mc coins at bottom of abt to grad, method below (20+ category)</p>
+            <p>20+ 2/3 normal bid 5 max bid</p>
+            <p>do this all the way until u can size 5 into potential runners and cut in loss for 1-2 sol or play conviction on fresh migrates but still stick to new pairs on abt to grad and filter coins by spam hiding dogshit (0 min - 120 mins) filter ( THIS IS WHEN U CAN BUY 3-5% OF PUMPFUNS AND MAKE THE MOST MONEY YOU'VE SEEN SO FAR) this is where you predominantly try to catch 150-600k toppers on pump ( 2 sol on 20k entry = 20 sol at 200k)</p>
+            <p>50+ : adopt ur own trading style which u can figure out from ur own mentality, or your emotions towards winning certain amounts and losing (this part is a learning curve and is the difference between hitting 100+ sol PnL's and 20 sol pnls, however )</p>
+            <p>100-300 sol : avoid conviction plays that are off new pairs unless bottomed. Play METAs size 1-10% of ur port into every trade u make and cut in 20-50% losses, YOU SHOULD BE HOLDING MORE AT THIS BALANCE and playing to hit runners.</p>
+            <p>300+ Don't oversize (THIS PORT IS A SIZE TRAP), play ur mentality, WAIT FOR RUNNERS (SOMETHING U SHOULD BE DOING EXCLUSIVELY) Do not overtrade and don't over-size stick to 1-10% rule and in the small circumstance, take a chance on a 30-50 sol bid, I will also note that above 100 sol you SHOULD be DCA'ing with multiple bids and bidding 2-5 times every time u buy, and leave space to DCA (buy lower than ur average to lower ur average entry) into anything.</p>
+            <p>NOTE:</p>
+            <p>A port above 150k USD isn't necessary for this market and u should be stabling into prices u like. When the time comes I'll make another tweet on sizing in current market conditions.</p>
+          </div>
         </div>
       </div>
       <div className="note-card pullupso-card">
