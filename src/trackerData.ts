@@ -11,6 +11,7 @@ export type ChallengeConfig = {
   mode: ChallengeMode;
   name: string;
   start: number;
+  defaultFinal: number;
   final: number;
   unit: "SOL" | "USDC";
   startLabel: string;
@@ -72,6 +73,7 @@ export const CHALLENGES: Record<ChallengeMode, ChallengeConfig> = {
     mode: "sol",
     name: "SOL mode",
     start: 1,
+    defaultFinal: FINAL,
     final: FINAL,
     unit: "SOL",
     startLabel: "1 SOL",
@@ -84,6 +86,7 @@ export const CHALLENGES: Record<ChallengeMode, ChallengeConfig> = {
     mode: "usdc",
     name: "USDC mode",
     start: 100,
+    defaultFinal: 500000,
     final: 500000,
     unit: "USDC",
     startLabel: "$100 USDC",
@@ -187,7 +190,8 @@ export function getConservativeSizingEntry(stack: number) {
 
 export function getTimeframePlan(timeframeId: TimeframeId, challenge: ChallengeConfig = CHALLENGES.sol): TimeframePlan {
   const option = TIMEFRAME_OPTIONS.find((candidate) => candidate.id === timeframeId) ?? TIMEFRAME_OPTIONS[0];
-  const planDays = option.id === "default" ? scaleDays(days, challenge.start) : generateDays(option.days, challenge);
+  const shouldUseBaseCurve = option.id === "default" && challenge.final === challenge.defaultFinal;
+  const planDays = shouldUseBaseCurve ? scaleDays(days, challenge.start) : generateDays(option.days, challenge);
   return {
     option,
     days: planDays,
@@ -204,8 +208,15 @@ export function isChallengeMode(value: string | null): value is ChallengeMode {
   return value === "sol" || value === "usdc";
 }
 
-export function getChallengeConfig(mode: ChallengeMode) {
-  return CHALLENGES[mode];
+export function getChallengeConfig(mode: ChallengeMode, final = CHALLENGES[mode].final) {
+  const base = CHALLENGES[mode];
+  const sanitizedFinal = sanitizeChallengeFinal(final, base);
+  return {
+    ...base,
+    final: sanitizedFinal,
+    finalLabel: formatChallengeAmount(sanitizedFinal, base),
+    completedLabel: formatCompactChallengeAmount(sanitizedFinal, base),
+  };
 }
 
 export function formatChallengeAmount(value: number, challenge: ChallengeConfig) {
@@ -216,6 +227,19 @@ export function formatChallengeAmount(value: number, challenge: ChallengeConfig)
 export function formatChallengeSizing(value: number, challenge: ChallengeConfig) {
   if (challenge.unit === "USDC") return `$${fmt(value)} USDC`;
   return `${fmtSizing(value)} SOL`;
+}
+
+export function sanitizeChallengeFinal(value: number, challenge: Pick<ChallengeConfig, "start" | "defaultFinal">) {
+  if (!Number.isFinite(value)) return challenge.defaultFinal;
+  return Math.max(value, challenge.start);
+}
+
+function formatCompactChallengeAmount(value: number, challenge: ChallengeConfig) {
+  const compact = Intl.NumberFormat("en", {
+    maximumFractionDigits: value >= 1000 ? 1 : 2,
+    notation: "compact",
+  }).format(value).toLowerCase();
+  return challenge.unit === "USDC" ? `$${compact} USDC` : `${compact} SOL`;
 }
 
 export function getMilestoneLabel(milestone: MilestoneId, challenge: ChallengeConfig) {

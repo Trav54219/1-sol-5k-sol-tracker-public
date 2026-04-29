@@ -11,6 +11,7 @@ import {
   isChallengeMode,
   isTimeframeId,
   LS_KEY,
+  sanitizeChallengeFinal,
   type ChallengeConfig,
   type ChallengeMode,
   type DayPlan,
@@ -20,6 +21,8 @@ import {
 } from "./trackerData";
 
 const CHALLENGE_MODE_KEY = "sol_speedrun_challenge_mode";
+const SOL_CHALLENGE_GOAL_KEY = "sol_speedrun_sol_goal";
+const USDC_CHALLENGE_GOAL_KEY = "sol_speedrun_usdc_goal";
 const SIZING_MODE_KEY = "sol_speedrun_sizing_mode";
 const TIMEFRAME_KEY = "sol_speedrun_timeframe";
 const COMPLETIONS_KEY = "sol_speedrun_completions";
@@ -42,6 +45,8 @@ type AppProps = {
   remoteLoading?: boolean;
   onRemoteChange?: (progress: ProgressSnapshot) => void | Promise<void>;
 };
+
+type ChallengeGoals = Record<ChallengeMode, number>;
 
 export type ProgressSnapshot = {
   checkedDays: number[];
@@ -155,6 +160,35 @@ function loadChallengeMode(): ChallengeMode {
   }
 }
 
+function getGoalStorageKey(mode: ChallengeMode) {
+  return mode === "sol" ? SOL_CHALLENGE_GOAL_KEY : USDC_CHALLENGE_GOAL_KEY;
+}
+
+function loadChallengeGoal(mode: ChallengeMode) {
+  const challenge = CHALLENGES[mode];
+  try {
+    const saved = localStorage.getItem(getGoalStorageKey(mode));
+    return sanitizeChallengeFinal(saved ? Number(saved) : challenge.defaultFinal, challenge);
+  } catch {
+    return challenge.defaultFinal;
+  }
+}
+
+function saveChallengeGoal(mode: ChallengeMode, goal: number) {
+  try {
+    localStorage.setItem(getGoalStorageKey(mode), String(goal));
+  } catch {
+    // Goal edits still work for this session if local storage is blocked.
+  }
+}
+
+function loadChallengeGoals(): ChallengeGoals {
+  return {
+    sol: loadChallengeGoal("sol"),
+    usdc: loadChallengeGoal("usdc"),
+  };
+}
+
 function loadTimeframe(): TimeframeId {
   try {
     const saved = localStorage.getItem(TIMEFRAME_KEY);
@@ -180,10 +214,11 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
   const [localCompletions, setLocalCompletions] = useState(() => loadLocalCompletions());
   const [currentPhase, setCurrentPhase] = useState(0);
   const [challengeMode, setChallengeMode] = useState<ChallengeMode>(() => loadChallengeMode());
+  const [challengeGoals, setChallengeGoals] = useState<ChallengeGoals>(() => loadChallengeGoals());
   const [sizingMode, setSizingMode] = useState<SizingMode>(() => loadSizingMode());
   const [timeframe, setTimeframe] = useState<TimeframeId>(() => loadTimeframe());
   const [challengeStartDate, setChallengeStartDate] = useState(() => loadLocalStartDate());
-  const challenge = useMemo(() => getChallengeConfig(challengeMode), [challengeMode]);
+  const challenge = useMemo(() => getChallengeConfig(challengeMode, challengeGoals[challengeMode]), [challengeMode, challengeGoals]);
   const timeframePlan = useMemo(() => getTimeframePlan(timeframe, challenge), [timeframe, challenge]);
   const planDays = timeframePlan.days;
   const planPhases = timeframePlan.phases;
@@ -230,6 +265,11 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
   }, [challengeMode]);
 
   useEffect(() => {
+    saveChallengeGoal("sol", challengeGoals.sol);
+    saveChallengeGoal("usdc", challengeGoals.usdc);
+  }, [challengeGoals]);
+
+  useEffect(() => {
     try {
       localStorage.setItem(TIMEFRAME_KEY, timeframe);
     } catch {
@@ -269,6 +309,12 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
   const resetCompletions = () => {
     persist(checked, 0);
   };
+  const updateChallengeGoal = (mode: ChallengeMode, goal: number) => {
+    setChallengeGoals((current) => ({
+      ...current,
+      [mode]: sanitizeChallengeFinal(goal, CHALLENGES[mode]),
+    }));
+  };
   const visibleDays = currentPhase === 0 ? planDays : planDays.filter((day) => day.phase === currentPhase);
 
   return (
@@ -301,6 +347,7 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
           <Stat label={`${challenge.completedLabel} completed`} value={`${completions}/${COMPLETION_GOAL}`} />
         </div>
         <ChallengeModeToggle mode={challengeMode} onChange={setChallengeMode} />
+        <ChallengeGoalEditor goals={challengeGoals} onChange={updateChallengeGoal} />
         <TimeframeToggle timeframe={timeframe} onChange={setTimeframe} />
         <SizingToggle mode={sizingMode} onChange={setSizingMode} />
       </header>
@@ -574,6 +621,33 @@ function ChallengeModeToggle({ mode, onChange }: { mode: ChallengeMode; onChange
           <small>{challenge.startLabel} to {challenge.finalLabel}</small>
         </button>
       ))}
+    </section>
+  );
+}
+
+function ChallengeGoalEditor({ goals, onChange }: { goals: ChallengeGoals; onChange: (mode: ChallengeMode, goal: number) => void }) {
+  return (
+    <section className="goal-editor" aria-label="Challenge goals">
+      {(Object.keys(CHALLENGES) as ChallengeMode[]).map((mode) => {
+        const base = CHALLENGES[mode];
+        const challenge = getChallengeConfig(mode, goals[mode]);
+        return (
+          <label className="goal-field" key={mode}>
+            <span>{base.unit} goal</span>
+            <div className="goal-input-wrap">
+              <input
+                min={base.start}
+                onChange={(event) => onChange(mode, Number(event.currentTarget.value))}
+                step="any"
+                type="number"
+                value={goals[mode]}
+              />
+              <small>{base.unit}</small>
+            </div>
+            <em>{base.startLabel} to {challenge.finalLabel}</em>
+          </label>
+        );
+      })}
     </section>
   );
 }
