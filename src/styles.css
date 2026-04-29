@@ -1145,6 +1145,34 @@ tbody td.cb-col {
   font-weight: 600;
 }
 
+.price-targets-card {
+  background: rgba(26, 86, 160, 0.05);
+}
+
+.price-targets-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.price-target-row {
+  background: var(--bg3);
+  border: 0.5px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.price-target-row strong {
+  color: #1a56a0;
+  display: block;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.price-target-row p {
+  margin: 0;
+}
+
 .pullupso-quote {
   color: var(--text);
   margin-top: 12px;
@@ -1216,6 +1244,10 @@ tbody td.cb-col {
   }
 
   .evaluating-coins-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .price-targets-grid {
     grid-template-columns: 1fr;
   }
 

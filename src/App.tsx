@@ -1333,11 +1333,28 @@ function Notes({
           </div>
           <div className="evaluating-coins-row">
             <strong>Final stretch</strong>
-            <p>Only buy coins you can see at least going to <span>$40k-$60k</span>.</p>
+            <p>Only buy coins you can see at least going to <span>$30k-$60k</span>.</p>
           </div>
           <div className="evaluating-coins-row">
             <strong>Migrated coins</strong>
             <p>Only buy coins you can see going to at least <span>$100k-$150k+</span>.</p>
+          </div>
+        </div>
+      </div>
+      <div className="note-card pullupso-card price-targets-card">
+        <div className="note-title">Price targets</div>
+        <div className="note-body price-targets-grid">
+          <div className="price-target-row">
+            <strong>Consensus targets</strong>
+            <p>Good coins usually have price targets. Assume most people will respect your targets or the market's consensus targets for where the coin deserves to be.</p>
+          </div>
+          <div className="price-target-row">
+            <strong>Let narratives cook</strong>
+            <p>People are slow. Give strong narratives a few minutes, hours, or even days for the thesis to fully play out, especially when you have alpha others do not.</p>
+          </div>
+          <div className="price-target-row">
+            <strong>Thesis over entry</strong>
+            <p>If something falls below your entry, do not sell just because you are red. Sell when the thesis is completely invalidated.</p>
           </div>
         </div>
       </div>
