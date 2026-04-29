@@ -731,7 +731,84 @@ function Notes() {
         </div>
       </div>
       <div className="note-card pullupso-card">
-        <div className="note-title">Narrative selection guide</div>
+        <div className="note-title">Narrative selection guide (N.A.R.R.A.T.I.V.E)</div>
+        <div className="note-body narrative-mini-guide">
+          <div className="narrative-mini-row">
+            <span className="narrative-mini-letter">N</span>
+            <div>
+              <strong>News</strong>
+              <p>Breaking news events - macro, geopolitical, viral headlines</p>
+            </div>
+            <span className="narrative-mini-tag">e.g. $TARIFF, $WAR</span>
+          </div>
+          <div className="narrative-mini-row">
+            <span className="narrative-mini-letter">A</span>
+            <div>
+              <strong>Animal</strong>
+              <p>Dog, cat, frog, bear - creature-based coins and species trends</p>
+            </div>
+            <span className="narrative-mini-tag">e.g. $DOGE, $PEPE</span>
+          </div>
+          <div className="narrative-mini-row">
+            <span className="narrative-mini-letter">R</span>
+            <div>
+              <strong>Relevant</strong>
+              <p>Timely to current market cycle - fits the meta, on-trend narrative</p>
+            </div>
+            <span className="narrative-mini-tag">cycle fit</span>
+          </div>
+          <div className="narrative-mini-row">
+            <span className="narrative-mini-letter">R</span>
+            <div>
+              <strong>Real world events</strong>
+              <p>Political figures, sports moments, celebrity culture, entertainment</p>
+            </div>
+            <span className="narrative-mini-tag">e.g. $TRUMP, $SUPERBOWL</span>
+          </div>
+          <div className="narrative-mini-row">
+            <span className="narrative-mini-letter">A</span>
+            <div>
+              <strong>AI</strong>
+              <p>Artificial intelligence theme - agent coins, AI mascots, tech hype</p>
+            </div>
+            <span className="narrative-mini-tag">e.g. $GOAT, $AIXBT</span>
+          </div>
+          <div className="narrative-mini-row">
+            <span className="narrative-mini-letter">T</span>
+            <div>
+              <strong>Tech</strong>
+              <p>Blockchain launches, L2s, protocol upgrades driving ecosystem memes</p>
+            </div>
+            <span className="narrative-mini-tag">chain-native hype</span>
+          </div>
+          <div className="narrative-mini-row">
+            <span className="narrative-mini-letter">I</span>
+            <div>
+              <strong>Influencer / KOL</strong>
+              <p>Celebrity, creator, or KOL-backed coins - social reach as catalyst</p>
+            </div>
+            <span className="narrative-mini-tag">e.g. $HAWK, $JENNER</span>
+          </div>
+          <div className="narrative-mini-row">
+            <span className="narrative-mini-letter">V</span>
+            <div>
+              <strong>Viral</strong>
+              <p>Internet meme culture - TikTok trends, X posts, Reddit, viral moments</p>
+            </div>
+            <span className="narrative-mini-tag">e.g. $MOODENG</span>
+          </div>
+          <div className="narrative-mini-row">
+            <span className="narrative-mini-letter">E</span>
+            <div>
+              <strong>Exchange listing</strong>
+              <p>CEX or major DEX listing as the narrative catalyst - liquidity event</p>
+            </div>
+            <span className="narrative-mini-tag">CEX pump</span>
+          </div>
+        </div>
+      </div>
+      <div className="note-card pullupso-card">
+        <div className="note-title">Narrative selection guide advanced</div>
         <div className="note-body narrative-guide">
           <strong>CERTAIN PROFIT</strong>
           <p><strong>C - Community:</strong> Tokens built around strong, engaged communities with active Discord/Telegram groups, dedicated holders, and organic grassroots momentum that drives sustained interest beyond initial hype.</p>

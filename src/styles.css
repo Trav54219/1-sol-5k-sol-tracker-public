@@ -840,6 +840,51 @@ tbody td.cb-col {
   margin-bottom: 0;
 }
 
+.narrative-mini-guide {
+  display: grid;
+  gap: 8px;
+}
+
+.narrative-mini-row {
+  align-items: center;
+  background: var(--bg3);
+  border: 0.5px solid var(--border);
+  border-radius: 8px;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 42px 1fr auto;
+  padding: 10px 12px;
+}
+
+.narrative-mini-letter {
+  align-items: center;
+  background: rgba(10, 124, 82, 0.12);
+  border-radius: 7px;
+  color: var(--green);
+  display: flex;
+  font-size: 18px;
+  font-weight: 600;
+  height: 42px;
+  justify-content: center;
+  letter-spacing: 0.04em;
+  width: 42px;
+}
+
+.narrative-mini-row p {
+  margin: 2px 0 0;
+}
+
+.narrative-mini-tag {
+  background: rgba(10, 124, 82, 0.1);
+  border-radius: 999px;
+  color: var(--green);
+  font-size: 10px;
+  font-weight: 600;
+  justify-self: end;
+  padding: 3px 8px;
+  white-space: nowrap;
+}
+
 .note-body a {
   border-bottom: 0.5px solid rgba(10, 124, 82, 0.35);
   color: var(--green);
@@ -936,5 +981,14 @@ tbody td.cb-col {
 
   .phase-bars {
     grid-template-columns: repeat(3, 1fr);
+  }
+
+  .narrative-mini-row {
+    grid-template-columns: 42px 1fr;
+  }
+
+  .narrative-mini-tag {
+    grid-column: 2;
+    justify-self: start;
   }
 }
