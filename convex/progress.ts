@@ -10,6 +10,10 @@ async function requireUserIdentity(ctx: QueryCtx | MutationCtx) {
   return identity;
 }
 
+async function getOptionalUserIdentity(ctx: QueryCtx | MutationCtx) {
+  return await ctx.auth.getUserIdentity();
+}
+
 async function getProgressForUser(ctx: QueryCtx | MutationCtx, identity: { subject: string; tokenIdentifier: string }) {
   const current = await ctx.db
     .query("progress")
@@ -27,7 +31,9 @@ async function getProgressForUser(ctx: QueryCtx | MutationCtx, identity: { subje
 export const get = query({
   args: {},
   handler: async (ctx) => {
-    const identity = await requireUserIdentity(ctx);
+    const identity = await getOptionalUserIdentity(ctx);
+    if (!identity) return emptyProgress();
+
     const progress = await getProgressForUser(ctx, identity);
 
     return {
@@ -42,6 +48,19 @@ export const get = query({
     };
   },
 });
+
+function emptyProgress() {
+  return {
+    sol: {
+      checkedDays: [],
+      completions: 0,
+    },
+    usdc: {
+      checkedDays: [],
+      completions: 0,
+    },
+  };
+}
 
 export const set = mutation({
   args: {

@@ -59,6 +59,13 @@ type ModeProgressSnapshot = {
 
 export type ProgressSnapshot = Record<ChallengeMode, ModeProgressSnapshot>;
 
+type LegacyProgressSnapshot = {
+  checkedDays?: number[];
+  completions?: number;
+  sol?: Partial<ModeProgressSnapshot>;
+  usdc?: Partial<ModeProgressSnapshot>;
+};
+
 function getCheckedStorageKey(mode: ChallengeMode) {
   return `${LS_KEY}_${mode}`;
 }
@@ -113,6 +120,23 @@ function loadLocalProgressByMode(): ProgressSnapshot {
       checkedDays: [...loadLocalChecked("usdc")].sort((a, b) => a - b),
       completions: loadLocalCompletions("usdc"),
     },
+  };
+}
+
+export function normalizeProgressSnapshot(progress: LegacyProgressSnapshot | null | undefined): ProgressSnapshot {
+  const fallback = progress ?? undefined;
+  return {
+    sol: normalizeModeProgress(progress?.sol, fallback),
+    usdc: normalizeModeProgress(progress?.usdc),
+  };
+}
+
+function normalizeModeProgress(progress?: Partial<ModeProgressSnapshot>, fallback?: LegacyProgressSnapshot): ModeProgressSnapshot {
+  const checkedDays = progress?.checkedDays ?? fallback?.checkedDays ?? [];
+  const completions = progress?.completions ?? fallback?.completions ?? 0;
+  return {
+    checkedDays: Array.isArray(checkedDays) ? checkedDays : [],
+    completions: clampCompletions(completions),
   };
 }
 
@@ -292,7 +316,8 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
   const capAmount = challenge.capMultiplier * challenge.start;
   const targetBuyDay = planDays.find((day) => getSizingAmount(day.day, day.start, "conservative", challenge) >= targetBuyAmount)?.day;
   const capDay = planDays.find((day) => getSizingAmount(day.day, day.start, "conservative", challenge) >= capAmount)?.day;
-  const activeProgress = remoteProgress?.[challengeMode] ?? localProgress[challengeMode];
+  const normalizedRemoteProgress = useMemo(() => normalizeProgressSnapshot(remoteProgress), [remoteProgress]);
+  const activeProgress = remoteProgress ? normalizedRemoteProgress[challengeMode] : localProgress[challengeMode];
   const checked = useMemo(() => new Set(activeProgress.checkedDays), [activeProgress]);
   const completions = activeProgress.completions;
   const checkedList = useMemo(() => [...checked].filter((day) => day <= totalDays).sort((a, b) => a - b), [checked, totalDays]);
@@ -303,9 +328,10 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
 
   useEffect(() => {
     if (remoteProgress) {
-      setLocalProgress(remoteProgress);
+      const nextRemoteProgress = normalizeProgressSnapshot(remoteProgress);
+      setLocalProgress(nextRemoteProgress);
       for (const mode of CHALLENGE_MODES) {
-        saveLocalModeProgress(mode, remoteProgress[mode]);
+        saveLocalModeProgress(mode, nextRemoteProgress[mode]);
       }
     }
   }, [remoteProgress]);

@@ -4,7 +4,7 @@ import { AuthKitProvider, useAuth } from "@workos-inc/authkit-react";
 import { ConvexReactClient, useConvexAuth, useMutation, useQuery } from "convex/react";
 import { makeFunctionReference } from "convex/server";
 import { ConvexProviderWithAuthKit } from "@convex-dev/workos";
-import App, { getLocalProgress, type ProgressSnapshot } from "./App";
+import App, { getLocalProgress, normalizeProgressSnapshot, type ProgressSnapshot } from "./App";
 import "./styles.css";
 
 const convexUrl = import.meta.env.VITE_CONVEX_URL as string | undefined;
@@ -27,11 +27,12 @@ function RemoteApp() {
     if (!convexAuth.isAuthenticated || remoteProgress === undefined || migratedLocal.current) return;
 
     const localProgress = getLocalProgress();
+    const normalizedRemoteProgress = normalizeProgressSnapshot(remoteProgress);
     const mergedProgress: ProgressSnapshot = {
-      sol: mergeModeProgress(remoteProgress.sol, localProgress.sol),
-      usdc: mergeModeProgress(remoteProgress.usdc, localProgress.usdc),
+      sol: mergeModeProgress(normalizedRemoteProgress.sol, localProgress.sol),
+      usdc: mergeModeProgress(normalizedRemoteProgress.usdc, localProgress.usdc),
     };
-    if (!isSameProgress(remoteProgress, mergedProgress)) {
+    if (!isSameProgress(normalizedRemoteProgress, mergedProgress)) {
       migratedLocal.current = true;
       void setProgress(mergedProgress);
     }
