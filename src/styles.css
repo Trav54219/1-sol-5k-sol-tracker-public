@@ -511,44 +511,6 @@ h1 span {
   gap: 6px;
 }
 
-.challenge-date-all {
-  display: grid;
-  flex-basis: 100%;
-  gap: 8px;
-}
-
-.challenge-date-grid {
-  display: grid;
-  gap: 8px;
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-}
-
-.challenge-date-chip {
-  background: var(--bg3);
-  border: 0.5px solid var(--border);
-  border-radius: 8px;
-  display: grid;
-  gap: 3px;
-  padding: 8px 10px;
-}
-
-.challenge-date-chip.active {
-  background: rgba(10, 124, 82, 0.07);
-  border-color: rgba(10, 124, 82, 0.28);
-}
-
-.challenge-date-chip span,
-.challenge-date-chip small {
-  color: var(--muted);
-  font-size: 10px;
-}
-
-.challenge-date-chip strong {
-  color: var(--text);
-  font-size: 12px;
-  font-weight: 600;
-}
-
 .challenge-date-field input {
   background: var(--bg3);
   border: 0.5px solid var(--border2);

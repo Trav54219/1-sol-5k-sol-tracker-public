@@ -376,7 +376,7 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
         </table>
       </div>
 
-      <Notes />
+      <Notes dailyGrowthRate={timeframePlan.dailyGrowthRate} phases={planPhases} planDays={planDays} totalDays={totalDays} />
       <div className="sync-debug" aria-live="polite">
         {auth?.isSignedIn ? `Synced days: ${checkedList.length} · completions: ${completions}/${COMPLETION_GOAL}` : "Guest progress is saved in this browser until you sign in."}
       </div>
@@ -456,15 +456,6 @@ function ChallengeDatePlanner({
   const completedDayOffset = Math.max(completedDays, 1);
   const remainingDays = Math.max(totalDays - completedDays, 0);
   const finishDate = parsedStartDate ? addCalendarDays(parsedStartDate, totalDays - completedDayOffset) : null;
-  const planDates = TIMEFRAME_OPTIONS.map((option) => {
-    const completedForPlan = Math.min(completedDays, option.days);
-    const dayOffset = Math.max(completedForPlan, 1);
-    return {
-      ...option,
-      finishDate: parsedStartDate ? formatGoalDate(addCalendarDays(parsedStartDate, option.days - dayOffset)) : "Select start",
-      remainingDays: Math.max(option.days - completedForPlan, 0),
-    };
-  });
 
   return (
     <div className="challenge-date-planner">
@@ -484,18 +475,6 @@ function ChallengeDatePlanner({
             ? `${completedDays}/${totalDays} days checked. ${remainingDays} days left.`
             : `Day ${totalDays} is counted as the goal day.`}
         </span>
-      </div>
-      <div className="challenge-date-all">
-        <span className="completion-label">Goal dates by plan</span>
-        <div className="challenge-date-grid">
-          {planDates.map((plan) => (
-            <div className={plan.days === totalDays ? "challenge-date-chip active" : "challenge-date-chip"} key={plan.id}>
-              <span>{plan.label}</span>
-              <strong>{plan.finishDate}</strong>
-              <small>{plan.remainingDays} days left</small>
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   );
@@ -754,45 +733,83 @@ function Badge({ label, phase }: { label: string; phase: { bg: string; color: st
   return <span className="badge" style={{ background: phase.bg, color: phase.color, border: `0.5px solid ${phase.border}` }}>{label}</span>;
 }
 
-function Notes() {
+function Notes({
+  dailyGrowthRate,
+  phases,
+  planDays,
+  totalDays,
+}: {
+  dailyGrowthRate: number;
+  phases: Phase[];
+  planDays: DayPlan[];
+  totalDays: number;
+}) {
   const [showSizingGuide, setShowSizingGuide] = useState(false);
+  const threeSolDay = planDays.find((day) => getSizingAmount(day.day, day.start, "conservative") >= 3);
+  const capDay = planDays.find((day) => getSizingAmount(day.day, day.start, "conservative") >= 4.5);
+  const goalDay = planDays[planDays.length - 1];
+  const phaseOne = phases[0];
+  const phaseOneDays = planDays.filter((day) => day.phase === phaseOne.id);
+  const phaseOneStart = phaseOneDays[0];
+  const phaseOneEnd = phaseOneDays[phaseOneDays.length - 1];
+  const phaseOneMinBuy = getSizingAmount(phaseOneStart.day, phaseOneStart.start, "conservative");
+  const phaseOneMaxBuy = getSizingAmount(phaseOneEnd.day, phaseOneEnd.start, "conservative");
+  const phaseFive = phases.find((phase) => phase.id === 5);
+  const phaseFiveStartDay = phaseFive ? planDays.find((day) => day.phase === phaseFive.id)?.day : null;
+  const bufferMin = Math.max(1, Math.ceil(totalDays * 0.2));
+  const bufferMax = Math.max(bufferMin + 1, Math.ceil(totalDays * 0.35));
+  const phaseRates = phases.map((phase) => {
+    const phaseDays = planDays.filter((day) => day.phase === phase.id);
+    const first = phaseDays[0];
+    const last = phaseDays[phaseDays.length - 1];
+    const avgRate = phaseDays.reduce((sum, day) => sum + ((day.end - day.start) / day.start), 0) / phaseDays.length;
+    return { phase, first, last, avgRate };
+  });
 
   return (
     <section className="notes-section">
       <div className="note-card">
         <div className="note-title">Daily % by phase</div>
         <div className="note-body">
-          Phase 1 (1-16 SOL): <strong>~18-20%</strong><br />
-          Phase 2 (16-86 SOL): <strong>~15-17%</strong><br />
-          Phase 3 (86-364 SOL): <strong>~13-15%</strong><br />
-          Phase 4 (364-569 SOL): <strong>~12%</strong><br />
-          Phase 5 (569-1,980 SOL): <strong>~8-10%</strong><br />
-          Phase 6 (1,980-5,000 SOL): <strong>~6%</strong>
+          {phaseRates.map(({ phase, first, last, avgRate }) => (
+            <Fragment key={phase.id}>
+              Phase {phase.id} ({fmt(first.start)}-{fmt(last.end)} SOL): <strong>~{(avgRate * 100).toFixed(1)}%</strong><br />
+            </Fragment>
+          ))}
         </div>
       </div>
       <div className="note-card">
         <div className="note-title">3 key milestones</div>
         <div className="note-body">
-          <strong>Day 42</strong> - 3 SOL MB unlocked<br />
-          Portfolio: ~540 SOL<br /><br />
-          <strong>Day 57</strong> - 4.5 SOL cap reached<br />
-          Portfolio: ~1,900 SOL<br /><br />
-          <strong>Day 73</strong> - 5,000 SOL reached
+          {threeSolDay ? (
+            <>
+              <strong>Day {threeSolDay.day}</strong> - 3 SOL MB unlocked<br />
+              Portfolio after target: ~{fmt(threeSolDay.end)} SOL<br /><br />
+            </>
+          ) : null}
+          {capDay ? (
+            <>
+              <strong>Day {capDay.day}</strong> - 4.5 SOL cap reached<br />
+              Portfolio after target: ~{fmt(capDay.end)} SOL<br /><br />
+            </>
+          ) : null}
+          <strong>Day {goalDay.day}</strong> - 5,000 SOL reached
         </div>
       </div>
       <div className="note-card">
         <div className="note-title">Phase 1 is the grind</div>
         <div className="note-body">
-          Days 1-16 at 0.04-0.2 SOL MB feel painfully slow but they are <strong>the most important</strong>.<br />
+          Days {phaseOneStart.day}-{phaseOneEnd.day} at {fmtSizing(phaseOneMinBuy)}-{fmtSizing(phaseOneMaxBuy)} SOL MB are the foundation for this {totalDays}-day plan.<br />
+          The full plan needs about <strong>{(dailyGrowthRate * 100).toFixed(1)}%</strong> per day, so early discipline is <strong>the most important</strong>.<br />
           Every habit you build here - hold discipline, no tilt, cut fast - <strong>carries to every phase after</strong>.
         </div>
       </div>
       <div className="note-card">
         <div className="note-title">Reality check</div>
         <div className="note-body">
-          This is <strong>zero bad days, best-case markets</strong>.<br />
-          Real timeline: add <strong>15-25 days</strong> for off sessions.<br />
-          At Phase 5+ a single tilt day can cost you a week. The stop-loss rule becomes non-negotiable.
+          This {totalDays}-day version is <strong>zero bad days, best-case markets</strong>.<br />
+          Real timeline: add <strong>{bufferMin}-{bufferMax} days</strong> for off sessions.<br />
+          {phaseFiveStartDay ? `At Phase 5+ around Day ${phaseFiveStartDay},` : "At Phase 5+,"} a single tilt day can cost you a week. The stop-loss rule becomes non-negotiable.
         </div>
       </div>
       <div className="note-card pullupso-card">
