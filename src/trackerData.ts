@@ -3,6 +3,7 @@ export const TOTAL_DAYS = 73;
 export const LS_KEY = "sol_speedrun_checked";
 
 export type SizingMode = "conservative" | "pullupso";
+export type TimeframeId = "default" | "7" | "14" | "21" | "30" | "45" | "60" | "75";
 
 export type Phase = {
   id: number;
@@ -11,6 +12,10 @@ export type Phase = {
   color: string;
   bg: string;
   border: string;
+};
+
+type PhaseBase = Omit<Phase, "label" | "days"> & {
+  name: string;
 };
 
 export type DayPlan = {
@@ -22,13 +27,38 @@ export type DayPlan = {
   milestone?: string;
 };
 
-export const phases: Phase[] = [
-  { id: 1, label: "Phase 1 · Days 1-16 · 1→16 SOL · Micro grind", days: 16, color: "#0a7c52", bg: "rgba(10,124,82,0.06)", border: "rgba(10,124,82,0.22)" },
-  { id: 2, label: "Phase 2 · Days 17-27 · 16→86 SOL · Building base", days: 11, color: "#1a56a0", bg: "rgba(26,86,160,0.06)", border: "rgba(26,86,160,0.22)" },
-  { id: 3, label: "Phase 3 · Days 28-38 · 86→364 SOL · Scaling up", days: 11, color: "#a05f00", bg: "rgba(160,95,0,0.06)", border: "rgba(160,95,0,0.22)" },
-  { id: 4, label: "Phase 4 · Days 39-42 · 364→569 SOL · 3 SOL target", days: 4, color: "#7c1fa0", bg: "rgba(124,31,160,0.06)", border: "rgba(124,31,160,0.22)" },
-  { id: 5, label: "Phase 5 · Days 43-57 · 569→1980 SOL · Upper tier", days: 15, color: "#0e7490", bg: "rgba(14,116,144,0.06)", border: "rgba(14,116,144,0.22)" },
-  { id: 6, label: "Phase 6 · Days 58-73 · 1980→5030 SOL · Endgame", days: 16, color: "#8a6800", bg: "rgba(138,104,0,0.06)", border: "rgba(138,104,0,0.22)" },
+export type TimeframeOption = {
+  id: TimeframeId;
+  label: string;
+  days: number;
+  detail: string;
+};
+
+export type TimeframePlan = {
+  option: TimeframeOption;
+  days: DayPlan[];
+  phases: Phase[];
+  dailyGrowthRate: number;
+};
+
+export const TIMEFRAME_OPTIONS: TimeframeOption[] = [
+  { id: "default", label: "Regular", days: TOTAL_DAYS, detail: "Original 73-day curve" },
+  { id: "7", label: "7 days", days: 7, detail: "Extreme sprint" },
+  { id: "14", label: "14 days", days: 14, detail: "Two-week sprint" },
+  { id: "21", label: "21 days", days: 21, detail: "Three-week sprint" },
+  { id: "30", label: "30 days", days: 30, detail: "One-month push" },
+  { id: "45", label: "45 days", days: 45, detail: "Fast plan" },
+  { id: "60", label: "60 days", days: 60, detail: "Accelerated plan" },
+  { id: "75", label: "75 days", days: 75, detail: "Slightly slower plan" },
+];
+
+const phaseBases: PhaseBase[] = [
+  { id: 1, name: "Micro grind", color: "#0a7c52", bg: "rgba(10,124,82,0.06)", border: "rgba(10,124,82,0.22)" },
+  { id: 2, name: "Building base", color: "#1a56a0", bg: "rgba(26,86,160,0.06)", border: "rgba(26,86,160,0.22)" },
+  { id: 3, name: "Scaling up", color: "#a05f00", bg: "rgba(160,95,0,0.06)", border: "rgba(160,95,0,0.22)" },
+  { id: 4, name: "3 SOL target", color: "#7c1fa0", bg: "rgba(124,31,160,0.06)", border: "rgba(124,31,160,0.22)" },
+  { id: 5, name: "Upper tier", color: "#0e7490", bg: "rgba(14,116,144,0.06)", border: "rgba(14,116,144,0.22)" },
+  { id: 6, name: "Endgame", color: "#8a6800", bg: "rgba(138,104,0,0.06)", border: "rgba(138,104,0,0.22)" },
 ];
 
 export const days: DayPlan[] = [
@@ -68,34 +98,171 @@ export const days: DayPlan[] = [
   { day: 66, start: 3155.73, end: 3345.07, phase: 6, unlock: null }, { day: 67, start: 3345.07, end: 3545.78, phase: 6, unlock: null },
   { day: 68, start: 3545.78, end: 3758.52, phase: 6, unlock: null }, { day: 69, start: 3758.52, end: 3984.03, phase: 6, unlock: null },
   { day: 70, start: 3984.03, end: 4223.07, phase: 6, unlock: null }, { day: 71, start: 4223.07, end: 4476.46, phase: 6, unlock: null },
-  { day: 72, start: 4476.46, end: 4745.04, phase: 6, unlock: null }, { day: 73, start: 4745.04, end: 5029.74, phase: 6, unlock: null, milestone: "5,000 SOL" },
+  { day: 72, start: 4476.46, end: 4745.04, phase: 6, unlock: null }, { day: 73, start: 4745.04, end: 5029.74, phase: 6, unlock: null, milestone: "Goal reached" },
 ];
 
-const mbByDay = [
-  { from: 1, mb: "0.04 SOL" }, { from: 4, mb: "0.06 SOL" }, { from: 8, mb: "0.1 SOL" }, { from: 12, mb: "0.15 SOL" },
-  { from: 14, mb: "0.2 SOL" }, { from: 16, mb: "0.3 SOL" }, { from: 18, mb: "0.4 SOL" }, { from: 20, mb: "0.5 SOL" },
-  { from: 22, mb: "0.65 SOL" }, { from: 24, mb: "0.85 SOL" }, { from: 27, mb: "1 SOL" }, { from: 29, mb: "1.25 SOL" },
-  { from: 31, mb: "1.5 SOL" }, { from: 33, mb: "1.75 SOL" }, { from: 35, mb: "2 SOL" }, { from: 37, mb: "2.25 SOL" },
-  { from: 39, mb: "2.5 SOL" }, { from: 41, mb: "2.75 SOL" }, { from: 42, mb: "3 SOL" }, { from: 44, mb: "3.25 SOL" },
-  { from: 46, mb: "3.5 SOL" }, { from: 48, mb: "3.75 SOL" }, { from: 51, mb: "4 SOL" }, { from: 54, mb: "4.25 SOL" },
-  { from: 57, mb: "4.5 SOL" },
+export const phases = buildPhases(days, TOTAL_DAYS);
+
+const conservativeLadder = [
+  { minStack: 1, mb: 0.04 }, { minStack: 1.73, mb: 0.06 }, { minStack: 3.51, mb: 0.1 }, { minStack: 6.97, mb: 0.15 },
+  { minStack: 9.76, mb: 0.2 }, { minStack: 13.57, mb: 0.3 }, { minStack: 18.62, mb: 0.4 }, { minStack: 25.47, mb: 0.5 },
+  { minStack: 34.89, mb: 0.65 }, { minStack: 47.56, mb: 0.85 }, { minStack: 74.52, mb: 1 }, { minStack: 98.95, mb: 1.25 },
+  { minStack: 130.37, mb: 1.5 }, { minStack: 169.43, mb: 1.75 }, { minStack: 220.19, mb: 2 }, { minStack: 284.65, mb: 2.25 },
+  { minStack: 364.38, mb: 2.5 }, { minStack: 455.39, mb: 2.75 }, { minStack: 509.24, mb: 3 }, { minStack: 626.29, mb: 3.25 },
+  { minStack: 757.81, mb: 3.5 }, { minStack: 900.35, mb: 3.75 }, { minStack: 1155.28, mb: 4 }, { minStack: 1455.32, mb: 4.25 },
+  { minStack: 1833.29, mb: 4.5 },
 ];
 
 export function getMBValue(day: number) {
-  let maxBuy = 0.04;
-  for (const entry of mbByDay) {
-    if (day >= entry.from) maxBuy = parseFloat(entry.mb);
-  }
-  return maxBuy;
+  return getConservativeSizing(days[Math.max(day - 1, 0)]?.start ?? 1);
 }
 
 export function getMB(day: number) {
   return `${fmtSizing(getMBValue(day))} SOL`;
 }
 
-export function getSizingAmount(day: number, stack: number, mode: SizingMode) {
-  if (mode === "conservative") return getMBValue(day);
+export function getSizingAmount(_day: number, stack: number, mode: SizingMode) {
+  if (mode === "conservative") return getConservativeSizing(stack);
   return getPullupsoSizing(stack);
+}
+
+export function getConservativeSizing(stack: number) {
+  return getConservativeSizingEntry(stack).mb;
+}
+
+export function getConservativeSizingEntry(stack: number) {
+  let maxBuy = conservativeLadder[0].mb;
+  let threshold = conservativeLadder[0].minStack;
+  for (const entry of conservativeLadder) {
+    if (stack >= entry.minStack) {
+      maxBuy = entry.mb;
+      threshold = entry.minStack;
+    }
+  }
+  return { mb: maxBuy, threshold };
+}
+
+export function getTimeframePlan(timeframeId: TimeframeId): TimeframePlan {
+  const option = TIMEFRAME_OPTIONS.find((candidate) => candidate.id === timeframeId) ?? TIMEFRAME_OPTIONS[0];
+  const planDays = option.id === "default" ? days : generateDays(option.days);
+  return {
+    option,
+    days: planDays,
+    phases: buildPhases(planDays, option.days),
+    dailyGrowthRate: getDailyGrowthRate(option.days),
+  };
+}
+
+export function isTimeframeId(value: string | null): value is TimeframeId {
+  return TIMEFRAME_OPTIONS.some((option) => option.id === value);
+}
+
+function generateDays(totalDays: number) {
+  const dailyMultiplier = Math.pow(FINAL, 1 / totalDays);
+  const phaseDayCounts = getPhaseDayCounts(totalDays);
+  const planDays: DayPlan[] = [];
+  let previousConservativeSize = getConservativeSizing(1);
+
+  for (let index = 0; index < totalDays; index += 1) {
+    const day = index + 1;
+    const start = day === 1 ? 1 : Math.pow(dailyMultiplier, index);
+    const end = day === totalDays ? FINAL : Math.pow(dailyMultiplier, day);
+    const conservativeSize = getConservativeSizing(start);
+    const phase = getPhaseForDay(day, phaseDayCounts);
+    const unlock = conservativeSize > previousConservativeSize ? `${fmtSizing(conservativeSize)} SOL` : null;
+    const milestone = day === totalDays ? "Goal reached" : getMilestone(conservativeSize, previousConservativeSize);
+
+    planDays.push({
+      day,
+      start: roundPlanAmount(start),
+      end: roundPlanAmount(end),
+      phase,
+      unlock,
+      milestone,
+    });
+    previousConservativeSize = conservativeSize;
+  }
+
+  return planDays;
+}
+
+function buildPhases(planDays: DayPlan[], totalDays: number): Phase[] {
+  const phaseDayCounts = getPhaseDayCounts(totalDays);
+  let startDay = 1;
+  return phaseBases.map((base, index) => {
+    const phaseDays = phaseDayCounts[index];
+    const endDay = startDay + phaseDays - 1;
+    const first = planDays[startDay - 1];
+    const last = planDays[endDay - 1];
+    const label = `Phase ${base.id} · Days ${startDay}-${endDay} · ${fmt(first.start)}→${fmt(last.end)} SOL · ${base.name}`;
+    startDay = endDay + 1;
+
+    return {
+      id: base.id,
+      label,
+      days: phaseDays,
+      color: base.color,
+      bg: base.bg,
+      border: base.border,
+    };
+  });
+}
+
+function getPhaseDayCounts(totalDays: number) {
+  if (totalDays === TOTAL_DAYS) return [16, 11, 11, 4, 15, 16];
+
+  const ratios = [16, 11, 11, 4, 15, 16].map((count) => count / TOTAL_DAYS);
+  const rawCounts = ratios.map((ratio) => ratio * totalDays);
+  const counts = rawCounts.map((count) => Math.max(Math.floor(count), 1));
+  let remaining = totalDays - counts.reduce((sum, count) => sum + count, 0);
+
+  const remainders = rawCounts
+    .map((count, index) => ({ index, remainder: count - Math.floor(count) }))
+    .sort((a, b) => b.remainder - a.remainder);
+
+  while (remaining > 0) {
+    for (const { index } of remainders) {
+      if (remaining <= 0) break;
+      counts[index] += 1;
+      remaining -= 1;
+    }
+  }
+
+  while (remaining < 0) {
+    for (const { index } of [...remainders].reverse()) {
+      if (remaining >= 0) break;
+      if (counts[index] <= 1) continue;
+      counts[index] -= 1;
+      remaining += 1;
+    }
+  }
+
+  return counts;
+}
+
+function getPhaseForDay(day: number, phaseDayCounts: number[]) {
+  let endDay = 0;
+  for (let index = 0; index < phaseDayCounts.length; index += 1) {
+    endDay += phaseDayCounts[index];
+    if (day <= endDay) return index + 1;
+  }
+  return phaseDayCounts.length;
+}
+
+function getDailyGrowthRate(totalDays: number) {
+  return Math.pow(FINAL, 1 / totalDays) - 1;
+}
+
+function getMilestone(currentSize: number, previousSize: number) {
+  if (currentSize >= 4.5 && previousSize < 4.5) return "4.5 SOL cap";
+  if (currentSize >= 3 && previousSize < 3) return "3 SOL MB";
+  return undefined;
+}
+
+function roundPlanAmount(value: number) {
+  if (value >= 1000) return Math.round(value);
+  if (value >= 10) return Math.round(value * 10) / 10;
+  return Math.round(value * 100) / 100;
 }
 
 function getPullupsoSizing(stack: number) {

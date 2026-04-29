@@ -99,6 +99,7 @@ input[type="date"] {
 .auth-title,
 .auth-btn,
 .guide-toggle,
+.timeframe-option,
 .sizing-option,
 .progress-label,
 .sync-debug {
@@ -139,17 +140,26 @@ h1 span {
   margin-top: 20px;
 }
 
+.timeframe-toggle,
 .sizing-toggle {
   background: var(--bg2);
   border: 0.5px solid var(--border2);
   border-radius: 12px;
   display: grid;
   gap: 8px;
-  grid-template-columns: repeat(2, 1fr);
   margin-top: 16px;
   padding: 8px;
 }
 
+.timeframe-toggle {
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+}
+
+.sizing-toggle {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.timeframe-option,
 .sizing-option {
   background: transparent;
   border: 0.5px solid transparent;
@@ -161,11 +171,14 @@ h1 span {
   transition: all 0.12s;
 }
 
+.timeframe-option span,
+.timeframe-option small,
 .sizing-option span,
 .sizing-option small {
   display: block;
 }
 
+.timeframe-option span,
 .sizing-option span {
   color: var(--muted2);
   font-size: 10px;
@@ -174,21 +187,25 @@ h1 span {
   text-transform: uppercase;
 }
 
+.timeframe-option small,
 .sizing-option small {
   font-size: 11px;
   line-height: 1.4;
   margin-top: 3px;
 }
 
+.timeframe-option:hover,
 .sizing-option:hover {
   background: var(--bg3);
 }
 
+.timeframe-option.active,
 .sizing-option.active {
   background: rgba(10, 124, 82, 0.07);
   border-color: rgba(10, 124, 82, 0.28);
 }
 
+.timeframe-option.active span,
 .sizing-option.active span {
   color: var(--green);
 }
@@ -494,6 +511,44 @@ h1 span {
   gap: 6px;
 }
 
+.challenge-date-all {
+  display: grid;
+  flex-basis: 100%;
+  gap: 8px;
+}
+
+.challenge-date-grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+}
+
+.challenge-date-chip {
+  background: var(--bg3);
+  border: 0.5px solid var(--border);
+  border-radius: 8px;
+  display: grid;
+  gap: 3px;
+  padding: 8px 10px;
+}
+
+.challenge-date-chip.active {
+  background: rgba(10, 124, 82, 0.07);
+  border-color: rgba(10, 124, 82, 0.28);
+}
+
+.challenge-date-chip span,
+.challenge-date-chip small {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.challenge-date-chip strong {
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 600;
+}
+
 .challenge-date-field input {
   background: var(--bg3);
   border: 0.5px solid var(--border2);
@@ -508,6 +563,50 @@ h1 span {
   font-size: 18px;
   font-weight: 600;
   line-height: 1.1;
+}
+
+.pace-card {
+  align-items: center;
+  background: var(--bg2);
+  border: 0.5px solid var(--border);
+  border-radius: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding: 12px 14px;
+}
+
+.pace-card strong {
+  display: block;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.1;
+  margin-top: 4px;
+}
+
+.pace-card.ahead {
+  background: rgba(10, 124, 82, 0.07);
+  border-color: rgba(10, 124, 82, 0.28);
+}
+
+.pace-card.ahead strong,
+.pace-card.on.pace strong {
+  color: var(--green);
+}
+
+.pace-card.behind {
+  background: rgba(160, 95, 0, 0.07);
+  border-color: rgba(160, 95, 0, 0.28);
+}
+
+.pace-card.behind strong {
+  color: #a05f00;
+}
+
+.pace-card.neutral strong {
+  color: var(--muted2);
 }
 
 .phase-bars {

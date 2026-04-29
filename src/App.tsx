@@ -1,7 +1,21 @@
 import { Fragment, useEffect, useMemo, useState } from "react";
-import { days, FINAL, fmt, fmtSizing, getSizingAmount, LS_KEY, phases, type SizingMode, TOTAL_DAYS } from "./trackerData";
+import {
+  FINAL,
+  TIMEFRAME_OPTIONS,
+  fmt,
+  fmtSizing,
+  getTimeframePlan,
+  getSizingAmount,
+  isTimeframeId,
+  LS_KEY,
+  type DayPlan,
+  type Phase,
+  type SizingMode,
+  type TimeframeId,
+} from "./trackerData";
 
 const SIZING_MODE_KEY = "sol_speedrun_sizing_mode";
+const TIMEFRAME_KEY = "sol_speedrun_timeframe";
 const COMPLETIONS_KEY = "sol_speedrun_completions";
 const CHALLENGE_START_DATE_KEY = "sol_speedrun_challenge_start_date";
 const COMPLETION_GOAL = 100;
@@ -101,6 +115,15 @@ function addCalendarDays(date: Date, daysToAdd: number) {
   return next;
 }
 
+function startOfLocalDay(date: Date) {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+function calendarDaysBetween(start: Date, end: Date) {
+  const msPerDay = 24 * 60 * 60 * 1000;
+  return Math.floor((startOfLocalDay(end).getTime() - startOfLocalDay(start).getTime()) / msPerDay);
+}
+
 function formatGoalDate(date: Date) {
   return new Intl.DateTimeFormat(undefined, {
     month: "long",
@@ -114,6 +137,15 @@ function loadSizingMode(): SizingMode {
     return localStorage.getItem(SIZING_MODE_KEY) === "pullupso" ? "pullupso" : "conservative";
   } catch {
     return "conservative";
+  }
+}
+
+function loadTimeframe(): TimeframeId {
+  try {
+    const saved = localStorage.getItem(TIMEFRAME_KEY);
+    return isTimeframeId(saved) ? saved : "default";
+  } catch {
+    return "default";
   }
 }
 
@@ -133,16 +165,24 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
   const [localCompletions, setLocalCompletions] = useState(() => loadLocalCompletions());
   const [currentPhase, setCurrentPhase] = useState(0);
   const [sizingMode, setSizingMode] = useState<SizingMode>(() => loadSizingMode());
+  const [timeframe, setTimeframe] = useState<TimeframeId>(() => loadTimeframe());
   const [challengeStartDate, setChallengeStartDate] = useState(() => loadLocalStartDate());
+  const timeframePlan = useMemo(() => getTimeframePlan(timeframe), [timeframe]);
+  const planDays = timeframePlan.days;
+  const planPhases = timeframePlan.phases;
+  const totalDays = timeframePlan.option.days;
+  const threeSolDay = planDays.find((day) => getSizingAmount(day.day, day.start, "conservative") >= 3)?.day;
+  const capDay = planDays.find((day) => getSizingAmount(day.day, day.start, "conservative") >= 4.5)?.day;
   const checked = useMemo(
     () => new Set(remoteProgress?.checkedDays ?? [...localChecked]),
     [localChecked, remoteProgress],
   );
   const completions = remoteProgress?.completions ?? localCompletions;
-  const checkedList = useMemo(() => [...checked].sort((a, b) => a - b), [checked]);
-  const totalDone = checked.size;
-  const overallPct = ((totalDone / TOTAL_DAYS) * 100).toFixed(1);
-  const isChallengeComplete = totalDone === TOTAL_DAYS;
+  const checkedList = useMemo(() => [...checked].filter((day) => day <= totalDays).sort((a, b) => a - b), [checked, totalDays]);
+  const checkedForPlan = useMemo(() => new Set(checkedList), [checkedList]);
+  const totalDone = checkedForPlan.size;
+  const overallPct = ((totalDone / totalDays) * 100).toFixed(1);
+  const isChallengeComplete = totalDone === totalDays;
 
   useEffect(() => {
     if (remoteProgress) {
@@ -161,6 +201,14 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
       // Sizing mode still works for this session if local storage is blocked.
     }
   }, [sizingMode]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(TIMEFRAME_KEY, timeframe);
+    } catch {
+      // Timeframe selection still works for this session if local storage is blocked.
+    }
+  }, [timeframe]);
 
   useEffect(() => {
     saveLocalStartDate(challengeStartDate);
@@ -194,7 +242,7 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
   const resetCompletions = () => {
     persist(checked, 0);
   };
-  const visibleDays = currentPhase === 0 ? days : days.filter((day) => day.phase === currentPhase);
+  const visibleDays = currentPhase === 0 ? planDays : planDays.filter((day) => day.phase === currentPhase);
 
   return (
     <>
@@ -208,7 +256,9 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
             <h1>
               1 SOL → <span>5,000 SOL</span>
             </h1>
-            <p className="subtitle">Best case · 12-15 hrs/day · MB 0.04 → 4.5 SOL cap · 73 trading days</p>
+            <p className="subtitle">
+              Best case · 12-15 hrs/day · {timeframePlan.option.label} · {(timeframePlan.dailyGrowthRate * 100).toFixed(1)}% daily target
+            </p>
             <a className="rules-link" href="https://trading-rules.vercel.app/" rel="noopener noreferrer" target="_blank">
               Trading rules
             </a>
@@ -216,13 +266,14 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
           <AuthControls auth={auth} remoteLoading={remoteLoading} />
         </div>
         <div className="summary-row">
-          <Stat label="Timeline" value="73 days" />
+          <Stat label="Timeline" value={`${totalDays} days`} />
           <Stat label="Start" value="1 SOL" />
           <Stat label="Final goal" value="5,000 SOL" />
-          <Stat label="3 SOL MB" value="Day 42" />
-          <Stat label="4.5 cap" value="Day 57" />
+          <Stat label="3 SOL MB" value={threeSolDay ? `Day ${threeSolDay}` : "N/A"} />
+          <Stat label="4.5 cap" value={capDay ? `Day ${capDay}` : "N/A"} />
           <Stat label="5K completed" value={`${completions}/${COMPLETION_GOAL}`} />
         </div>
+        <TimeframeToggle timeframe={timeframe} onChange={setTimeframe} />
         <SizingToggle mode={sizingMode} onChange={setSizingMode} />
       </header>
 
@@ -230,7 +281,7 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
         <div className="tracker-top">
           <div>
             <div className="tracker-title">Overall progress</div>
-            <div className="tracker-count">{totalDone} / 73</div>
+            <div className="tracker-count">{totalDone} / {totalDays}</div>
             <div className="tracker-sub">{overallPct}% of roadmap complete</div>
           </div>
           <button className="reset-btn" onClick={resetAll} type="button">
@@ -246,16 +297,19 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
           onAdjustCompletions={adjustCompletions}
           onLogCompletion={logCompletion}
           onResetCompletions={resetCompletions}
+          totalDays={totalDays}
         />
         <ChallengeDatePlanner
           completedDays={totalDone}
           startDate={challengeStartDate}
+          totalDays={totalDays}
           onStartDateChange={setChallengeStartDate}
         />
+        <PaceIndicator completedDays={totalDone} startDate={challengeStartDate} totalDays={totalDays} />
         <div className="phase-bars">
-          {phases.map((phase) => {
-            const phaseDays = days.filter((day) => day.phase === phase.id);
-            const doneDays = phaseDays.filter((day) => checked.has(day.day)).length;
+          {planPhases.map((phase) => {
+            const phaseDays = planDays.filter((day) => day.phase === phase.id);
+            const doneDays = phaseDays.filter((day) => checkedForPlan.has(day.day)).length;
             return (
               <div className="phase-bar-item" key={phase.id}>
                 <div className="phase-bar-label">
@@ -281,9 +335,9 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
           style={{ background: "var(--bg2)", borderColor: "var(--border2)", color: "var(--muted2)", opacity: currentPhase === 0 ? 1 : 0.6 }}
           type="button"
         >
-          All 73 days
+          All {totalDays} days
         </button>
-        {phases.map((phase) => (
+        {planPhases.map((phase) => (
           <button
             className="pnav"
             key={phase.id}
@@ -310,7 +364,14 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
             </tr>
           </thead>
           <tbody>
-            <TrackerRows daysToRender={visibleDays} checked={checked} onToggle={toggleDay} sizingMode={sizingMode} />
+            <TrackerRows
+              daysToRender={visibleDays}
+              checked={checkedForPlan}
+              onToggle={toggleDay}
+              phases={planPhases}
+              planDays={planDays}
+              sizingMode={sizingMode}
+            />
           </tbody>
         </table>
       </div>
@@ -329,12 +390,14 @@ function CompletionCounter({
   onAdjustCompletions,
   onLogCompletion,
   onResetCompletions,
+  totalDays,
 }: {
   completions: number;
   isComplete: boolean;
   onAdjustCompletions: (delta: number) => void;
   onLogCompletion: () => void;
   onResetCompletions: () => void;
+  totalDays: number;
 }) {
   const [adjustBy, setAdjustBy] = useState(1);
   const pct = Math.min((completions / COMPLETION_GOAL) * 100, 100);
@@ -361,7 +424,7 @@ function CompletionCounter({
           <button className="completion-reset-btn" onClick={onResetCompletions} type="button">reset</button>
         </div>
         <span className="completion-hint">
-          {isComplete ? "All 73 days checked. Log this run and start the next one." : `${COMPLETION_GOAL - completions} runs left to master the challenge.`}
+          {isComplete ? `All ${totalDays} days checked. Log this run and start the next one.` : `${COMPLETION_GOAL - completions} runs left to master the challenge.`}
         </span>
       </div>
       <div className="completion-action">
@@ -381,16 +444,27 @@ function CompletionCounter({
 function ChallengeDatePlanner({
   completedDays,
   startDate,
+  totalDays,
   onStartDateChange,
 }: {
   completedDays: number;
   startDate: string;
+  totalDays: number;
   onStartDateChange: (startDate: string) => void;
 }) {
   const parsedStartDate = parseDateInput(startDate);
   const completedDayOffset = Math.max(completedDays, 1);
-  const remainingDays = Math.max(TOTAL_DAYS - completedDays, 0);
-  const finishDate = parsedStartDate ? addCalendarDays(parsedStartDate, TOTAL_DAYS - completedDayOffset) : null;
+  const remainingDays = Math.max(totalDays - completedDays, 0);
+  const finishDate = parsedStartDate ? addCalendarDays(parsedStartDate, totalDays - completedDayOffset) : null;
+  const planDates = TIMEFRAME_OPTIONS.map((option) => {
+    const completedForPlan = Math.min(completedDays, option.days);
+    const dayOffset = Math.max(completedForPlan, 1);
+    return {
+      ...option,
+      finishDate: parsedStartDate ? formatGoalDate(addCalendarDays(parsedStartDate, option.days - dayOffset)) : "Select start",
+      remainingDays: Math.max(option.days - completedForPlan, 0),
+    };
+  });
 
   return (
     <div className="challenge-date-planner">
@@ -407,11 +481,89 @@ function ChallengeDatePlanner({
         <strong>{finishDate ? formatGoalDate(finishDate) : "Select a start date"}</strong>
         <span className="completion-hint">
           {completedDays > 0
-            ? `${completedDays}/${TOTAL_DAYS} days checked. ${remainingDays} days left.`
-            : "Day 73 is counted as the goal day."}
+            ? `${completedDays}/${totalDays} days checked. ${remainingDays} days left.`
+            : `Day ${totalDays} is counted as the goal day.`}
         </span>
       </div>
+      <div className="challenge-date-all">
+        <span className="completion-label">Goal dates by plan</span>
+        <div className="challenge-date-grid">
+          {planDates.map((plan) => (
+            <div className={plan.days === totalDays ? "challenge-date-chip active" : "challenge-date-chip"} key={plan.id}>
+              <span>{plan.label}</span>
+              <strong>{plan.finishDate}</strong>
+              <small>{plan.remainingDays} days left</small>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
+  );
+}
+
+function PaceIndicator({ completedDays, startDate, totalDays }: { completedDays: number; startDate: string; totalDays: number }) {
+  const parsedStartDate = parseDateInput(startDate);
+
+  if (!parsedStartDate) {
+    return (
+      <div className="pace-card neutral">
+        <div>
+          <span className="completion-label">Pace</span>
+          <strong>Select a start date</strong>
+        </div>
+        <span className="completion-hint">Your pace will compare checked days against the selected timeframe.</span>
+      </div>
+    );
+  }
+
+  const elapsedDays = calendarDaysBetween(parsedStartDate, new Date());
+
+  if (elapsedDays < 0) {
+    return (
+      <div className="pace-card neutral">
+        <div>
+          <span className="completion-label">Pace</span>
+          <strong>Starts in {Math.abs(elapsedDays)} days</strong>
+        </div>
+        <span className="completion-hint">Pace tracking begins on your challenge start date.</span>
+      </div>
+    );
+  }
+
+  const expectedDays = Math.min(elapsedDays + 1, totalDays);
+  const delta = completedDays - expectedDays;
+  const status = delta > 0 ? "ahead" : delta < 0 ? "behind" : "on pace";
+  const statusCopy = delta === 0 ? "Exactly on pace" : `${Math.abs(delta)} day${Math.abs(delta) === 1 ? "" : "s"} ${status}`;
+
+  return (
+    <div className={`pace-card ${status}`}>
+      <div>
+        <span className="completion-label">Pace</span>
+        <strong>{statusCopy}</strong>
+      </div>
+      <span className="completion-hint">
+        {completedDays}/{totalDays} checked vs {expectedDays}/{totalDays} expected for this plan.
+      </span>
+    </div>
+  );
+}
+
+function TimeframeToggle({ timeframe, onChange }: { timeframe: TimeframeId; onChange: (timeframe: TimeframeId) => void }) {
+  return (
+    <section className="timeframe-toggle" aria-label="Timeframe">
+      {TIMEFRAME_OPTIONS.map((option) => (
+        <button
+          aria-pressed={timeframe === option.id}
+          className={timeframe === option.id ? "timeframe-option active" : "timeframe-option"}
+          key={option.id}
+          onClick={() => onChange(option.id)}
+          type="button"
+        >
+          <span>{option.label}</span>
+          <small>{option.detail}</small>
+        </button>
+      ))}
+    </section>
   );
 }
 
@@ -507,11 +659,15 @@ function TrackerRows({
   daysToRender,
   checked,
   onToggle,
+  phases,
+  planDays,
   sizingMode,
 }: {
-  daysToRender: typeof days;
+  daysToRender: DayPlan[];
   checked: Set<number>;
   onToggle: (day: number, isChecked: boolean) => void;
+  phases: Phase[];
+  planDays: DayPlan[];
   sizingMode: SizingMode;
 }) {
   let lastPhase = -1;
@@ -520,7 +676,7 @@ function TrackerRows({
     <>
       {daysToRender.map((row) => {
         const phase = phases.find((candidate) => candidate.id === row.phase)!;
-        const phaseDays = days.filter((day) => day.phase === row.phase);
+        const phaseDays = planDays.filter((day) => day.phase === row.phase);
         const doneDays = phaseDays.filter((day) => checked.has(day.day)).length;
         const includeDivider = row.phase !== lastPhase;
         lastPhase = row.phase;
