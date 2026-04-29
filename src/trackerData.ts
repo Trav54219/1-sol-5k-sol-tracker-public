@@ -52,7 +52,7 @@ export const days: DayPlan[] = [
   { day: 35, start: 220.19, end: 251.02, phase: 3, unlock: "2 SOL" }, { day: 36, start: 251.02, end: 284.65, phase: 3, unlock: null },
   { day: 37, start: 284.65, end: 322.46, phase: 3, unlock: "2.25 SOL" }, { day: 38, start: 322.46, end: 364.38, phase: 3, unlock: null },
   { day: 39, start: 364.38, end: 407.31, phase: 4, unlock: "2.5 SOL" }, { day: 40, start: 407.31, end: 455.39, phase: 4, unlock: null },
-  { day: 41, start: 455.39, end: 509.24, phase: 4, unlock: "2.75 SOL" }, { day: 42, start: 509.24, end: 569.35, phase: 4, unlock: "3 SOL", milestone: "3 SOL QB" },
+  { day: 41, start: 455.39, end: 509.24, phase: 4, unlock: "2.75 SOL" }, { day: 42, start: 509.24, end: 569.35, phase: 4, unlock: "3 SOL", milestone: "3 SOL MB" },
   { day: 43, start: 569.35, end: 626.29, phase: 5, unlock: null }, { day: 44, start: 626.29, end: 688.92, phase: 5, unlock: "3.25 SOL" },
   { day: 45, start: 688.92, end: 757.81, phase: 5, unlock: null }, { day: 46, start: 757.81, end: 826.01, phase: 5, unlock: "3.5 SOL" },
   { day: 47, start: 826.01, end: 900.35, phase: 5, unlock: null }, { day: 48, start: 900.35, end: 981.38, phase: 5, unlock: "3.75 SOL" },
@@ -71,30 +71,30 @@ export const days: DayPlan[] = [
   { day: 72, start: 4476.46, end: 4745.04, phase: 6, unlock: null }, { day: 73, start: 4745.04, end: 5029.74, phase: 6, unlock: null, milestone: "5,000 SOL" },
 ];
 
-const qbByDay = [
-  { from: 1, qb: "0.04 SOL" }, { from: 4, qb: "0.06 SOL" }, { from: 8, qb: "0.1 SOL" }, { from: 12, qb: "0.15 SOL" },
-  { from: 14, qb: "0.2 SOL" }, { from: 16, qb: "0.3 SOL" }, { from: 18, qb: "0.4 SOL" }, { from: 20, qb: "0.5 SOL" },
-  { from: 22, qb: "0.65 SOL" }, { from: 24, qb: "0.85 SOL" }, { from: 27, qb: "1 SOL" }, { from: 29, qb: "1.25 SOL" },
-  { from: 31, qb: "1.5 SOL" }, { from: 33, qb: "1.75 SOL" }, { from: 35, qb: "2 SOL" }, { from: 37, qb: "2.25 SOL" },
-  { from: 39, qb: "2.5 SOL" }, { from: 41, qb: "2.75 SOL" }, { from: 42, qb: "3 SOL" }, { from: 44, qb: "3.25 SOL" },
-  { from: 46, qb: "3.5 SOL" }, { from: 48, qb: "3.75 SOL" }, { from: 51, qb: "4 SOL" }, { from: 54, qb: "4.25 SOL" },
-  { from: 57, qb: "4.5 SOL" },
+const mbByDay = [
+  { from: 1, mb: "0.04 SOL" }, { from: 4, mb: "0.06 SOL" }, { from: 8, mb: "0.1 SOL" }, { from: 12, mb: "0.15 SOL" },
+  { from: 14, mb: "0.2 SOL" }, { from: 16, mb: "0.3 SOL" }, { from: 18, mb: "0.4 SOL" }, { from: 20, mb: "0.5 SOL" },
+  { from: 22, mb: "0.65 SOL" }, { from: 24, mb: "0.85 SOL" }, { from: 27, mb: "1 SOL" }, { from: 29, mb: "1.25 SOL" },
+  { from: 31, mb: "1.5 SOL" }, { from: 33, mb: "1.75 SOL" }, { from: 35, mb: "2 SOL" }, { from: 37, mb: "2.25 SOL" },
+  { from: 39, mb: "2.5 SOL" }, { from: 41, mb: "2.75 SOL" }, { from: 42, mb: "3 SOL" }, { from: 44, mb: "3.25 SOL" },
+  { from: 46, mb: "3.5 SOL" }, { from: 48, mb: "3.75 SOL" }, { from: 51, mb: "4 SOL" }, { from: 54, mb: "4.25 SOL" },
+  { from: 57, mb: "4.5 SOL" },
 ];
 
-export function getQBValue(day: number) {
-  let quickBuy = 0.04;
-  for (const entry of qbByDay) {
-    if (day >= entry.from) quickBuy = parseFloat(entry.qb);
+export function getMBValue(day: number) {
+  let maxBuy = 0.04;
+  for (const entry of mbByDay) {
+    if (day >= entry.from) maxBuy = parseFloat(entry.mb);
   }
-  return quickBuy;
+  return maxBuy;
 }
 
-export function getQB(day: number) {
-  return `${fmtSizing(getQBValue(day))} SOL`;
+export function getMB(day: number) {
+  return `${fmtSizing(getMBValue(day))} SOL`;
 }
 
 export function getSizingAmount(day: number, stack: number, mode: SizingMode) {
-  if (mode === "conservative") return getQBValue(day);
+  if (mode === "conservative") return getMBValue(day);
   return getPullupsoSizing(stack);
 }
 

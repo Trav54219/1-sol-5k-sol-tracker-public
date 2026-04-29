@@ -31,6 +31,10 @@ input {
   font: inherit;
 }
 
+input[type="date"] {
+  color-scheme: light;
+}
+
 .header {
   border-bottom: 0.5px solid var(--border2);
   margin: 0 auto 24px;
@@ -89,7 +93,7 @@ input {
 .sol-range,
 .daily-gain,
 .pct-gain,
-.qb-cell,
+.mb-cell,
 .badge,
 .note-title,
 .auth-title,
@@ -471,6 +475,41 @@ h1 span {
   color: var(--muted);
 }
 
+.challenge-date-planner {
+  align-items: center;
+  background: var(--bg2);
+  border: 0.5px solid var(--border);
+  border-radius: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding: 12px 14px;
+}
+
+.challenge-date-field,
+.challenge-date-result {
+  display: grid;
+  gap: 6px;
+}
+
+.challenge-date-field input {
+  background: var(--bg3);
+  border: 0.5px solid var(--border2);
+  border-radius: 6px;
+  color: var(--text);
+  min-width: 170px;
+  padding: 7px 9px;
+}
+
+.challenge-date-result strong {
+  color: var(--green);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
 .phase-bars {
   display: grid;
   gap: 8px;
@@ -713,7 +752,7 @@ tbody td.cb-col {
   margin-left: 4px;
 }
 
-.qb-cell {
+.mb-cell {
   font-size: 13px;
   font-weight: 600;
   white-space: nowrap;
@@ -785,6 +824,20 @@ tbody td.cb-col {
 .note-body strong {
   color: var(--text);
   font-weight: 500;
+}
+
+.narrative-guide > strong {
+  display: block;
+  letter-spacing: 0.08em;
+  margin-bottom: 12px;
+}
+
+.narrative-guide p {
+  margin-bottom: 12px;
+}
+
+.narrative-guide p:last-child {
+  margin-bottom: 0;
 }
 
 .note-body a {

@@ -3,6 +3,7 @@ import { days, FINAL, fmt, fmtSizing, getSizingAmount, LS_KEY, phases, type Sizi
 
 const SIZING_MODE_KEY = "sol_speedrun_sizing_mode";
 const COMPLETIONS_KEY = "sol_speedrun_completions";
+const CHALLENGE_START_DATE_KEY = "sol_speedrun_challenge_start_date";
 const COMPLETION_GOAL = 100;
 
 type AuthState = {
@@ -59,9 +60,53 @@ function saveLocalCompletions(completions: number) {
   }
 }
 
+function loadLocalStartDate() {
+  try {
+    const saved = localStorage.getItem(CHALLENGE_START_DATE_KEY) || "";
+    return isDateInputValue(saved) ? saved : "";
+  } catch {
+    return "";
+  }
+}
+
+function saveLocalStartDate(startDate: string) {
+  try {
+    if (startDate) localStorage.setItem(CHALLENGE_START_DATE_KEY, startDate);
+    else localStorage.removeItem(CHALLENGE_START_DATE_KEY);
+  } catch {
+    // The date selector still works for this session if local storage is blocked.
+  }
+}
+
 function clampCompletions(value: number) {
   if (!Number.isFinite(value)) return 0;
   return Math.min(Math.max(Math.trunc(value), 0), COMPLETION_GOAL);
+}
+
+function isDateInputValue(value: string) {
+  return /^\d{4}-\d{2}-\d{2}$/.test(value);
+}
+
+function parseDateInput(value: string) {
+  if (!isDateInputValue(value)) return null;
+  const [year, month, day] = value.split("-").map(Number);
+  const date = new Date(year, month - 1, day);
+  if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) return null;
+  return date;
+}
+
+function addCalendarDays(date: Date, daysToAdd: number) {
+  const next = new Date(date);
+  next.setDate(next.getDate() + daysToAdd);
+  return next;
+}
+
+function formatGoalDate(date: Date) {
+  return new Intl.DateTimeFormat(undefined, {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  }).format(date);
 }
 
 function loadSizingMode(): SizingMode {
@@ -88,6 +133,7 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
   const [localCompletions, setLocalCompletions] = useState(() => loadLocalCompletions());
   const [currentPhase, setCurrentPhase] = useState(0);
   const [sizingMode, setSizingMode] = useState<SizingMode>(() => loadSizingMode());
+  const [challengeStartDate, setChallengeStartDate] = useState(() => loadLocalStartDate());
   const checked = useMemo(
     () => new Set(remoteProgress?.checkedDays ?? [...localChecked]),
     [localChecked, remoteProgress],
@@ -115,6 +161,10 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
       // Sizing mode still works for this session if local storage is blocked.
     }
   }, [sizingMode]);
+
+  useEffect(() => {
+    saveLocalStartDate(challengeStartDate);
+  }, [challengeStartDate]);
 
   const persist = (next: Set<number>, nextCompletions = completions) => {
     const nextList = [...next].sort((a, b) => a - b);
@@ -158,7 +208,7 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
             <h1>
               1 SOL → <span>5,000 SOL</span>
             </h1>
-            <p className="subtitle">Best case · 12-15 hrs/day · QB 0.04 → 4.5 SOL cap · 73 trading days</p>
+            <p className="subtitle">Best case · 12-15 hrs/day · MB 0.04 → 4.5 SOL cap · 73 trading days</p>
             <a className="rules-link" href="https://trading-rules.vercel.app/" rel="noopener noreferrer" target="_blank">
               Trading rules
             </a>
@@ -169,7 +219,7 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
           <Stat label="Timeline" value="73 days" />
           <Stat label="Start" value="1 SOL" />
           <Stat label="Final goal" value="5,000 SOL" />
-          <Stat label="3 SOL QB" value="Day 42" />
+          <Stat label="3 SOL MB" value="Day 42" />
           <Stat label="4.5 cap" value="Day 57" />
           <Stat label="5K completed" value={`${completions}/${COMPLETION_GOAL}`} />
         </div>
@@ -196,6 +246,11 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
           onAdjustCompletions={adjustCompletions}
           onLogCompletion={logCompletion}
           onResetCompletions={resetCompletions}
+        />
+        <ChallengeDatePlanner
+          completedDays={totalDone}
+          startDate={challengeStartDate}
+          onStartDateChange={setChallengeStartDate}
         />
         <div className="phase-bars">
           {phases.map((phase) => {
@@ -318,6 +373,43 @@ function CompletionCounter({
             log completion
           </button>
         ) : null}
+      </div>
+    </div>
+  );
+}
+
+function ChallengeDatePlanner({
+  completedDays,
+  startDate,
+  onStartDateChange,
+}: {
+  completedDays: number;
+  startDate: string;
+  onStartDateChange: (startDate: string) => void;
+}) {
+  const parsedStartDate = parseDateInput(startDate);
+  const completedDayOffset = Math.max(completedDays, 1);
+  const remainingDays = Math.max(TOTAL_DAYS - completedDays, 0);
+  const finishDate = parsedStartDate ? addCalendarDays(parsedStartDate, TOTAL_DAYS - completedDayOffset) : null;
+
+  return (
+    <div className="challenge-date-planner">
+      <label className="challenge-date-field">
+        <span className="completion-label">Challenge start date</span>
+        <input
+          onChange={(event) => onStartDateChange(event.currentTarget.value)}
+          type="date"
+          value={startDate}
+        />
+      </label>
+      <div className="challenge-date-result">
+        <span className="completion-label">Expected goal date</span>
+        <strong>{finishDate ? formatGoalDate(finishDate) : "Select a start date"}</strong>
+        <span className="completion-hint">
+          {completedDays > 0
+            ? `${completedDays}/${TOTAL_DAYS} days checked. ${remainingDays} days left.`
+            : "Day 73 is counted as the goal day."}
+        </span>
       </div>
     </div>
   );
@@ -483,9 +575,9 @@ function TrackerRows({
                 <span className="daily-gain" style={{ color: phase.color }}>+{fmt(gain)} SOL</span>
                 <span className="pct-gain">(+{pct}%)</span>
               </td>
-              <td><span className="qb-cell" style={{ color: phase.color }}>{fmtSizing(quickBuy)} SOL</span></td>
+              <td><span className="mb-cell" style={{ color: phase.color }}>{fmtSizing(quickBuy)} SOL</span></td>
               <td>
-                <span className="qb-cell" style={{ color: phase.color }}>{quickBuyPct}%</span>
+                <span className="mb-cell" style={{ color: phase.color }}>{quickBuyPct}%</span>
                 <span className="pct-gain"> of stack</span>
               </td>
               <td>
@@ -525,7 +617,7 @@ function Notes() {
       <div className="note-card">
         <div className="note-title">3 key milestones</div>
         <div className="note-body">
-          <strong>Day 42</strong> - 3 SOL QB unlocked<br />
+          <strong>Day 42</strong> - 3 SOL MB unlocked<br />
           Portfolio: ~540 SOL<br /><br />
           <strong>Day 57</strong> - 4.5 SOL cap reached<br />
           Portfolio: ~1,900 SOL<br /><br />
@@ -535,7 +627,7 @@ function Notes() {
       <div className="note-card">
         <div className="note-title">Phase 1 is the grind</div>
         <div className="note-body">
-          Days 1-16 at 0.04-0.2 SOL QB feel painfully slow but they are <strong>the most important</strong>.<br />
+          Days 1-16 at 0.04-0.2 SOL MB feel painfully slow but they are <strong>the most important</strong>.<br />
           Every habit you build here - hold discipline, no tilt, cut fast - <strong>carries to every phase after</strong>.
         </div>
       </div>
@@ -599,14 +691,105 @@ function Notes() {
         </div>
       </div>
       <div className="note-card pullupso-card">
-        <div className="note-title">Narrative selection guide</div>
+        <div className="note-title">Catching runners</div>
         <div className="note-body">
-          <strong>CORTA</strong><br />
-          C - Community<br />
-          O - Original<br />
-          R - Relevant<br />
-          T - Tech<br />
-          A - Animal
+          Source: <a href="https://x.com/ferbsol" target="_blank" rel="noopener noreferrer">@ferbsol on X</a>
+          <div className="pullupso-quote">
+            <p>
+              <a href="https://x.com/ferbsol/status/1927664021353767226" target="_blank" rel="noopener noreferrer">
+                To catch a runner early, a few things need to align:
+                <br /><br />
+                You haven't been wrecked recently
+                <br /><br />
+                You're actively in memescope mode
+                <br /><br />
+                You're playing with money you can lose
+                <br /><br />
+                You've got the balls to buy, and the patience to hold
+                <br /><br />
+                You do some basic due diligence
+                <br /><br />
+                You don't sell on the first fud
+                <br /><br />
+                And you try to predict how big the narrative could become.
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="note-card pullupso-card">
+        <div className="note-title">Estimating ceilings</div>
+        <div className="note-body">
+          Source: <a href="https://x.com/gr3gor14n" target="_blank" rel="noopener noreferrer">@gr3gor14n on X</a>
+          <div className="pullupso-quote">
+            <p>
+              <a href="https://x.com/gr3gor14n/status/2049039199958147511?s=20" target="_blank" rel="noopener noreferrer">
+                Estimate the ceiling of the coin before you buy. This was at minimum a 2 million mcap narrative. Therefore you could have bought both this one, and the OG and still ended up in big profits. Then once you have your position, reassess your ceilings based on volume/holders/kols calling. GL next time
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="note-card pullupso-card">
+        <div className="note-title">Narrative selection guide</div>
+        <div className="note-body narrative-guide">
+          <strong>CERTAIN PROFIT</strong>
+          <p><strong>C - Community:</strong> Tokens built around strong, engaged communities with active Discord/Telegram groups, dedicated holders, and organic grassroots momentum that drives sustained interest beyond initial hype.</p>
+          <p><strong>E - Event-driven:</strong> Coins launched in response to specific scheduled events like product launches, conferences, token unlocks, or anticipated announcements that create predictable volatility windows.</p>
+          <p><strong>R - Relevant:</strong> Narratives that tap into current cultural zeitgeist, trending topics, or conversations dominating social media and mainstream attention at the exact moment of launch.</p>
+          <p><strong>T - Tech:</strong> Projects leveraging technical innovations like novel token mechanics, on-chain utilities, smart contract features, or blockchain infrastructure improvements that differentiate them from pure meme plays.</p>
+          <p><strong>A - Animal:</strong> Classic memecoin category featuring dogs, cats, frogs, and other creatures that have historically performed well due to broad appeal, visual recognizability, and emotional connection.</p>
+          <p><strong>I - Intelligence/AI:</strong> Tokens centered on artificial intelligence themes, AI agents, autonomous systems, or machine learning narratives that capitalize on the explosive interest in AI technology.</p>
+          <p><strong>N - News:</strong> Reactive launches tied to breaking news stories, viral moments, or unexpected headlines that create immediate attention and trading opportunities within hours of the event.</p>
+          <p><strong>P - Political:</strong> Coins referencing politicians, elections, policy decisions, or government events that benefit from high media coverage and passionate supporter bases willing to "vote with their wallets".</p>
+          <p><strong>R - Original:</strong> First-of-its-kind concepts or truly novel narrative angles that haven't been exploited yet, giving traders the psychological appeal of discovering something genuinely new.</p>
+          <p><strong>O - Offensive/Satire:</strong> Edgy, provocative, or culturally subversive memes that leverage internet culture, dark humor, or controversial themes to generate viral spread through shock value and shareability.</p>
+          <p><strong>F - Financial:</strong> Tokens that parody or reference trading culture, Wall Street terminology, financial institutions, market mechanics, or investment themes that resonate with the crypto trader demographic.</p>
+          <p><strong>I - Influencer/Celebrity:</strong> Launches tied to specific public figures, content creators, or celebrities whose personal brand and follower base can drive immediate volume and social proof.</p>
+          <p><strong>T - Timing:</strong> The meta-narrative of being first to market with any breaking narrative, where speed of deployment matters more than the specific category—capturing the 2-hour launch window after major events for maximum impact.</p>
+          <p><strong>M - Mascot/Brand:</strong> Tokens based on existing corporate mascots, brand characters, or recognizable logos that leverage established visual IP for instant recognition and nostalgia.</p>
+          <p><strong>S - Slogan/Catchphrase:</strong> Coins built around famous sayings, viral quotes, catchphrases from movies/TV, or memorable one-liners that have cultural staying power and instant recognition.</p>
+          <p><strong>L - Location/Geography:</strong> Tokens tied to specific cities, countries, regions, or places that tap into local pride, nationalism, or geographic community identity.</p>
+          <p><strong>H - Historical/Nostalgia:</strong> References to historical figures, past events, retro gaming, 90s/2000s internet culture, or nostalgic themes that evoke emotional memories.</p>
+          <p><strong>D - Derivative/Spin-off:</strong> Direct plays on existing successful memecoins (like "Baby X", "Mini X", "X 2.0") that ride coattails of proven narratives with slight variations.</p>
+          <p><strong>V - Viral Trend:</strong> Tokens based on TikTok trends, YouTube phenomena, Twitter/X moments, or rapidly spreading internet content that hasn't yet been monetized.</p>
+          <p><strong>W - World Event:</strong> Global happenings like sports championships, natural disasters, space missions, scientific breakthroughs, or international incidents that dominate headlines.</p>
+          <p><strong>U - Utility Promise:</strong> Memecoins that claim future functionality, gaming integration, NFT collections, or ecosystem building (even if speculative) to justify holding beyond pure speculation.</p>
+          <p><strong>X - X-Rated/Adult:</strong> NSFW themes, adult entertainment references, or sexually suggestive content that targets a specific market segment willing to trade edgier material.</p>
+          <p><strong>K - Kayfabe/Wrestling:</strong> Coins that create ongoing storylines, rivalries, character arcs, or competitive narratives between different tokens to maintain engagement.</p>
+          <p><strong>B - Blockchain-Native:</strong> Tokens that embody the identity of their specific chain to rally tribal community loyalty around the ecosystem.</p>
+          <p><strong>Y - Yolo/Degen:</strong> Pure gambling/casino-themed coins, "send it" culture, risk-taking mentality, or meta-commentary on degenerate trading behavior itself.</p>
+          <p><strong>J - Joke/Parody:</strong> Direct parodies of serious crypto projects, mocking traditional finance, or satirical takes on the crypto industry itself.</p>
+          <p><strong>Q - Quality/Blue-chip:</strong> Established memecoins that have "graduated" to CEX listings and are treated as longer-term holds rather than pure pumps.</p>
+          <p><strong>Z - Zodiac/Mystical:</strong> Astrology, spiritual themes, mysticism, fortune-telling, or esoteric/occult references that tap into metaphysical communities.</p>
+          <p><strong>E - Emoji/Symbol:</strong> Tokens represented primarily by emojis or symbols rather than words that communicate purely through visual shorthand.</p>
+          <p><strong>R - Rivalry/Feud:</strong> Coins created specifically to compete with or mock another memecoin, creating tribal warfare between holder communities.</p>
+          <p><strong>C - Chain-Specific Platform:</strong> Tokens tied to specific launchpads or platforms that inherit the platform's user base.</p>
+          <p><strong>A - Archive/Meta-Meme:</strong> Projects that archive meme culture itself or provide commentary on the memecoin phenomenon.</p>
+          <p><strong>I - Irony/Absurdist:</strong> Deliberately nonsensical or absurdist concepts that lean into meaninglessness as the point.</p>
+          <p><strong>F - Food/Beverage:</strong> Tokens based on food items, drinks, restaurant brands, or culinary culture that tap into universal food appreciation.</p>
+          <p><strong>S - Sports/Team:</strong> Coins tied to specific sports, teams, athletes, championships, or sporting events that leverage fan tribalism and competitive passion.</p>
+          <p><strong>R - Religion/Spiritual:</strong> Faith-based memecoins targeting religious communities with ethical/values-aligned narratives.</p>
+          <p><strong>C - Color/Aesthetic:</strong> Tokens defined primarily by a color scheme or visual aesthetic rather than concept.</p>
+          <p><strong>N - NFT-Derivative:</strong> Memecoins launched by existing NFT projects that leverage established NFT communities and IP.</p>
+          <p><strong>M - Music/Sound:</strong> References to songs, musicians, genres, sound effects, or audio memes that have cultural resonance beyond visual content.</p>
+          <p><strong>T - TV/Movie:</strong> Specific references to television shows, movies, or streaming content.</p>
+          <p><strong>G - Gaming Character:</strong> Specific video game characters, gaming franchises, or esports personalities.</p>
+          <p><strong>O - Occupation/Profession:</strong> Tokens themed around specific jobs, professions, or career archetypes.</p>
+          <p><strong>E - Elon-Specific:</strong> Tokens specifically tied to Elon Musk due to his unique market-moving power and dedicated sub-narrative.</p>
+          <p><strong>C - Cartoon/Animation:</strong> Specific cartoon characters or animation styles from established media properties.</p>
+          <p><strong>M - Meta-Commentary:</strong> Coins that explicitly comment on the memecoin phenomenon itself, the absurdity of crypto trading, or are self-aware about being memes.</p>
+        </div>
+      </div>
+      <div className="note-card pullupso-card">
+        <div className="note-title">Narrative tiers</div>
+        <div className="note-body narrative-guide">
+          <strong>All Tiers Combined</strong>
+          <p><strong>Tier 1 (Hot/Reactive):</strong> News, Political, Event-driven, Elon-Specific, Viral Trend, World Event, Timing</p>
+          <p><strong>Tier 2 (Cultural):</strong> Animal, Influencer/Celebrity, Slogan/Catchphrase, Mascot/Brand, Food/Beverage, Sports/Team, Music/Sound, TV/Movie, Cartoon/Animation</p>
+          <p><strong>Tier 3 (Technical):</strong> Intelligence/AI, Tech, Blockchain-Native, NFT-Derivative, Utility Promise, Chain-Specific Platform</p>
+          <p><strong>Tier 4 (Meta):</strong> Community, Original, Quality/Blue-chip, Archive/Meta-Meme, Meta-Commentary, Relevant</p>
+          <p><strong>Tier 5 (Niche):</strong> Religion/Spiritual, Location/Geography, Historical/Nostalgia, Zodiac/Mystical, Color/Aesthetic, Occupation/Profession, Gaming Character, Emoji/Symbol, Yolo/Degen, Offensive/Satire, Joke/Parody, Financial, Rivalry/Feud, Derivative/Spin-off, Kayfabe/Wrestling, X-Rated/Adult, Irony/Absurdist</p>
         </div>
       </div>
     </section>
