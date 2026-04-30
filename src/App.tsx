@@ -423,6 +423,24 @@ function formatSolPriceUpdatedAt(updatedAt: number | null) {
   }).format(updatedAt)}`;
 }
 
+function formatGuideUnit(value: number, challenge: ChallengeConfig, plus = false) {
+  if (challenge.unit === "USDC") {
+    return `$${new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(value * challenge.start)}${plus ? "+" : ""}`;
+  }
+
+  return `${value.toLocaleString("en-US", { maximumFractionDigits: 2 }).replace(/^0\./, ".")}${plus ? "+" : ""} SOL`;
+}
+
+function formatGuideRange(min: number, max: number, challenge: ChallengeConfig, plus = false) {
+  if (challenge.unit === "USDC") {
+    return `${formatGuideUnit(min, challenge)}-${formatGuideUnit(max, challenge, plus)}`;
+  }
+
+  const minLabel = min.toLocaleString("en-US", { maximumFractionDigits: 2 }).replace(/^0\./, ".");
+  const maxLabel = max.toLocaleString("en-US", { maximumFractionDigits: 2 }).replace(/^0\./, ".");
+  return `${minLabel}-${maxLabel}${plus ? "+" : ""} SOL`;
+}
+
 export function getLocalCheckedDays() {
   return loadLocalProgressByMode().sol.checkedDays;
 }
@@ -1277,6 +1295,31 @@ function Notes({
     const avgRate = phaseDays.reduce((sum, day) => sum + ((day.end - day.start) / day.start), 0) / phaseDays.length;
     return { phase, first, last, avgRate };
   });
+  const isUsdcGuide = challenge.unit === "USDC";
+  const guideStart = isUsdcGuide ? "$300 SOL" : formatGuideUnit(3, challenge);
+  const guideGoal = isUsdcGuide ? "$200,000 SOL" : formatGuideUnit(2000, challenge);
+  const earlyStackRange = isUsdcGuide ? "$200-$500+" : formatGuideRange(2, 5, challenge, true);
+  const earlyBidRange = isUsdcGuide ? "$50-$100" : formatGuideRange(0.5, 1, challenge);
+  const earlyHappyTarget = isUsdcGuide ? "10+ SOL" : formatGuideUnit(10, challenge, true);
+  const smallCutRange = isUsdcGuide ? "$20-$50" : formatGuideRange(0.2, 0.5, challenge);
+  const alternateEarlyBid = isUsdcGuide ? "$30" : formatGuideUnit(0.3, challenge);
+  const midStackRange = isUsdcGuide ? "$500-$2000" : formatGuideRange(5, 20, challenge, true);
+  const midBidRange = isUsdcGuide ? "$50-$300" : formatGuideRange(0.5, 3, challenge);
+  const upperCategory = isUsdcGuide ? "$2000" : formatGuideUnit(20, challenge, true);
+  const upperStack = isUsdcGuide ? "$2000" : formatGuideUnit(20, challenge, true);
+  const upperNormalBid = isUsdcGuide ? "$200-$300" : formatGuideRange(2, 3, challenge);
+  const upperMaxBid = isUsdcGuide ? "$500" : formatGuideUnit(5, challenge);
+  const runnerSize = isUsdcGuide ? "$500" : formatGuideUnit(5, challenge);
+  const cutLossRange = isUsdcGuide ? "$100-$200" : formatGuideRange(1, 2, challenge);
+  const exampleEntry = isUsdcGuide ? "$200" : formatGuideUnit(2, challenge);
+  const exampleExit = isUsdcGuide ? "$2000" : formatGuideUnit(20, challenge);
+  const styleStack = isUsdcGuide ? "$500" : formatGuideUnit(50, challenge, true);
+  const largeStackRange = isUsdcGuide ? "$10000-$30000" : formatGuideRange(100, 300, challenge);
+  const oversizedStack = isUsdcGuide ? "$30000" : formatGuideUnit(300, challenge, true);
+  const chanceBidRange = isUsdcGuide ? "$3000-$5000" : formatGuideRange(30, 50, challenge);
+  const dcaStack = isUsdcGuide ? "$10000" : formatGuideUnit(100, challenge);
+  const largePnlTarget = isUsdcGuide ? "$10000+" : `${dcaStack}+`;
+  const mediumPnlTarget = isUsdcGuide ? "$2000+" : upperStack;
 
   return (
     <section className="notes-section">
@@ -1358,19 +1401,47 @@ function Notes({
           </div>
         </div>
       </div>
+      <div className="note-card pullupso-card pre-trade-checklist-card">
+        <div className="note-title">Pre trade checklist</div>
+        <div className="note-body">
+          <p className="pre-trade-checklist-note">Mainly applies to final stretch coins.</p>
+          <div className="pre-trade-checklist-grid">
+            <div className="pre-trade-checklist-row">
+              <strong>1. Identify the call</strong>
+              <p>Find and confirm the call in Gem Bot before doing anything else.</p>
+            </div>
+            <div className="pre-trade-checklist-row">
+              <strong>2. Check and research</strong>
+              <p>Review ticker, name, narrative, community, whether it is in meta, and whether it fits the narrative selection guide.</p>
+            </div>
+            <div className="pre-trade-checklist-row">
+              <strong>3. Predefine risk</strong>
+              <p>Know how much you are willing to lose if the thesis gets invalidated.</p>
+            </div>
+            <div className="pre-trade-checklist-row">
+              <strong>4. Set price target</strong>
+              <p>Ask if the coin can go to $40k, $50k, $60k, $100k, etc. based on your research, then stick with the thesis and target.</p>
+            </div>
+            <div className="pre-trade-checklist-row">
+              <strong>5. Execute and hold</strong>
+              <p>Buy, hold through dips if the narrative is good, and loop back to the original thesis when doubt hits.</p>
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="note-card pullupso-card">
-        <div className="note-title">Pullupso 3 SOL to 2,000 SOL in 7 days tips</div>
+        <div className="note-title">Pullupso {guideStart} to {guideGoal} in 7 days tips</div>
         <div className="note-body">
           Source: <a href="https://x.com/pullupso" target="_blank" rel="noopener noreferrer">@pullupso on X</a>
           <div className="pullupso-quote">
-            <p>Sizing and tips/ tricks i used to go from 3 sol to 2000 sol in 7 days.</p>
-            <p>2-5+ Use .5 - 1 sol (scalp pumpfuns for .2-.5 or more just sell when u think chart goes down) DO THIS OVER AND OVER TIL around 10+ SOL or until ur happy or u feel like u get the hang of it, literally just break even or sell in 10-20% losses if ur cutting. ( .3 is also good, but this is my preference to snowball quick early on, and juice out .5-1 sol pnls)</p>
-            <p>5-20+ use .5-3 Scalp and try bid 12-25k mc coins at bottom of abt to grad, method below (20+ category)</p>
-            <p>20+ 2/3 normal bid 5 max bid</p>
-            <p>do this all the way until u can size 5 into potential runners and cut in loss for 1-2 sol or play conviction on fresh migrates but still stick to new pairs on abt to grad and filter coins by spam hiding dogshit (0 min - 120 mins) filter ( THIS IS WHEN U CAN BUY 3-5% OF PUMPFUNS AND MAKE THE MOST MONEY YOU'VE SEEN SO FAR) this is where you predominantly try to catch 150-600k toppers on pump ( 2 sol on 20k entry = 20 sol at 200k)</p>
-            <p>50+ : adopt ur own trading style which u can figure out from ur own mentality, or your emotions towards winning certain amounts and losing (this part is a learning curve and is the difference between hitting 100+ sol PnL's and 20 sol pnls, however )</p>
-            <p>100-300 sol : avoid conviction plays that are off new pairs unless bottomed. Play METAs size 1-10% of ur port into every trade u make and cut in 20-50% losses, YOU SHOULD BE HOLDING MORE AT THIS BALANCE and playing to hit runners.</p>
-            <p>300+ Don't oversize (THIS PORT IS A SIZE TRAP), play ur mentality, WAIT FOR RUNNERS (SOMETHING U SHOULD BE DOING EXCLUSIVELY) Do not overtrade and don't over-size stick to 1-10% rule and in the small circumstance, take a chance on a 30-50 sol bid, I will also note that above 100 sol you SHOULD be DCA'ing with multiple bids and bidding 2-5 times every time u buy, and leave space to DCA (buy lower than ur average to lower ur average entry) into anything.</p>
+            <p>Sizing and tips/tricks used to go from {guideStart} to {guideGoal} in 7 days.</p>
+            <p>{earlyStackRange} Use {earlyBidRange} (scalp pumpfuns for {smallCutRange} or more just sell when u think chart goes down) DO THIS OVER AND OVER TIL around {earlyHappyTarget} or until ur happy or u feel like u get the hang of it, literally just break even or sell in 10-20% losses if ur cutting. ({alternateEarlyBid} is also good, but this is my preference to snowball quick early on, and juice out {earlyBidRange} pnls)</p>
+            <p>{midStackRange} use {midBidRange} Scalp and try bid 12-25k mc coins at bottom of abt to grad, method below ({upperCategory} category)</p>
+            <p>{upperStack} {upperNormalBid} normal bid {upperMaxBid} max bid</p>
+            <p>do this all the way until u can size {runnerSize} into potential runners and cut in loss for {cutLossRange} or play conviction on fresh migrates but still stick to new pairs on abt to grad and filter coins by spam hiding dogshit (0 min - 120 mins) filter ( THIS IS WHEN U CAN BUY 3-5% OF PUMPFUNS AND MAKE THE MOST MONEY YOU'VE SEEN SO FAR) this is where you predominantly try to catch 150-600k toppers on pump ( {exampleEntry} on 20k entry = {exampleExit} at 200k)</p>
+            <p>{styleStack} : adopt ur own trading style which u can figure out from ur own mentality, or your emotions towards winning certain amounts and losing (this part is a learning curve and is the difference between hitting {largePnlTarget} PnL's and {mediumPnlTarget} pnls, however )</p>
+            <p>{largeStackRange} : avoid conviction plays that are off new pairs unless bottomed. Play METAs size 1-10% of ur port into every trade u make and cut in 20-50% losses, YOU SHOULD BE HOLDING MORE AT THIS BALANCE and playing to hit runners.</p>
+            <p>{oversizedStack} Don't oversize (THIS PORT IS A SIZE TRAP), play ur mentality, WAIT FOR RUNNERS (SOMETHING U SHOULD BE DOING EXCLUSIVELY) Do not overtrade and don't over-size stick to 1-10% rule and in the small circumstance, take a chance on a {chanceBidRange} bid, I will also note that above {dcaStack} you SHOULD be DCA'ing with multiple bids and bidding 2-5 times every time u buy, and leave space to DCA (buy lower than ur average to lower ur average entry) into anything.</p>
             <p>NOTE:</p>
             <p>A port above 150k USD isn't necessary for this market and u should be stabling into prices u like. When the time comes I'll make another tweet on sizing in current market conditions.</p>
           </div>

@@ -1111,6 +1111,40 @@ tbody td.cb-col {
   grid-column: 1 / -1;
 }
 
+.pre-trade-checklist-card {
+  background: rgba(138, 104, 0, 0.05);
+}
+
+.pre-trade-checklist-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  margin-top: 10px;
+}
+
+.pre-trade-checklist-note {
+  color: var(--muted);
+  margin: 0;
+}
+
+.pre-trade-checklist-row {
+  background: var(--bg3);
+  border: 0.5px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.pre-trade-checklist-row strong {
+  color: #8a6800;
+  display: block;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.pre-trade-checklist-row p {
+  margin: 0;
+}
+
 .evaluating-coins-card {
   background: rgba(10, 124, 82, 0.05);
 }
@@ -1248,6 +1282,10 @@ tbody td.cb-col {
   }
 
   .price-targets-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pre-trade-checklist-grid {
     grid-template-columns: 1fr;
   }
 
