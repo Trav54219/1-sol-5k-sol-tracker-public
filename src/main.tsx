@@ -29,6 +29,8 @@ function RemoteApp() {
     const localProgress = getLocalProgress();
     const normalizedRemoteProgress = normalizeProgressSnapshot(remoteProgress);
     const mergedProgress: ProgressSnapshot = {
+      activePlan: normalizedRemoteProgress.activePlan,
+      planHistory: normalizedRemoteProgress.planHistory,
       sol: mergeModeProgress(normalizedRemoteProgress.sol, localProgress.sol),
       usdc: mergeModeProgress(normalizedRemoteProgress.usdc, localProgress.usdc),
     };

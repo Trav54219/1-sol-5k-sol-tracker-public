@@ -88,6 +88,38 @@ const FEE_PRESETS: FeePreset[] = [
   },
 ];
 
+type SellFeePreset = Omit<FeePreset, "buySize">;
+
+const SELL_FEE_PRESETS: SellFeePreset[] = [
+  {
+    name: "Preset 1",
+    slippage: "100%",
+    priority: "0.0001",
+    bribe: "0.0001",
+    autoFee: "Off",
+    maxFee: "0.01",
+    mevMode: "Off",
+  },
+  {
+    name: "Preset 2",
+    slippage: "100%",
+    priority: "0.001",
+    bribe: "0.004",
+    autoFee: "Off",
+    maxFee: "0.1",
+    mevMode: "Off",
+  },
+  {
+    name: "Preset 3",
+    slippage: "100%",
+    priority: "0.0006",
+    bribe: "0.004",
+    autoFee: "Off",
+    maxFee: "0.1",
+    mevMode: "Off",
+  },
+];
+
 type AuthState = {
   configured: boolean;
   canSync: boolean;
@@ -112,11 +144,46 @@ type ModeProgressSnapshot = {
   completions: number;
 };
 
-export type ProgressSnapshot = Record<ChallengeMode, ModeProgressSnapshot>;
+type TradeJournalEntry = {
+  id: string;
+  createdAt: number;
+  day: number;
+  ticker: string;
+  result: "win" | "loss" | "breakeven" | "note";
+  pnl: string;
+  notes: string;
+};
+
+type ActivePlanSnapshot = {
+  challengeMode: ChallengeMode;
+  challengeStartDate: string;
+  goals: ChallengeGoals;
+  notes: string;
+  sizingMode: SizingMode;
+  startedAt: number;
+  starts: ChallengeStarts;
+  timeframe: TimeframeId;
+  tradeJournal: TradeJournalEntry[];
+};
+
+type PlanHistoryItem = {
+  id: string;
+  activePlan: ActivePlanSnapshot;
+  archivedAt: number;
+  reason: "completed" | "restarted";
+  progress: ModeProgressSnapshot;
+};
+
+export type ProgressSnapshot = Record<ChallengeMode, ModeProgressSnapshot> & {
+  activePlan: ActivePlanSnapshot | null;
+  planHistory: PlanHistoryItem[];
+};
 
 type LegacyProgressSnapshot = {
+  activePlan?: Partial<ActivePlanSnapshot> | null;
   checkedDays?: number[];
   completions?: number;
+  planHistory?: Partial<PlanHistoryItem>[];
   sol?: Partial<ModeProgressSnapshot>;
   usdc?: Partial<ModeProgressSnapshot>;
 };
@@ -167,6 +234,8 @@ function saveLocalCompletions(mode: ChallengeMode, completions: number) {
 
 function loadLocalProgressByMode(): ProgressSnapshot {
   return {
+    activePlan: null,
+    planHistory: [],
     sol: {
       checkedDays: [...loadLocalChecked("sol")].sort((a, b) => a - b),
       completions: loadLocalCompletions("sol"),
@@ -181,6 +250,8 @@ function loadLocalProgressByMode(): ProgressSnapshot {
 export function normalizeProgressSnapshot(progress: LegacyProgressSnapshot | null | undefined): ProgressSnapshot {
   const fallback = progress ?? undefined;
   return {
+    activePlan: normalizeActivePlan(progress?.activePlan),
+    planHistory: normalizePlanHistory(progress?.planHistory),
     sol: normalizeModeProgress(progress?.sol, fallback),
     usdc: normalizeModeProgress(progress?.usdc),
   };
@@ -193,6 +264,61 @@ function normalizeModeProgress(progress?: Partial<ModeProgressSnapshot>, fallbac
     checkedDays: Array.isArray(checkedDays) ? checkedDays : [],
     completions: clampCompletions(completions),
   };
+}
+
+function normalizeActivePlan(plan?: Partial<ActivePlanSnapshot> | null): ActivePlanSnapshot | null {
+  if (!plan) return null;
+  const starts = normalizeChallengeStarts(plan.starts);
+  const goals = normalizeChallengeGoals(plan.goals, starts);
+  const planChallengeMode = typeof plan.challengeMode === "string" && isChallengeMode(plan.challengeMode) ? plan.challengeMode : "sol";
+  const planTimeframe = typeof plan.timeframe === "string" && isTimeframeId(plan.timeframe) ? plan.timeframe : "default";
+  return {
+    challengeMode: planChallengeMode,
+    challengeStartDate: typeof plan.challengeStartDate === "string" && isDateInputValue(plan.challengeStartDate) ? plan.challengeStartDate : "",
+    goals,
+    notes: typeof plan.notes === "string" ? plan.notes.slice(0, 5000) : "",
+    sizingMode: plan.sizingMode === "pullupso" ? "pullupso" : "conservative",
+    startedAt: typeof plan.startedAt === "number" && Number.isFinite(plan.startedAt) ? plan.startedAt : Date.now(),
+    starts,
+    timeframe: planTimeframe,
+    tradeJournal: normalizeTradeJournal(plan.tradeJournal),
+  };
+}
+
+function normalizeTradeJournal(entries?: Partial<TradeJournalEntry>[]) {
+  if (!Array.isArray(entries)) return [];
+  return entries
+    .map((entry, index) => {
+      const day = typeof entry.day === "number" && Number.isInteger(entry.day) && entry.day >= 1 && entry.day <= 75 ? entry.day : 1;
+      return {
+        id: typeof entry.id === "string" && entry.id ? entry.id : `journal-${Date.now()}-${index}`,
+        createdAt: typeof entry.createdAt === "number" && Number.isFinite(entry.createdAt) ? entry.createdAt : Date.now(),
+        day,
+        ticker: typeof entry.ticker === "string" ? entry.ticker.slice(0, 32) : "",
+        result: entry.result === "win" || entry.result === "loss" || entry.result === "breakeven" || entry.result === "note" ? entry.result : "note",
+        pnl: typeof entry.pnl === "string" ? entry.pnl.slice(0, 32) : "",
+        notes: typeof entry.notes === "string" ? entry.notes.slice(0, 1000) : "",
+      };
+    })
+    .slice(0, 250);
+}
+
+function normalizePlanHistory(history?: Partial<PlanHistoryItem>[]) {
+  if (!Array.isArray(history)) return [];
+  return history
+    .map((item, index) => {
+      const activePlan = normalizeActivePlan(item.activePlan);
+      if (!activePlan) return null;
+      return {
+        id: typeof item.id === "string" && item.id ? item.id : `history-${Date.now()}-${index}`,
+        activePlan,
+        archivedAt: typeof item.archivedAt === "number" && Number.isFinite(item.archivedAt) ? item.archivedAt : Date.now(),
+        reason: item.reason === "completed" ? "completed" : "restarted",
+        progress: normalizeModeProgress(item.progress),
+      };
+    })
+    .filter((item): item is PlanHistoryItem => item !== null)
+    .slice(0, 50);
 }
 
 function saveLocalModeProgress(mode: ChallengeMode, progress: ModeProgressSnapshot) {
@@ -256,6 +382,14 @@ function formatGoalDate(date: Date) {
     day: "numeric",
     year: "numeric",
   }).format(date);
+}
+
+function formatShortDate(timestamp: number) {
+  return new Intl.DateTimeFormat(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(timestamp);
 }
 
 function loadSizingMode(): SizingMode {
@@ -330,6 +464,20 @@ function loadChallengeStarts(): ChallengeStarts {
   return {
     sol: loadChallengeStart("sol"),
     usdc: loadChallengeStart("usdc"),
+  };
+}
+
+function normalizeChallengeStarts(starts?: Partial<ChallengeStarts>): ChallengeStarts {
+  return {
+    sol: sanitizeChallengeStart(starts?.sol ?? CHALLENGES.sol.defaultStart, CHALLENGES.sol),
+    usdc: sanitizeChallengeStart(starts?.usdc ?? CHALLENGES.usdc.defaultStart, CHALLENGES.usdc),
+  };
+}
+
+function normalizeChallengeGoals(goals: Partial<ChallengeGoals> | undefined, starts: ChallengeStarts): ChallengeGoals {
+  return {
+    sol: sanitizeChallengeFinal(goals?.sol ?? CHALLENGES.sol.defaultFinal, { ...CHALLENGES.sol, start: starts.sol }),
+    usdc: sanitizeChallengeFinal(goals?.usdc ?? CHALLENGES.usdc.defaultFinal, { ...CHALLENGES.usdc, start: starts.usdc }),
   };
 }
 
@@ -441,6 +589,70 @@ function formatGuideRange(min: number, max: number, challenge: ChallengeConfig, 
   return `${minLabel}-${maxLabel}${plus ? "+" : ""} SOL`;
 }
 
+function createActivePlanSnapshot({
+  challengeMode,
+  challengeStartDate,
+  challengeGoals,
+  challengeStarts,
+  notes = "",
+  sizingMode,
+  timeframe,
+  startedAt = Date.now(),
+  tradeJournal = [],
+}: {
+  challengeMode: ChallengeMode;
+  challengeStartDate: string;
+  challengeGoals: ChallengeGoals;
+  challengeStarts: ChallengeStarts;
+  notes?: string;
+  sizingMode: SizingMode;
+  timeframe: TimeframeId;
+  startedAt?: number;
+  tradeJournal?: TradeJournalEntry[];
+}): ActivePlanSnapshot {
+  const starts = normalizeChallengeStarts(challengeStarts);
+  return {
+    challengeMode,
+    challengeStartDate: isDateInputValue(challengeStartDate) ? challengeStartDate : "",
+    goals: normalizeChallengeGoals(challengeGoals, starts),
+    notes: notes.slice(0, 5000),
+    sizingMode,
+    startedAt,
+    starts,
+    timeframe,
+    tradeJournal: normalizeTradeJournal(tradeJournal),
+  };
+}
+
+function isSameActivePlan(left: ActivePlanSnapshot | null, right: ActivePlanSnapshot | null) {
+  if (!left || !right) return left === right;
+  return (
+    left.challengeMode === right.challengeMode &&
+    left.challengeStartDate === right.challengeStartDate &&
+    left.notes === right.notes &&
+    left.sizingMode === right.sizingMode &&
+    left.timeframe === right.timeframe &&
+    left.starts.sol === right.starts.sol &&
+    left.starts.usdc === right.starts.usdc &&
+    left.goals.sol === right.goals.sol &&
+    left.goals.usdc === right.goals.usdc &&
+    JSON.stringify(left.tradeJournal) === JSON.stringify(right.tradeJournal)
+  );
+}
+
+function archivePlan(history: PlanHistoryItem[], activePlan: ActivePlanSnapshot, progress: ModeProgressSnapshot, reason: PlanHistoryItem["reason"]) {
+  return [
+    {
+      id: `plan-${Date.now()}`,
+      activePlan,
+      archivedAt: Date.now(),
+      reason,
+      progress,
+    },
+    ...history,
+  ].slice(0, 50);
+}
+
 export function getLocalCheckedDays() {
   return loadLocalProgressByMode().sol.checkedDays;
 }
@@ -449,9 +661,14 @@ export function getLocalProgress(): ProgressSnapshot {
   return loadLocalProgressByMode();
 }
 
+type SaveStatus = "idle" | "saving" | "saved" | "error";
+type ConfirmAction = "reset-all" | "reset-completions" | "restart-plan" | null;
+
 export default function App({ auth, remoteProgress, remoteLoading = false, onRemoteChange }: AppProps) {
   const [localProgress, setLocalProgress] = useState(() => loadLocalProgressByMode());
   const [currentPhase, setCurrentPhase] = useState(0);
+  const [confirmAction, setConfirmAction] = useState<ConfirmAction>(null);
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
   const [challengeMode, setChallengeMode] = useState<ChallengeMode>(() => loadChallengeMode());
   const [challengeStarts, setChallengeStarts] = useState<ChallengeStarts>(() => loadChallengeStarts());
   const [challengeGoals, setChallengeGoals] = useState<ChallengeGoals>(() => loadChallengeGoals());
@@ -473,6 +690,22 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
   const capDay = planDays.find((day) => getSizingAmount(day.day, day.start, "conservative", challenge) >= capAmount)?.day;
   const normalizedRemoteProgress = useMemo(() => normalizeProgressSnapshot(remoteProgress), [remoteProgress]);
   const activeProgress = remoteProgress ? normalizedRemoteProgress[challengeMode] : localProgress[challengeMode];
+  const activePlan = localProgress.activePlan;
+  const draftPlan = useMemo(
+    () => createActivePlanSnapshot({
+      challengeMode,
+      challengeStartDate,
+      challengeGoals,
+      challengeStarts,
+      notes: activePlan?.notes,
+      sizingMode,
+      timeframe,
+      startedAt: activePlan?.startedAt,
+      tradeJournal: activePlan?.tradeJournal,
+    }),
+    [activePlan?.notes, activePlan?.startedAt, activePlan?.tradeJournal, challengeGoals, challengeMode, challengeStartDate, challengeStarts, sizingMode, timeframe],
+  );
+  const hasPlanChanges = !isSameActivePlan(activePlan, draftPlan);
   const checked = useMemo(() => new Set(activeProgress.checkedDays), [activeProgress]);
   const completions = activeProgress.completions;
   const checkedList = useMemo(() => [...checked].filter((day) => day <= totalDays).sort((a, b) => a - b), [checked, totalDays]);
@@ -487,6 +720,15 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
       setLocalProgress(nextRemoteProgress);
       for (const mode of CHALLENGE_MODES) {
         saveLocalModeProgress(mode, nextRemoteProgress[mode]);
+      }
+      if (nextRemoteProgress.activePlan) {
+        const nextPlan = nextRemoteProgress.activePlan;
+        setChallengeMode(nextPlan.challengeMode);
+        setChallengeStarts(nextPlan.starts);
+        setChallengeGoals(nextPlan.goals);
+        setSizingMode(nextPlan.sizingMode);
+        setTimeframe(nextPlan.timeframe);
+        setChallengeStartDate(nextPlan.challengeStartDate);
       }
     }
   }, [remoteProgress]);
@@ -529,6 +771,24 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
     saveLocalStartDate(challengeStartDate);
   }, [challengeStartDate]);
 
+  const persistSnapshot = (nextProgress: ProgressSnapshot) => {
+    setLocalProgress(nextProgress);
+    for (const mode of CHALLENGE_MODES) {
+      saveLocalModeProgress(mode, nextProgress[mode]);
+    }
+    if (!onRemoteChange || !auth?.isSignedIn) return;
+    setSaveStatus("saving");
+    void Promise.resolve(onRemoteChange(nextProgress))
+      .then(() => {
+        setSaveStatus("saved");
+        window.setTimeout(() => setSaveStatus("idle"), 1800);
+      })
+      .catch((error: unknown) => {
+        console.error(error);
+        setSaveStatus("error");
+      });
+  };
+
   const persist = (next: Set<number>, nextCompletions = completions) => {
     const nextList = [...next].sort((a, b) => a - b);
     const sanitizedCompletions = clampCompletions(nextCompletions);
@@ -539,10 +799,7 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
         completions: sanitizedCompletions,
       },
     };
-    setLocalProgress(nextProgress);
-    saveLocalChecked(challengeMode, next);
-    saveLocalCompletions(challengeMode, sanitizedCompletions);
-    void onRemoteChange?.(nextProgress);
+    persistSnapshot(nextProgress);
   };
 
   const toggleDay = (day: number, isChecked: boolean) => {
@@ -552,16 +809,35 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
     persist(next);
   };
 
-  const resetAll = () => persist(new Set());
+  const resetAll = () => {
+    persist(new Set());
+    setConfirmAction(null);
+  };
   const logCompletion = () => {
     if (!isChallengeComplete || completions >= COMPLETION_GOAL) return;
-    persist(new Set(), completions + 1);
+    const archivedPlan = activePlan ?? draftPlan;
+    persistSnapshot({
+      ...localProgress,
+      activePlan: {
+        ...draftPlan,
+        startedAt: Date.now(),
+      },
+      planHistory: archivePlan(localProgress.planHistory, archivedPlan, {
+        checkedDays: checkedList,
+        completions,
+      }, "completed"),
+      [challengeMode]: {
+        checkedDays: [],
+        completions: clampCompletions(completions + 1),
+      },
+    });
   };
   const adjustCompletions = (delta: number) => {
     persist(checked, completions + delta);
   };
   const resetCompletions = () => {
     persist(checked, 0);
+    setConfirmAction(null);
   };
   const updateChallengeGoal = (mode: ChallengeMode, goal: number) => {
     setChallengeGoals((current) => ({
@@ -579,6 +855,111 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
       ...current,
       [mode]: sanitizeChallengeFinal(current[mode], { ...CHALLENGES[mode], start: nextStart }),
     }));
+  };
+  const saveCurrentPlan = () => {
+    persistSnapshot({
+      ...localProgress,
+      activePlan: createActivePlanSnapshot({
+        challengeMode,
+        challengeStartDate,
+        challengeGoals,
+        challengeStarts,
+        notes: activePlan?.notes,
+        sizingMode,
+        timeframe,
+        startedAt: activePlan?.startedAt,
+        tradeJournal: activePlan?.tradeJournal,
+      }),
+    });
+  };
+  const updatePlanNotes = (notes: string) => {
+    persistSnapshot({
+      ...localProgress,
+      activePlan: {
+        ...(activePlan ?? draftPlan),
+        notes: notes.slice(0, 5000),
+      },
+    });
+  };
+  const addTradeJournalEntry = (entry: Omit<TradeJournalEntry, "id" | "createdAt">) => {
+    const basePlan = activePlan ?? draftPlan;
+    persistSnapshot({
+      ...localProgress,
+      activePlan: {
+        ...basePlan,
+        tradeJournal: normalizeTradeJournal([
+          {
+            ...entry,
+            id: `trade-${Date.now()}`,
+            createdAt: Date.now(),
+          },
+          ...basePlan.tradeJournal,
+        ]),
+      },
+    });
+  };
+  const removeTradeJournalEntry = (entryId: string) => {
+    if (!activePlan) return;
+    persistSnapshot({
+      ...localProgress,
+      activePlan: {
+        ...activePlan,
+        tradeJournal: activePlan.tradeJournal.filter((entry) => entry.id !== entryId),
+      },
+    });
+  };
+  const exportBackup = () => {
+    const backup = {
+      exportedAt: new Date().toISOString(),
+      progress: localProgress,
+    };
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `sol-speedrun-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+  const restartPlan = () => {
+    const archivedPlan = activePlan ?? draftPlan;
+    const shouldArchive = activePlan || totalDone > 0 || completions > 0;
+    persistSnapshot({
+      ...localProgress,
+      activePlan: createActivePlanSnapshot({
+        challengeMode,
+        challengeStartDate,
+        challengeGoals,
+        challengeStarts,
+        notes: activePlan?.notes,
+        sizingMode,
+        timeframe,
+        tradeJournal: activePlan?.tradeJournal,
+      }),
+      planHistory: shouldArchive
+        ? archivePlan(localProgress.planHistory, archivedPlan, {
+            checkedDays: checkedList,
+            completions,
+          }, "restarted")
+        : localProgress.planHistory,
+      [challengeMode]: {
+        checkedDays: [],
+        completions: 0,
+      },
+    });
+    setConfirmAction(null);
+  };
+  const requestResetAll = () => {
+    if (confirmAction === "reset-all") resetAll();
+    else setConfirmAction("reset-all");
+  };
+  const requestResetCompletions = () => {
+    if (confirmAction === "reset-completions") resetCompletions();
+    else setConfirmAction("reset-completions");
+  };
+  const requestRestartPlan = () => {
+    if (confirmAction === "restart-plan") restartPlan();
+    else setConfirmAction("restart-plan");
   };
   const visibleDays = currentPhase === 0 ? planDays : planDays.filter((day) => day.phase === currentPhase);
 
@@ -616,6 +997,17 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
         <ChallengeGoalEditor goals={challengeGoals} onGoalChange={updateChallengeGoal} onStartChange={updateChallengeStart} starts={challengeStarts} />
         <TimeframeToggle timeframe={timeframe} onChange={setTimeframe} />
         <SizingToggle mode={sizingMode} onChange={setSizingMode} />
+        <PlanControls
+          activePlan={activePlan}
+          challenge={challenge}
+          hasPlanChanges={hasPlanChanges}
+          hasProgress={totalDone > 0 || completions > 0}
+          isRestartConfirming={confirmAction === "restart-plan"}
+          onExportBackup={exportBackup}
+          onRestartPlan={requestRestartPlan}
+          onSavePlan={saveCurrentPlan}
+          onStartPlan={restartPlan}
+        />
       </header>
 
       <section className="tracker">
@@ -625,8 +1017,8 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
             <div className="tracker-count">{totalDone} / {totalDays}</div>
             <div className="tracker-sub">{overallPct}% of roadmap complete</div>
           </div>
-          <button className="reset-btn" onClick={resetAll} type="button">
-            reset all
+          <button className={confirmAction === "reset-all" ? "reset-btn confirming" : "reset-btn"} onClick={requestResetAll} type="button">
+            {confirmAction === "reset-all" ? "confirm reset" : "reset all"}
           </button>
         </div>
         <div className="main-track">
@@ -637,7 +1029,8 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
           isComplete={isChallengeComplete}
           onAdjustCompletions={adjustCompletions}
           onLogCompletion={logCompletion}
-          onResetCompletions={resetCompletions}
+          onResetCompletions={requestResetCompletions}
+          resetConfirming={confirmAction === "reset-completions"}
           totalDays={totalDays}
           challenge={challenge}
         />
@@ -649,6 +1042,9 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
         />
         <PaceIndicator completedDays={totalDone} startDate={challengeStartDate} totalDays={totalDays} />
         <RequiredGrowthCard challenge={challenge} completedDays={totalDone} planDays={planDays} totalDays={totalDays} />
+        <PlanNotes notes={activePlan?.notes ?? ""} onChange={updatePlanNotes} />
+        <TradeJournal entries={activePlan?.tradeJournal ?? []} onAdd={addTradeJournalEntry} onRemove={removeTradeJournalEntry} totalDays={totalDays} />
+        <PlanHistory history={localProgress.planHistory} />
         <FeeSettings />
         <div className="phase-bars">
           {planPhases.map((phase) => {
@@ -724,7 +1120,7 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
 
       <Notes dailyGrowthRate={timeframePlan.dailyGrowthRate} phases={planPhases} planDays={planDays} totalDays={totalDays} challenge={challenge} />
       <div className="sync-debug" aria-live="polite">
-        {auth?.isSignedIn ? `Synced days: ${checkedList.length} · completions: ${completions}/${COMPLETION_GOAL}` : "Guest progress is saved in this browser until you sign in."}
+        <SyncStatus auth={auth} checkedDays={checkedList.length} completions={completions} saveStatus={saveStatus} />
       </div>
     </>
   );
@@ -736,6 +1132,7 @@ function CompletionCounter({
   onAdjustCompletions,
   onLogCompletion,
   onResetCompletions,
+  resetConfirming,
   totalDays,
   challenge,
 }: {
@@ -744,6 +1141,7 @@ function CompletionCounter({
   onAdjustCompletions: (delta: number) => void;
   onLogCompletion: () => void;
   onResetCompletions: () => void;
+  resetConfirming: boolean;
   totalDays: number;
   challenge: ChallengeConfig;
 }) {
@@ -769,7 +1167,7 @@ function CompletionCounter({
             />
           </label>
           <button onClick={() => onAdjustCompletions(sanitizedAdjustBy)} type="button">+{sanitizedAdjustBy}</button>
-          <button className="completion-reset-btn" onClick={onResetCompletions} type="button">reset</button>
+          <button className={resetConfirming ? "completion-reset-btn confirming" : "completion-reset-btn"} onClick={onResetCompletions} type="button">{resetConfirming ? "confirm reset" : "reset"}</button>
         </div>
         <span className="completion-hint">
           {isComplete ? `All ${totalDays} days checked. Log this run and start the next one.` : `${COMPLETION_GOAL - completions} runs left to master the challenge.`}
@@ -1034,6 +1432,208 @@ function SizingToggle({ mode, onChange }: { mode: SizingMode; onChange: (mode: S
   );
 }
 
+function PlanControls({
+  activePlan,
+  challenge,
+  hasPlanChanges,
+  hasProgress,
+  isRestartConfirming,
+  onExportBackup,
+  onRestartPlan,
+  onSavePlan,
+  onStartPlan,
+}: {
+  activePlan: ActivePlanSnapshot | null;
+  challenge: ChallengeConfig;
+  hasPlanChanges: boolean;
+  hasProgress: boolean;
+  isRestartConfirming: boolean;
+  onExportBackup: () => void;
+  onRestartPlan: () => void;
+  onSavePlan: () => void;
+  onStartPlan: () => void;
+}) {
+  const planStatus = activePlan
+    ? hasPlanChanges
+      ? "Current inputs differ from your saved active plan."
+      : `Active plan saved for ${challenge.startLabel} to ${challenge.finalLabel}.`
+    : "No active plan saved yet. Save one before tracking this run.";
+
+  return (
+    <section className="plan-controls" aria-label="Active plan">
+      <div>
+        <span className="completion-label">Active plan</span>
+        <strong>{activePlan ? "Plan saved" : "Ready to start"}</strong>
+        <p>{planStatus}</p>
+      </div>
+      <div className="plan-actions">
+        <button className="plan-btn primary" disabled={activePlan !== null && !hasPlanChanges} onClick={activePlan ? onSavePlan : onStartPlan} type="button">
+          {activePlan ? "Update saved plan" : "Start plan"}
+        </button>
+        <button className="plan-btn secondary" disabled={!activePlan && !hasProgress} onClick={onRestartPlan} type="button">
+          {isRestartConfirming ? "Confirm restart" : "Restart from day 1"}
+        </button>
+        <button className="plan-btn secondary" onClick={onExportBackup} type="button">
+          Export backup
+        </button>
+      </div>
+    </section>
+  );
+}
+
+function PlanNotes({ notes, onChange }: { notes: string; onChange: (notes: string) => void }) {
+  return (
+    <section className="plan-panel" aria-label="Plan notes">
+      <div className="plan-panel-head">
+        <div>
+          <span className="completion-label">Plan notes</span>
+          <strong>Run context</strong>
+        </div>
+        <span className="completion-hint">Saved with the active plan and archived with history.</span>
+      </div>
+      <textarea
+        className="plan-notes-input"
+        onChange={(event) => onChange(event.currentTarget.value)}
+        placeholder="Why this plan, what to focus on, mistakes to avoid..."
+        value={notes}
+      />
+    </section>
+  );
+}
+
+function TradeJournal({
+  entries,
+  onAdd,
+  onRemove,
+  totalDays,
+}: {
+  entries: TradeJournalEntry[];
+  onAdd: (entry: Omit<TradeJournalEntry, "id" | "createdAt">) => void;
+  onRemove: (entryId: string) => void;
+  totalDays: number;
+}) {
+  const [day, setDay] = useState(1);
+  const [ticker, setTicker] = useState("");
+  const [result, setResult] = useState<TradeJournalEntry["result"]>("note");
+  const [pnl, setPnl] = useState("");
+  const [notes, setNotes] = useState("");
+
+  const submitEntry = () => {
+    if (!ticker.trim() && !notes.trim()) return;
+    onAdd({
+      day: Math.min(Math.max(Math.trunc(day) || 1, 1), totalDays),
+      ticker: ticker.trim(),
+      result,
+      pnl: pnl.trim(),
+      notes: notes.trim(),
+    });
+    setTicker("");
+    setResult("note");
+    setPnl("");
+    setNotes("");
+  };
+
+  return (
+    <section className="plan-panel" aria-label="Trade journal">
+      <div className="plan-panel-head">
+        <div>
+          <span className="completion-label">Trade journal</span>
+          <strong>Active run log</strong>
+        </div>
+        <span className="completion-hint">{entries.length} entries saved with this plan.</span>
+      </div>
+      <div className="journal-form">
+        <label>
+          <span>Day</span>
+          <input min={1} max={totalDays} onChange={(event) => setDay(Number(event.currentTarget.value))} type="number" value={day} />
+        </label>
+        <label>
+          <span>Ticker</span>
+          <input onChange={(event) => setTicker(event.currentTarget.value)} placeholder="SOL / coin" value={ticker} />
+        </label>
+        <label>
+          <span>Result</span>
+          <select onChange={(event) => setResult(event.currentTarget.value as TradeJournalEntry["result"])} value={result}>
+            <option value="note">Note</option>
+            <option value="win">Win</option>
+            <option value="loss">Loss</option>
+            <option value="breakeven">Breakeven</option>
+          </select>
+        </label>
+        <label>
+          <span>PnL</span>
+          <input onChange={(event) => setPnl(event.currentTarget.value)} placeholder="+0.2 SOL" value={pnl} />
+        </label>
+        <label className="journal-notes-field">
+          <span>Notes</span>
+          <input onChange={(event) => setNotes(event.currentTarget.value)} placeholder="Setup, mistake, rule followed..." value={notes} />
+        </label>
+        <button className="plan-btn primary" onClick={submitEntry} type="button">Add entry</button>
+      </div>
+      <div className="journal-list">
+        {entries.length === 0 ? <p className="empty-copy">No trades logged yet.</p> : null}
+        {entries.map((entry) => (
+          <article className="journal-entry" key={entry.id}>
+            <div>
+              <strong>{entry.ticker || "Untitled trade"}</strong>
+              <span>Day {entry.day} · {entry.result}{entry.pnl ? ` · ${entry.pnl}` : ""}</span>
+              {entry.notes ? <p>{entry.notes}</p> : null}
+            </div>
+            <button className="mini-remove-btn" onClick={() => onRemove(entry.id)} type="button">remove</button>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function PlanHistory({ history }: { history: PlanHistoryItem[] }) {
+  return (
+    <section className="plan-panel" aria-label="Plan history">
+      <div className="plan-panel-head">
+        <div>
+          <span className="completion-label">Plan history</span>
+          <strong>Past runs</strong>
+        </div>
+        <span className="completion-hint">{history.length} archived plans.</span>
+      </div>
+      <div className="history-list">
+        {history.length === 0 ? <p className="empty-copy">Restart or complete a plan to archive it here.</p> : null}
+        {history.map((item) => {
+          const challenge = getChallengeConfig(item.activePlan.challengeMode, item.activePlan.goals[item.activePlan.challengeMode], item.activePlan.starts[item.activePlan.challengeMode]);
+          return (
+            <article className="history-item" key={item.id}>
+              <div>
+                <strong>{challenge.startLabel} to {challenge.finalLabel}</strong>
+                <span>{item.reason} · {item.progress.checkedDays.length} days checked · {item.progress.completions} completions</span>
+              </div>
+              <time>{formatShortDate(item.archivedAt)}</time>
+            </article>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function SyncStatus({
+  auth,
+  checkedDays,
+  completions,
+  saveStatus,
+}: {
+  auth?: AuthState;
+  checkedDays: number;
+  completions: number;
+  saveStatus: SaveStatus;
+}) {
+  if (!auth?.isSignedIn) return <>Guest progress is saved in this browser until you sign in.</>;
+  if (saveStatus === "saving") return <>Saving to cloud...</>;
+  if (saveStatus === "saved") return <>Saved to cloud · {checkedDays} days · completions: {completions}/{COMPLETION_GOAL}</>;
+  if (saveStatus === "error") return <>Save failed. Check your connection and Convex dev server.</>;
+  return <>Cloud sync ready · {checkedDays} days · completions: {completions}/{COMPLETION_GOAL}</>;
+}
+
 function Stat({ label, value, hint }: { label: string; value: string; hint?: string }) {
   return (
     <div className="stat">
@@ -1226,6 +1826,49 @@ function FeeSettings() {
             <div className="fee-preset-top">
               <span>{preset.name}</span>
               <strong>{preset.buySize}</strong>
+            </div>
+            <dl className="fee-preset-values">
+              <div>
+                <dt>Slippage</dt>
+                <dd>{preset.slippage}</dd>
+              </div>
+              <div>
+                <dt>Priority</dt>
+                <dd>{preset.priority}</dd>
+              </div>
+              <div>
+                <dt>Bribe</dt>
+                <dd>{preset.bribe}</dd>
+              </div>
+              <div>
+                <dt>Auto fee</dt>
+                <dd>{preset.autoFee}</dd>
+              </div>
+              <div>
+                <dt>Max fee</dt>
+                <dd>{preset.maxFee}</dd>
+              </div>
+              <div>
+                <dt>MEV</dt>
+                <dd>{preset.mevMode}</dd>
+              </div>
+            </dl>
+          </article>
+        ))}
+      </div>
+      <div className="fee-settings-head fee-settings-subhead">
+        <div>
+          <span className="completion-label">Fee settings</span>
+          <strong>Sell preset guide</strong>
+        </div>
+        <span className="completion-hint">Use presets 1, 2, and 3 from left to right.</span>
+      </div>
+      <div className="fee-preset-grid">
+        {SELL_FEE_PRESETS.map((preset) => (
+          <article className="fee-preset-card" key={preset.name}>
+            <div className="fee-preset-top">
+              <span>{preset.name}</span>
+              <strong>Sell settings</strong>
             </div>
             <dl className="fee-preset-values">
               <div>

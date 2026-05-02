@@ -35,6 +35,11 @@ input[type="date"] {
   color-scheme: light;
 }
 
+select,
+textarea {
+  font: inherit;
+}
+
 .header {
   border-bottom: 0.5px solid var(--border2);
   margin: 0 auto 24px;
@@ -99,6 +104,7 @@ input[type="date"] {
 .auth-title,
 .auth-btn,
 .guide-toggle,
+.plan-btn,
 .challenge-option,
 .goal-field,
 .timeframe-option,
@@ -144,6 +150,7 @@ h1 span {
 
 .challenge-toggle,
 .goal-editor,
+.plan-controls,
 .timeframe-toggle,
 .sizing-toggle {
   background: var(--bg2);
@@ -163,6 +170,185 @@ h1 span {
 .goal-editor,
 .sizing-toggle {
   grid-template-columns: repeat(2, 1fr);
+}
+
+.plan-controls {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.plan-controls strong {
+  color: var(--green);
+  display: block;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.1;
+  margin-top: 4px;
+}
+
+.plan-controls p {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+.plan-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.plan-btn {
+  border: 0.5px solid var(--border2);
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 11px;
+  padding: 8px 12px;
+}
+
+.plan-btn.primary {
+  background: var(--green);
+  border-color: var(--green);
+  color: #fff;
+}
+
+.plan-btn.secondary {
+  background: var(--bg);
+  color: var(--muted2);
+}
+
+.plan-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.reset-btn.confirming,
+.completion-reset-btn.confirming {
+  border-color: #a05f00;
+  color: #a05f00;
+}
+
+.plan-panel {
+  background: var(--bg2);
+  border: 0.5px solid var(--border);
+  border-radius: 10px;
+  margin-top: 10px;
+  padding: 12px 14px;
+}
+
+.plan-panel-head {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.plan-panel-head strong {
+  color: var(--green);
+  display: block;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.1;
+  margin-top: 4px;
+}
+
+.plan-notes-input {
+  background: var(--bg3);
+  border: 0.5px solid var(--border2);
+  border-radius: 8px;
+  color: var(--text);
+  min-height: 96px;
+  padding: 10px 12px;
+  resize: vertical;
+  width: 100%;
+}
+
+.journal-form {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 80px 1fr 140px 120px;
+}
+
+.journal-form label {
+  display: grid;
+  gap: 4px;
+}
+
+.journal-form span {
+  color: var(--muted);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.journal-form input,
+.journal-form select {
+  background: var(--bg3);
+  border: 0.5px solid var(--border2);
+  border-radius: 7px;
+  color: var(--text);
+  min-width: 0;
+  padding: 8px 9px;
+}
+
+.journal-notes-field {
+  grid-column: span 3;
+}
+
+.journal-list,
+.history-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.journal-entry,
+.history-item {
+  align-items: center;
+  background: var(--bg3);
+  border: 0.5px solid var(--border);
+  border-radius: 8px;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  padding: 10px 12px;
+}
+
+.journal-entry strong,
+.history-item strong {
+  color: var(--text);
+  display: block;
+  font-size: 13px;
+}
+
+.journal-entry span,
+.history-item span,
+.history-item time,
+.empty-copy {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.journal-entry p {
+  color: var(--muted2);
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.mini-remove-btn {
+  background: transparent;
+  border: 0.5px solid var(--border2);
+  border-radius: 999px;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  padding: 5px 8px;
 }
 
 .goal-field {
@@ -658,6 +844,12 @@ h1 span {
   font-weight: 600;
   line-height: 1.1;
   margin-top: 4px;
+}
+
+.fee-settings-subhead {
+  border-top: 0.5px solid var(--border);
+  margin-top: 16px;
+  padding-top: 14px;
 }
 
 .fee-preset-grid {
@@ -1244,6 +1436,48 @@ tbody td.cb-col {
   .completion-counter {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .summary-row,
+  .plan-controls,
+  .challenge-date-planner,
+  .pace-card {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .plan-actions,
+  .completion-adjust {
+    width: 100%;
+  }
+
+  .plan-btn,
+  .auth-btn,
+  .reset-btn,
+  .completion-btn {
+    min-height: 42px;
+  }
+
+  .plan-actions .plan-btn {
+    flex: 1 1 100%;
+  }
+
+  .journal-form {
+    grid-template-columns: 1fr;
+  }
+
+  .journal-notes-field {
+    grid-column: auto;
+  }
+
+  .journal-entry,
+  .history-item {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .mini-remove-btn {
+    align-self: flex-start;
   }
 
   .completion-action {
