@@ -19,6 +19,7 @@ const activePlan = v.object({
     usdc: v.number(),
   }),
   notes: v.optional(v.string()),
+  planPreset: v.optional(v.union(v.literal("flexible"), v.literal("og"))),
   sizingMode: v.union(v.literal("conservative"), v.literal("pullupso")),
   startedAt: v.number(),
   starts: v.object({

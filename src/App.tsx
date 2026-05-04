@@ -9,6 +9,7 @@ import {
   getTimeframePlan,
   getSizingAmount,
   isChallengeMode,
+  isPlanPresetId,
   isTimeframeId,
   LS_KEY,
   sanitizeChallengeFinal,
@@ -17,6 +18,7 @@ import {
   type ChallengeMode,
   type DayPlan,
   type Phase,
+  type PlanPresetId,
   type SizingMode,
   type TimeframeId,
 } from "./trackerData";
@@ -28,6 +30,7 @@ const SOL_CHALLENGE_GOAL_KEY = "sol_speedrun_sol_goal";
 const USDC_CHALLENGE_GOAL_KEY = "sol_speedrun_usdc_goal";
 const SIZING_MODE_KEY = "sol_speedrun_sizing_mode";
 const TIMEFRAME_KEY = "sol_speedrun_timeframe";
+const PLAN_PRESET_KEY = "sol_speedrun_plan_preset";
 const COMPLETIONS_KEY = "sol_speedrun_completions";
 const CHALLENGE_START_DATE_KEY = "sol_speedrun_challenge_start_date";
 const COMPLETION_GOAL = 100;
@@ -159,6 +162,7 @@ type ActivePlanSnapshot = {
   challengeStartDate: string;
   goals: ChallengeGoals;
   notes: string;
+  planPreset: PlanPresetId;
   sizingMode: SizingMode;
   startedAt: number;
   starts: ChallengeStarts;
@@ -272,12 +276,18 @@ function normalizeActivePlan(plan?: Partial<ActivePlanSnapshot> | null): ActiveP
   const goals = normalizeChallengeGoals(plan.goals, starts);
   const planChallengeMode = typeof plan.challengeMode === "string" && isChallengeMode(plan.challengeMode) ? plan.challengeMode : "sol";
   const planTimeframe = typeof plan.timeframe === "string" && isTimeframeId(plan.timeframe) ? plan.timeframe : "default";
+  const sizingMode = plan.sizingMode === "pullupso" ? "pullupso" : "conservative";
+  let planPreset: PlanPresetId = plan.planPreset === "og" ? "og" : "flexible";
+  if (planPreset === "og" && (planChallengeMode !== "sol" || planTimeframe !== "default" || sizingMode !== "conservative")) {
+    planPreset = "flexible";
+  }
   return {
     challengeMode: planChallengeMode,
     challengeStartDate: typeof plan.challengeStartDate === "string" && isDateInputValue(plan.challengeStartDate) ? plan.challengeStartDate : "",
     goals,
     notes: typeof plan.notes === "string" ? plan.notes.slice(0, 5000) : "",
-    sizingMode: plan.sizingMode === "pullupso" ? "pullupso" : "conservative",
+    planPreset,
+    sizingMode,
     startedAt: typeof plan.startedAt === "number" && Number.isFinite(plan.startedAt) ? plan.startedAt : Date.now(),
     starts,
     timeframe: planTimeframe,
@@ -490,6 +500,15 @@ function loadTimeframe(): TimeframeId {
   }
 }
 
+function loadPlanPreset(): PlanPresetId {
+  try {
+    const saved = localStorage.getItem(PLAN_PRESET_KEY);
+    return isPlanPresetId(saved) ? saved : "flexible";
+  } catch {
+    return "flexible";
+  }
+}
+
 function useSolPrice(): SolPriceState {
   const [solPrice, setSolPrice] = useState<SolPriceState>({
     price: null,
@@ -595,6 +614,7 @@ function createActivePlanSnapshot({
   challengeGoals,
   challengeStarts,
   notes = "",
+  planPreset = "flexible",
   sizingMode,
   timeframe,
   startedAt = Date.now(),
@@ -605,17 +625,23 @@ function createActivePlanSnapshot({
   challengeGoals: ChallengeGoals;
   challengeStarts: ChallengeStarts;
   notes?: string;
+  planPreset?: PlanPresetId;
   sizingMode: SizingMode;
   timeframe: TimeframeId;
   startedAt?: number;
   tradeJournal?: TradeJournalEntry[];
 }): ActivePlanSnapshot {
   const starts = normalizeChallengeStarts(challengeStarts);
+  let coercedPreset: PlanPresetId = planPreset === "og" ? "og" : "flexible";
+  if (coercedPreset === "og" && (challengeMode !== "sol" || timeframe !== "default" || sizingMode !== "conservative")) {
+    coercedPreset = "flexible";
+  }
   return {
     challengeMode,
     challengeStartDate: isDateInputValue(challengeStartDate) ? challengeStartDate : "",
     goals: normalizeChallengeGoals(challengeGoals, starts),
     notes: notes.slice(0, 5000),
+    planPreset: coercedPreset,
     sizingMode,
     startedAt,
     starts,
@@ -630,6 +656,7 @@ function isSameActivePlan(left: ActivePlanSnapshot | null, right: ActivePlanSnap
     left.challengeMode === right.challengeMode &&
     left.challengeStartDate === right.challengeStartDate &&
     left.notes === right.notes &&
+    left.planPreset === right.planPreset &&
     left.sizingMode === right.sizingMode &&
     left.timeframe === right.timeframe &&
     left.starts.sol === right.starts.sol &&
@@ -674,6 +701,7 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
   const [challengeGoals, setChallengeGoals] = useState<ChallengeGoals>(() => loadChallengeGoals());
   const [sizingMode, setSizingMode] = useState<SizingMode>(() => loadSizingMode());
   const [timeframe, setTimeframe] = useState<TimeframeId>(() => loadTimeframe());
+  const [planPreset, setPlanPreset] = useState<PlanPresetId>(() => loadPlanPreset());
   const [challengeStartDate, setChallengeStartDate] = useState(() => loadLocalStartDate());
   const solPrice = useSolPrice();
   const challenge = useMemo(
@@ -698,12 +726,13 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
       challengeGoals,
       challengeStarts,
       notes: activePlan?.notes,
+      planPreset,
       sizingMode,
       timeframe,
       startedAt: activePlan?.startedAt,
       tradeJournal: activePlan?.tradeJournal,
     }),
-    [activePlan?.notes, activePlan?.startedAt, activePlan?.tradeJournal, challengeGoals, challengeMode, challengeStartDate, challengeStarts, sizingMode, timeframe],
+    [activePlan?.notes, activePlan?.startedAt, activePlan?.tradeJournal, challengeGoals, challengeMode, challengeStartDate, challengeStarts, planPreset, sizingMode, timeframe],
   );
   const hasPlanChanges = !isSameActivePlan(activePlan, draftPlan);
   const checked = useMemo(() => new Set(activeProgress.checkedDays), [activeProgress]);
@@ -729,9 +758,25 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
         setSizingMode(nextPlan.sizingMode);
         setTimeframe(nextPlan.timeframe);
         setChallengeStartDate(nextPlan.challengeStartDate);
+        setPlanPreset(nextPlan.planPreset);
       }
     }
   }, [remoteProgress]);
+
+  useEffect(() => {
+    if (planPreset !== "og") return;
+    if (challengeMode !== "sol" || timeframe !== "default" || sizingMode !== "conservative") {
+      setPlanPreset("flexible");
+    }
+  }, [challengeMode, planPreset, sizingMode, timeframe]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(PLAN_PRESET_KEY, planPreset);
+    } catch {
+      // Preset still applies for this session if local storage is blocked.
+    }
+  }, [planPreset]);
 
   useEffect(() => {
     try {
@@ -865,6 +910,7 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
         challengeGoals,
         challengeStarts,
         notes: activePlan?.notes,
+        planPreset,
         sizingMode,
         timeframe,
         startedAt: activePlan?.startedAt,
@@ -932,6 +978,7 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
         challengeGoals,
         challengeStarts,
         notes: activePlan?.notes,
+        planPreset,
         sizingMode,
         timeframe,
         tradeJournal: activePlan?.tradeJournal,
@@ -993,10 +1040,24 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
           <Stat label={`${formatChallengeSizing(capAmount, challenge)} cap`} value={capDay ? `Day ${capDay}` : "N/A"} />
           <Stat label={`${challenge.completedLabel} completed`} value={`${completions}/${COMPLETION_GOAL}`} />
         </div>
+        <PlanPresetToggle
+          onChange={(next) => {
+            if (next === "og") {
+              setPlanPreset("og");
+              setChallengeMode("sol");
+              setTimeframe("default");
+              setSizingMode("conservative");
+            } else {
+              setPlanPreset("flexible");
+            }
+          }}
+          preset={planPreset}
+        />
         <ChallengeModeToggle goals={challengeGoals} mode={challengeMode} onChange={setChallengeMode} starts={challengeStarts} />
         <ChallengeGoalEditor goals={challengeGoals} onGoalChange={updateChallengeGoal} onStartChange={updateChallengeStart} starts={challengeStarts} />
-        <TimeframeToggle timeframe={timeframe} onChange={setTimeframe} />
-        <SizingToggle mode={sizingMode} onChange={setSizingMode} />
+        <TimeframeToggle disabled={planPreset === "og"} timeframe={timeframe} onChange={setTimeframe} />
+        <SizingToggle disabled={planPreset === "og"} mode={sizingMode} onChange={setSizingMode} />
+        {planPreset === "og" ? <p className="og-lock-hint">OG locks the original 73-day curve and conservative max-buy ladder (4.5 SOL cap). Switch to Custom sprint to change timeframe or Pullupso sizing.</p> : null}
         <PlanControls
           activePlan={activePlan}
           challenge={challenge}
@@ -1388,13 +1449,39 @@ function ChallengeGoalEditor({
   );
 }
 
-function TimeframeToggle({ timeframe, onChange }: { timeframe: TimeframeId; onChange: (timeframe: TimeframeId) => void }) {
+function PlanPresetToggle({ preset, onChange }: { preset: PlanPresetId; onChange: (preset: PlanPresetId) => void }) {
   return (
-    <section className="timeframe-toggle" aria-label="Timeframe">
+    <section className="plan-preset-toggle" aria-label="Plan track">
+      <button
+        aria-pressed={preset === "og"}
+        className={preset === "og" ? "preset-option active" : "preset-option"}
+        onClick={() => onChange("og")}
+        type="button"
+      >
+        <span>OG · 1 SOL to 5k</span>
+        <small>73-day curve · conservative ladder · 4.5 SOL max buy cap</small>
+      </button>
+      <button
+        aria-pressed={preset === "flexible"}
+        className={preset === "flexible" ? "preset-option active" : "preset-option"}
+        onClick={() => onChange("flexible")}
+        type="button"
+      >
+        <span>Custom sprint</span>
+        <small>Pick timeframe and sizing</small>
+      </button>
+    </section>
+  );
+}
+
+function TimeframeToggle({ disabled, timeframe, onChange }: { disabled?: boolean; timeframe: TimeframeId; onChange: (timeframe: TimeframeId) => void }) {
+  return (
+    <section aria-disabled={disabled ?? false} className={disabled ? "timeframe-toggle disabled" : "timeframe-toggle"} aria-label="Timeframe">
       {TIMEFRAME_OPTIONS.map((option) => (
         <button
           aria-pressed={timeframe === option.id}
           className={timeframe === option.id ? "timeframe-option active" : "timeframe-option"}
+          disabled={disabled}
           key={option.id}
           onClick={() => onChange(option.id)}
           type="button"
@@ -1407,12 +1494,13 @@ function TimeframeToggle({ timeframe, onChange }: { timeframe: TimeframeId; onCh
   );
 }
 
-function SizingToggle({ mode, onChange }: { mode: SizingMode; onChange: (mode: SizingMode) => void }) {
+function SizingToggle({ disabled, mode, onChange }: { disabled?: boolean; mode: SizingMode; onChange: (mode: SizingMode) => void }) {
   return (
-    <section className="sizing-toggle" aria-label="Sizing mode">
+    <section aria-disabled={disabled ?? false} className={disabled ? "sizing-toggle disabled" : "sizing-toggle"} aria-label="Sizing mode">
       <button
         aria-pressed={mode === "conservative"}
         className={mode === "conservative" ? "sizing-option active" : "sizing-option"}
+        disabled={disabled}
         onClick={() => onChange("conservative")}
         type="button"
       >
@@ -1422,6 +1510,7 @@ function SizingToggle({ mode, onChange }: { mode: SizingMode; onChange: (mode: S
       <button
         aria-pressed={mode === "pullupso"}
         className={mode === "pullupso" ? "sizing-option active" : "sizing-option"}
+        disabled={disabled}
         onClick={() => onChange("pullupso")}
         type="button"
       >
@@ -1604,7 +1693,10 @@ function PlanHistory({ history }: { history: PlanHistoryItem[] }) {
           return (
             <article className="history-item" key={item.id}>
               <div>
-                <strong>{challenge.startLabel} to {challenge.finalLabel}</strong>
+                <strong>
+                  {item.activePlan.planPreset === "og" ? <span className="og-badge">OG</span> : null}
+                  {challenge.startLabel} to {challenge.finalLabel}
+                </strong>
                 <span>{item.reason} · {item.progress.checkedDays.length} days checked · {item.progress.completions} completions</span>
               </div>
               <time>{formatShortDate(item.archivedAt)}</time>

@@ -151,6 +151,7 @@ h1 span {
 .challenge-toggle,
 .goal-editor,
 .plan-controls,
+.plan-preset-toggle,
 .timeframe-toggle,
 .sizing-toggle {
   background: var(--bg2);
@@ -170,6 +171,71 @@ h1 span {
 .goal-editor,
 .sizing-toggle {
   grid-template-columns: repeat(2, 1fr);
+}
+
+.plan-preset-toggle {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.preset-option {
+  background: transparent;
+  border: 0.5px solid transparent;
+  border-radius: 9px;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.preset-option span {
+  color: var(--text);
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.preset-option small {
+  color: var(--muted);
+  display: block;
+  font-size: 11px;
+  line-height: 1.35;
+  margin-top: 4px;
+}
+
+.preset-option.active,
+.preset-option:hover {
+  background: var(--bg3);
+  border-color: var(--green-mid);
+  color: var(--text);
+}
+
+.og-lock-hint {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+  margin: 0 4px;
+}
+
+.og-badge {
+  background: rgba(10, 124, 82, 0.12);
+  border: 0.5px solid rgba(10, 124, 82, 0.35);
+  border-radius: 5px;
+  color: var(--green);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  margin-right: 8px;
+  padding: 2px 6px;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
+.timeframe-toggle.disabled,
+.sizing-toggle.disabled {
+  opacity: 0.65;
+  pointer-events: none;
 }
 
 .plan-controls {
@@ -1487,6 +1553,10 @@ tbody td.cb-col {
   .challenge-toggle,
   .goal-editor,
   .sizing-toggle {
+    grid-template-columns: 1fr;
+  }
+
+  .plan-preset-toggle {
     grid-template-columns: 1fr;
   }
 

@@ -5,6 +5,8 @@ export const LS_KEY = "sol_speedrun_checked";
 export type ChallengeMode = "sol" | "usdc";
 export type SizingMode = "conservative" | "pullupso";
 export type TimeframeId = "default" | "3" | "5" | "7" | "14" | "21" | "30" | "45" | "60" | "75";
+/** Original 1 SOL → 5k track: 73-day curve + conservative max-buy ladder (4.5 SOL cap). */
+export type PlanPresetId = "flexible" | "og";
 export type MilestoneId = "target-buy" | "cap" | "goal";
 
 export type ChallengeConfig = {
@@ -211,6 +213,10 @@ export function isTimeframeId(value: string | null): value is TimeframeId {
 
 export function isChallengeMode(value: string | null): value is ChallengeMode {
   return value === "sol" || value === "usdc";
+}
+
+export function isPlanPresetId(value: string | null): value is PlanPresetId {
+  return value === "flexible" || value === "og";
 }
 
 export function getChallengeConfig(mode: ChallengeMode, final = CHALLENGES[mode].final, start = CHALLENGES[mode].start) {

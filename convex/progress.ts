@@ -20,6 +20,7 @@ const activePlanObjectValidator = v.object({
     usdc: v.number(),
   }),
   notes: v.string(),
+  planPreset: v.optional(v.union(v.literal("flexible"), v.literal("og"))),
   sizingMode: v.union(v.literal("conservative"), v.literal("pullupso")),
   startedAt: v.number(),
   starts: v.object({
@@ -51,6 +52,7 @@ type ActivePlanInput = {
     usdc: number;
   };
   notes: string;
+  planPreset?: "flexible" | "og";
   sizingMode: "conservative" | "pullupso";
   startedAt: number;
   starts: {
@@ -209,6 +211,7 @@ function sanitizeActivePlan(activePlan: ActivePlanInput) {
       usdc: sanitizePositiveNumber(activePlan.goals.usdc),
     },
     notes: activePlan.notes.slice(0, 5000),
+    planPreset: sanitizePlanPreset(activePlan),
     sizingMode: activePlan.sizingMode,
     startedAt: Number.isFinite(activePlan.startedAt) ? activePlan.startedAt : Date.now(),
     starts: {
@@ -222,6 +225,12 @@ function sanitizeActivePlan(activePlan: ActivePlanInput) {
 
 function sanitizePositiveNumber(value: number) {
   return Number.isFinite(value) && value > 0 ? value : 1;
+}
+
+function sanitizePlanPreset(activePlan: NonNullable<ActivePlanInput>): "flexible" | "og" {
+  if (activePlan.planPreset !== "og") return "flexible";
+  if (activePlan.challengeMode !== "sol" || activePlan.timeframe !== "default" || activePlan.sizingMode !== "conservative") return "flexible";
+  return "og";
 }
 
 function sanitizePlanHistory(planHistory: {
