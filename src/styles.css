@@ -107,6 +107,7 @@ textarea {
 .plan-btn,
 .challenge-option,
 .goal-field,
+.preset-option,
 .timeframe-option,
 .sizing-option,
 .progress-label,
@@ -187,28 +188,37 @@ h1 span {
   cursor: pointer;
   padding: 10px 12px;
   text-align: left;
+  transition: all 0.12s;
 }
 
 .preset-option span {
-  color: var(--text);
+  color: var(--muted2);
   display: block;
-  font-size: 13px;
+  font-size: 10px;
   font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .preset-option small {
   color: var(--muted);
   display: block;
   font-size: 11px;
-  line-height: 1.35;
-  margin-top: 4px;
+  line-height: 1.4;
+  margin-top: 3px;
 }
 
-.preset-option.active,
 .preset-option:hover {
   background: var(--bg3);
-  border-color: var(--green-mid);
-  color: var(--text);
+}
+
+.preset-option.active {
+  background: rgba(10, 124, 82, 0.07);
+  border-color: rgba(10, 124, 82, 0.28);
+}
+
+.preset-option.active span {
+  color: var(--green);
 }
 
 .og-lock-hint {
@@ -459,6 +469,17 @@ h1 span {
   color: var(--muted);
   font-size: 11px;
   font-style: normal;
+}
+
+.goal-field-locked .goal-input-wrap input:disabled {
+  cursor: not-allowed;
+  opacity: 0.72;
+}
+
+.goal-field .og-lock-hint {
+  font-size: 10px;
+  line-height: 1.35;
+  margin-top: 2px;
 }
 
 .challenge-option,

@@ -1,10 +1,4 @@
 {
 	"version": 1,
-	"hooks": {
-		"stop": [
-			{
-				"command": ".cursor/hooks/checkout-main-after-agent.sh"
-			}
-		]
-	}
+	"hooks": {}
 }

@@ -1,0 +1,26 @@
+---
+description: Creating a git branch must check it out and be verified
+alwaysApply: true
+---
+
+# New Git Branches: Create + Switch + Verify
+
+When the user asks to create a new branch (or a branch for work / a feature branch):
+
+1. **Always** create and check out in one step. Prefer:
+   - `git switch -c <branch-name>`  
+   or  
+   - `git checkout -b <branch-name>`  
+   Do **not** use `git branch <name>` alone — that does **not** switch to the new branch.
+
+2. **Immediately confirm** the working branch, in the same terminal flow:
+   - `git branch --show-current`  
+   and state in the reply that the user is **on** `<branch-name>` (only if the output matches).
+
+3. If the user is not on `main` (or they did not specify a base), create from the current HEAD unless they asked to branch from a specific ref; if unclear, branch from `main` after `git switch main` and pull if they expect latest.
+
+This is non-optional whenever the request is to "make" / "create" a new branch.
+
+4. **Do not re-break checkout after the fact:** Git branch operations that write `.git` must run with full permissions (`all`), not sandbox-only `git_write`, so HEAD and config updates reliably.
+
+5. **Never add a Cursor hook** that runs `git checkout main` on agent `stop` when the tree is clean — it immediately undoes branch switches after the agent finishes (the status bar stays on `main`).

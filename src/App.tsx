@@ -272,14 +272,19 @@ function normalizeModeProgress(progress?: Partial<ModeProgressSnapshot>, fallbac
 
 function normalizeActivePlan(plan?: Partial<ActivePlanSnapshot> | null): ActivePlanSnapshot | null {
   if (!plan) return null;
-  const starts = normalizeChallengeStarts(plan.starts);
-  const goals = normalizeChallengeGoals(plan.goals, starts);
+  let starts = normalizeChallengeStarts(plan.starts);
+  let goals = normalizeChallengeGoals(plan.goals, starts);
   const planChallengeMode = typeof plan.challengeMode === "string" && isChallengeMode(plan.challengeMode) ? plan.challengeMode : "sol";
   const planTimeframe = typeof plan.timeframe === "string" && isTimeframeId(plan.timeframe) ? plan.timeframe : "default";
   const sizingMode = plan.sizingMode === "pullupso" ? "pullupso" : "conservative";
   let planPreset: PlanPresetId = plan.planPreset === "og" ? "og" : "flexible";
   if (planPreset === "og" && (planChallengeMode !== "sol" || planTimeframe !== "default" || sizingMode !== "conservative")) {
     planPreset = "flexible";
+  }
+  if (planPreset === "og" && planChallengeMode === "sol") {
+    const fixed = getPlanChallengeInputs("og", "sol", starts, goals);
+    starts = normalizeChallengeStarts(fixed.starts);
+    goals = normalizeChallengeGoals(fixed.goals, starts);
   }
   return {
     challengeMode: planChallengeMode,
@@ -489,6 +494,22 @@ function normalizeChallengeGoals(goals: Partial<ChallengeGoals> | undefined, sta
     sol: sanitizeChallengeFinal(goals?.sol ?? CHALLENGES.sol.defaultFinal, { ...CHALLENGES.sol, start: starts.sol }),
     usdc: sanitizeChallengeFinal(goals?.usdc ?? CHALLENGES.usdc.defaultFinal, { ...CHALLENGES.usdc, start: starts.usdc }),
   };
+}
+
+/** OG + SOL always uses the canonical 1 → 5k track; custom start/goal only apply in Custom sprint ("flexible"). */
+function getPlanChallengeInputs(
+  planPreset: PlanPresetId,
+  activeChallengeMode: ChallengeMode,
+  starts: ChallengeStarts,
+  goals: ChallengeGoals,
+): { starts: ChallengeStarts; goals: ChallengeGoals } {
+  if (planPreset === "og" && activeChallengeMode === "sol") {
+    return {
+      starts: { ...starts, sol: CHALLENGES.sol.defaultStart },
+      goals: { ...goals, sol: CHALLENGES.sol.defaultFinal },
+    };
+  }
+  return { starts, goals };
 }
 
 function loadTimeframe(): TimeframeId {
@@ -704,9 +725,18 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
   const [planPreset, setPlanPreset] = useState<PlanPresetId>(() => loadPlanPreset());
   const [challengeStartDate, setChallengeStartDate] = useState(() => loadLocalStartDate());
   const solPrice = useSolPrice();
+  const planChallengeInputs = useMemo(
+    () => getPlanChallengeInputs(planPreset, challengeMode, challengeStarts, challengeGoals),
+    [challengeGoals, challengeMode, challengeStarts, planPreset],
+  );
   const challenge = useMemo(
-    () => getChallengeConfig(challengeMode, challengeGoals[challengeMode], challengeStarts[challengeMode]),
-    [challengeMode, challengeGoals, challengeStarts],
+    () =>
+      getChallengeConfig(
+        challengeMode,
+        planChallengeInputs.goals[challengeMode],
+        planChallengeInputs.starts[challengeMode],
+      ),
+    [challengeMode, planChallengeInputs],
   );
   const timeframePlan = useMemo(() => getTimeframePlan(timeframe, challenge), [timeframe, challenge]);
   const planDays = timeframePlan.days;
@@ -723,8 +753,8 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
     () => createActivePlanSnapshot({
       challengeMode,
       challengeStartDate,
-      challengeGoals,
-      challengeStarts,
+      challengeGoals: planChallengeInputs.goals,
+      challengeStarts: planChallengeInputs.starts,
       notes: activePlan?.notes,
       planPreset,
       sizingMode,
@@ -732,7 +762,7 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
       startedAt: activePlan?.startedAt,
       tradeJournal: activePlan?.tradeJournal,
     }),
-    [activePlan?.notes, activePlan?.startedAt, activePlan?.tradeJournal, challengeGoals, challengeMode, challengeStartDate, challengeStarts, planPreset, sizingMode, timeframe],
+    [activePlan?.notes, activePlan?.startedAt, activePlan?.tradeJournal, planChallengeInputs, challengeMode, challengeStartDate, planPreset, sizingMode, timeframe],
   );
   const hasPlanChanges = !isSameActivePlan(activePlan, draftPlan);
   const checked = useMemo(() => new Set(activeProgress.checkedDays), [activeProgress]);
@@ -902,13 +932,14 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
     }));
   };
   const saveCurrentPlan = () => {
+    const inputs = getPlanChallengeInputs(planPreset, challengeMode, challengeStarts, challengeGoals);
     persistSnapshot({
       ...localProgress,
       activePlan: createActivePlanSnapshot({
         challengeMode,
         challengeStartDate,
-        challengeGoals,
-        challengeStarts,
+        challengeGoals: inputs.goals,
+        challengeStarts: inputs.starts,
         notes: activePlan?.notes,
         planPreset,
         sizingMode,
@@ -970,13 +1001,14 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
   const restartPlan = () => {
     const archivedPlan = activePlan ?? draftPlan;
     const shouldArchive = activePlan || totalDone > 0 || completions > 0;
+    const inputs = getPlanChallengeInputs(planPreset, challengeMode, challengeStarts, challengeGoals);
     persistSnapshot({
       ...localProgress,
       activePlan: createActivePlanSnapshot({
         challengeMode,
         challengeStartDate,
-        challengeGoals,
-        challengeStarts,
+        challengeGoals: inputs.goals,
+        challengeStarts: inputs.starts,
         notes: activePlan?.notes,
         planPreset,
         sizingMode,
@@ -1053,8 +1085,8 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
           }}
           preset={planPreset}
         />
-        <ChallengeModeToggle goals={challengeGoals} mode={challengeMode} onChange={setChallengeMode} starts={challengeStarts} />
-        <ChallengeGoalEditor goals={challengeGoals} onGoalChange={updateChallengeGoal} onStartChange={updateChallengeStart} starts={challengeStarts} />
+        <ChallengeModeToggle goals={challengeGoals} mode={challengeMode} onChange={setChallengeMode} planPreset={planPreset} starts={challengeStarts} />
+        <ChallengeGoalEditor goals={challengeGoals} onGoalChange={updateChallengeGoal} onStartChange={updateChallengeStart} planPreset={planPreset} starts={challengeStarts} />
         <TimeframeToggle disabled={planPreset === "og"} timeframe={timeframe} onChange={setTimeframe} />
         <SizingToggle disabled={planPreset === "og"} mode={sizingMode} onChange={setSizingMode} />
         {planPreset === "og" ? <p className="og-lock-hint">OG locks the original 73-day curve and conservative max-buy ladder (4.5 SOL cap). Switch to Custom sprint to change timeframe or Pullupso sizing.</p> : null}
@@ -1372,17 +1404,20 @@ function ChallengeModeToggle({
   goals,
   mode,
   onChange,
+  planPreset,
   starts,
 }: {
   goals: ChallengeGoals;
   mode: ChallengeMode;
   onChange: (mode: ChallengeMode) => void;
+  planPreset: PlanPresetId;
   starts: ChallengeStarts;
 }) {
   return (
     <section className="challenge-toggle" aria-label="Challenge mode">
       {(Object.keys(CHALLENGES) as ChallengeMode[]).map((challengeMode) => {
-        const challenge = getChallengeConfig(challengeMode, goals[challengeMode], starts[challengeMode]);
+        const inputs = getPlanChallengeInputs(planPreset, challengeMode, starts, goals);
+        const challenge = getChallengeConfig(challengeMode, inputs.goals[challengeMode], inputs.starts[challengeMode]);
         return (
           <button
             aria-pressed={mode === challenge.mode}
@@ -1404,24 +1439,29 @@ function ChallengeGoalEditor({
   goals,
   onGoalChange,
   onStartChange,
+  planPreset,
   starts,
 }: {
   goals: ChallengeGoals;
   onGoalChange: (mode: ChallengeMode, goal: number) => void;
   onStartChange: (mode: ChallengeMode, start: number) => void;
+  planPreset: PlanPresetId;
   starts: ChallengeStarts;
 }) {
   return (
     <section className="goal-editor" aria-label="Challenge goals">
       {(Object.keys(CHALLENGES) as ChallengeMode[]).map((mode) => {
         const base = CHALLENGES[mode];
-        const challenge = getChallengeConfig(mode, goals[mode], starts[mode]);
+        const solLocked = planPreset === "og" && mode === "sol";
+        const inputs = getPlanChallengeInputs(planPreset, mode, starts, goals);
+        const rowChallenge = getChallengeConfig(mode, inputs.goals[mode], inputs.starts[mode]);
         return (
-          <label className="goal-field" key={mode}>
+          <label className={`goal-field${solLocked ? " goal-field-locked" : ""}`} key={mode}>
             <span>{base.unit} challenge</span>
             <div className="goal-input-wrap">
               <small>Start</small>
               <input
+                disabled={solLocked}
                 min={0.000001}
                 onChange={(event) => onStartChange(mode, Number(event.currentTarget.value))}
                 step="any"
@@ -1433,6 +1473,7 @@ function ChallengeGoalEditor({
             <div className="goal-input-wrap">
               <small>Goal</small>
               <input
+                disabled={solLocked}
                 min={starts[mode]}
                 onChange={(event) => onGoalChange(mode, Number(event.currentTarget.value))}
                 step="any"
@@ -1441,7 +1482,8 @@ function ChallengeGoalEditor({
               />
               <small>{base.unit}</small>
             </div>
-            <em>{base.startLabel} to {challenge.finalLabel}</em>
+            <em>{rowChallenge.startLabel} to {rowChallenge.finalLabel}</em>
+            {solLocked ? <span className="og-lock-hint">Saved for Custom sprint. OG always uses 1 SOL → 5,000 SOL.</span> : null}
           </label>
         );
       })}
@@ -1689,7 +1731,14 @@ function PlanHistory({ history }: { history: PlanHistoryItem[] }) {
       <div className="history-list">
         {history.length === 0 ? <p className="empty-copy">Restart or complete a plan to archive it here.</p> : null}
         {history.map((item) => {
-          const challenge = getChallengeConfig(item.activePlan.challengeMode, item.activePlan.goals[item.activePlan.challengeMode], item.activePlan.starts[item.activePlan.challengeMode]);
+          const inputs = getPlanChallengeInputs(
+            item.activePlan.planPreset,
+            item.activePlan.challengeMode,
+            item.activePlan.starts,
+            item.activePlan.goals,
+          );
+          const mode = item.activePlan.challengeMode;
+          const challenge = getChallengeConfig(mode, inputs.goals[mode], inputs.starts[mode]);
           return (
             <article className="history-item" key={item.id}>
               <div>

@@ -1,14 +1,5 @@
 #!/usr/bin/env bash
-# After an agent run ends, use main when the tree is clean (avoids hijacking in-progress work).
-if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-	exit 0
-fi
-if ! git diff --quiet 2>/dev/null || ! git diff --cached --quiet 2>/dev/null; then
-	exit 0
-fi
-current="$(git branch --show-current 2>/dev/null)" || exit 0
-if [ "$current" = "main" ]; then
-	exit 0
-fi
-git checkout main 2>/dev/null || true
+# Disabled: previously ran `git checkout main` on agent stop when the tree was clean, which
+# undid branch checkouts immediately after the agent created/switched branches.
+# Re-enable only if you restore a matching "stop" entry in .cursor/hooks.json.
 exit 0
