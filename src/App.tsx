@@ -1057,9 +1057,14 @@ export default function App({ auth, remoteProgress, remoteLoading = false, onRem
             <p className="subtitle">
               Best case · 12-15 hrs/day · {timeframePlan.option.label} · {(timeframePlan.dailyGrowthRate * 100).toFixed(1)}% daily target
             </p>
-            <a className="rules-link" href="https://trading-rules.vercel.app/" rel="noopener noreferrer" target="_blank">
-              Trading rules
-            </a>
+            <div className="rules-links">
+              <a className="rules-link" href="https://trading-rules.vercel.app/" rel="noopener noreferrer" target="_blank">
+                Trading rules
+              </a>
+              <a className="rules-link" href="https://docs.google.com/document/d/1-1u3RloZfi9kPz6p750DruFAKaHRg5SfpFCgLa8byO4/edit?tab=t.0" rel="noopener noreferrer" target="_blank">
+                Boom Bust Book
+              </a>
+            </div>
           </div>
           <AuthControls auth={auth} remoteLoading={remoteLoading} />
         </div>
@@ -2449,6 +2454,414 @@ function Notes({
           <p><strong>Tier 3 (Technical):</strong> Intelligence/AI, Tech, Blockchain-Native, NFT-Derivative, Utility Promise, Chain-Specific Platform</p>
           <p><strong>Tier 4 (Meta):</strong> Community, Original, Quality/Blue-chip, Archive/Meta-Meme, Meta-Commentary, Relevant</p>
           <p><strong>Tier 5 (Niche):</strong> Religion/Spiritual, Location/Geography, Historical/Nostalgia, Zodiac/Mystical, Color/Aesthetic, Occupation/Profession, Gaming Character, Emoji/Symbol, Yolo/Degen, Offensive/Satire, Joke/Parody, Financial, Rivalry/Feud, Derivative/Spin-off, Kayfabe/Wrestling, X-Rated/Adult, Irony/Absurdist</p>
+        </div>
+      </div>
+      <div className="note-card pullupso-card">
+        <div className="note-title">Reality check on high-entry buys</div>
+        <div className="note-body">
+          Source: <a href="https://x.com/cap100x" target="_blank" rel="noopener noreferrer">@cap100x on X</a>
+          <div className="pullupso-quote">
+            <p>
+              <a href="https://x.com/cap100x/status/2048581578452828523?s=46" target="_blank" rel="noopener noreferrer">
+                no ur just wasting ur time buying coins this high and wasting more time tweeting about it for attention -
+                <br /><br />
+                buying lowcaps, compound ur money and grow.
+                <br /><br />
+                u just look retarded buying $20 in a 5.4m coin and posting about it, maybe some delusional bagworkers will say good job but be realistic
+                <br /><br />
+                coming from someone who not too long ago was BROKE and lost his port MANY times.
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="note-card pullupso-card">
+        <div className="note-title">Reality of becoming a full-time trader</div>
+        <div className="note-body">
+          Source: <a href="https://x.com/cryptomikli" target="_blank" rel="noopener noreferrer">@cryptomikli on X</a>
+          <div className="pullupso-quote">
+            <p>
+              <a href="https://x.com/cryptomikli/status/2048463400758288774?s=46" target="_blank" rel="noopener noreferrer">
+                Flood explains why most traders fail and how to avoid it: "Trading is like financial combat. If you're making money, you're taking it from someone else"
+                <br /><br />
+                "If you're trying to be a full-time trader, set aside enough capital to cover all your expenses for six months to a year. Put that money into T bills or a very safe blend of assets, not equities. That's your untouchable bucket, so you don't have to think about expenses and you know you're covered for a year"
+                <br /><br />
+                "Then you have your long-only or relatively safe bucket, where you either identify if you actually have alpha or just hold quality assets that appreciate over time. After that, you have your actively traded bucket"
+                <br /><br />
+                "I have no empathy for people who say they lost everything because of a mistake like a resting limit order or getting filled during a crash. You should never have all your assets on a single exchange because of user error risk. If you do, you're not a serious person"
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="note-card pullupso-card">
+        <div className="note-title">gh0strider tweet</div>
+        <div className="note-body">
+          Source: <a href="https://x.com/0xghostrider" target="_blank" rel="noopener noreferrer">@0xghostrider on X</a>
+          <div className="pullupso-quote">
+            <p>
+              <a href="https://x.com/0xghostrider/status/2048273413031247970?s=46" target="_blank" rel="noopener noreferrer">
+                Zero utility in following sound money management protocols in the current gambling economy when you are trying to get the wheels off the ground.
+                <br /><br />
+                Doesn't matter if you're trying to trade, become a streamer, launch ecom store, info product, personal brand, it's all gambling in the initial stages.
+                <br /><br />
+                Every grand slam in the modern era is sparked by a degenerate play and it ain't worth embarking on any of these journeys for a lesser outcome.
+                <br /><br />
+                Can thank your lucky stars if your sensitivity to money reflexes were ripped out from an early age so you can commit to punting for 10+ years until one of your ventures inevitably moons.
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="note-card pullupso-card">
+        <div className="note-title">decu trading advice $250,000 PNL to $1,000,0000 in 6 months</div>
+        <div className="note-body">
+          Source: <a href="https://x.com/notdecu" target="_blank" rel="noopener noreferrer">@notdecu on X</a>
+          <div className="pullupso-quote decu-advice-quote">
+            <p><a href="https://x.com/notdecu/status/2049865699598672039" target="_blank" rel="noopener noreferrer"><strong>1. Stick to what works for you</strong></a></p>
+            <p><a href="https://x.com/notdecu/status/2049865699598672039" target="_blank" rel="noopener noreferrer">Whether it's high-caps, mid-caps, or even deving, everyone has a niche.</a></p>
+            <p><a href="https://x.com/notdecu/status/2049865699598672039" target="_blank" rel="noopener noreferrer">In my case, I have seen success in new pairs and unfortunately, I am not the best at the rest.</a></p>
+            <p><a href="https://x.com/notdecu/status/2049865699598672039" target="_blank" rel="noopener noreferrer">So that is what I'll be talking about here.</a></p>
+            <p><a href="https://x.com/notdecu/status/2049865699598672039" target="_blank" rel="noopener noreferrer"><strong>2. You need to find a way to filter out bad coins from the good ones.</strong></a></p>
+            <p><a href="https://x.com/notdecu/status/2049865699598672039" target="_blank" rel="noopener noreferrer">What's a good way to do that? Tracking dev wallets.</a></p>
+            <p><a href="https://x.com/notdecu/status/2049865699598672039" target="_blank" rel="noopener noreferrer">To find the good ones: Analyze previous performances through their wallet. Stay chronically online to spot recurring names.</a></p>
+            <p><a href="https://x.com/notdecu/status/2049865699598672039" target="_blank" rel="noopener noreferrer">Which brings me to my next point.</a></p>
+            <p><a href="https://x.com/notdecu/status/2049865699598672039" target="_blank" rel="noopener noreferrer"><strong>3. Unfortunately, it is hard to trench new pairs only being online 2-3 hours a day.</strong></a></p>
+            <p><a href="https://x.com/notdecu/status/2049865699598672039" target="_blank" rel="noopener noreferrer">You have to know what's already ran, understand the current meta, and recognize exactly how coins are moving.</a></p>
+            <p><a href="https://x.com/notdecu/status/2049865699598672039" target="_blank" rel="noopener noreferrer">Even if you aren't trading, just staring at the scope/charts is the best way to build your edge.</a></p>
+            <p><a href="https://x.com/notdecu/status/2049865699598672039" target="_blank" rel="noopener noreferrer"><strong>4. When you buy a coin, make sure to inspect every detail: name, ticker, dev wallet, and holders.</strong></a></p>
+            <p><a href="https://x.com/notdecu/status/2049865699598672039" target="_blank" rel="noopener noreferrer">With vamps everywhere, even a tiny misspelling or a bearish image is a red flag. If you don't catch the small mistakes, the market will.</a></p>
+            <p><a href="https://x.com/notdecu/status/2049865699598672039" target="_blank" rel="noopener noreferrer">Also, if a coin is getting volume and global fees look like this it is most likely a rug:</a></p>
+            <p><a href="https://x.com/notdecu/status/2049865699598672039" target="_blank" rel="noopener noreferrer"><strong>5. Lastly, I want to say a big part of trading is just the mental game.</strong></a></p>
+            <p><a href="https://x.com/notdecu/status/2049865699598672039" target="_blank" rel="noopener noreferrer">You usually think you are pvping others when most of the time you are pvping yourself.</a></p>
+            <p><a href="https://x.com/notdecu/status/2049865699598672039" target="_blank" rel="noopener noreferrer">One small hesitation could be the reason you miss out on that one cook.</a></p>
+            <p><a href="https://x.com/notdecu/status/2049865699598672039" target="_blank" rel="noopener noreferrer">Goodluck and see you on the scope 😎</a></p>
+            <p><a href="https://x.com/notdecu/status/2050010079777144915" target="_blank" rel="noopener noreferrer"><strong>Decu Risk Management</strong></a></p>
+            <p><a href="https://x.com/notdecu/status/2050010079777144915" target="_blank" rel="noopener noreferrer">Thank you! Yes, as far as risk management I try to cut losses around 40% or less because the tax on sell puts me over.</a></p>
+            <p><a href="https://x.com/notdecu/status/2050010079777144915" target="_blank" rel="noopener noreferrer">Also I try to stick to my strategy in buying lowcaps which leaves me not much to lose. Also the pattern recognition helps for me to understand life span of certain type of coins.</a></p>
+          </div>
+        </div>
+      </div>
+      <div className="note-card pullupso-card">
+        <div className="note-title">Being able to quick buy new narratives but not enough conviction to hold</div>
+        <div className="note-body">
+          Source: <a href="https://x.com/zukiyopnls" target="_blank" rel="noopener noreferrer">@zukiyopnls on X</a>
+          <div className="pullupso-quote decu-advice-quote">
+            <p>
+              <a href="https://x.com/zukiyopnls/status/2049016741959721286?s=46" target="_blank" rel="noopener noreferrer">
+                Alright it deadass isn't funny anymore, no troll how tf do I hold, I'm moving like Dv/Cented with the quick buys, but right now holding is deadass the biggest issue
+              </a>
+            </p>
+            <p><strong>Replies</strong></p>
+            <p>
+              <a href="https://x.com/Megga/status/2049353413259939907" target="_blank" rel="noopener noreferrer">
+                <strong>@Megga:</strong> bid with size ur comfy with and just set a price target on what u think it'll go to and clip around there if thesis is the same
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/XScharo/status/2049358794136904087" target="_blank" rel="noopener noreferrer">
+                <strong>@XScharo:</strong> do your research on the coin real quick, you should be able to price it in quickly - based on that u just hold ur conviction if ur conviction can play out in 12s good if it needs 15min okay
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/_zeldr1ss/status/2049137766970093995" target="_blank" rel="noopener noreferrer">
+                <strong>@_zeldr1ss:</strong> if u dont have conviction to hold then ur not buying the right coins
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="note-card pullupso-card">
+        <div className="note-title">The Cognitive Game: How Top Traders Think in Chaos</div>
+        <div className="note-body">
+          Source: <a href="https://x.com/Cypherpunkgod1" target="_blank" rel="noopener noreferrer">@Cypherpunkgod1 on X</a>
+          <div className="pullupso-quote decu-advice-quote cognitive-thread-quote">
+            <p>
+              <a href="https://x.com/Cypherpunkgod1/status/1979459508943417407" target="_blank" rel="noopener noreferrer">
+                <strong>The Cognitive Game: How Top Traders Think in Chaos</strong> — Twitter thread
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/Cypherpunkgod1/status/1979459511879356446" target="_blank" rel="noopener noreferrer">
+                Most people think memecoin trading is about speed, who apes first, who sells last, who spots the next meta before everyone else.
+                <br /><br />
+                But if you zoom out, the ones who consistently survive the volatility aren&apos;t just &quot;early.&quot; They think differently.
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/Cypherpunkgod1/status/1979459516790931586" target="_blank" rel="noopener noreferrer">
+                They don&apos;t chase hype. They analyze attention.
+                <br /><br />
+                They don&apos;t gamble on emotion. They exploit it.
+                <br /><br />
+                They treat the market not as a casino, but as a psychological ecosystem, one they&apos;ve learned to navigate with surgical precision.
+                <br /><br />
+                This is the cognitive blueprint behind that mindset.
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/Cypherpunkgod1/status/1979459520913903788" target="_blank" rel="noopener noreferrer">
+                <strong>The Illusion of Skill</strong>
+                <br /><br />
+                Everyone believes they have skill in the market.
+                <br /><br />
+                Few actually do.
+                <br /><br />
+                Because skill in crypto isn&apos;t about chart lines or tokenomics — it&apos;s about how clearly you can think under pressure.
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/Cypherpunkgod1/status/1979459525670277278" target="_blank" rel="noopener noreferrer">
+                It&apos;s your ability to understand why you&apos;re buying, what others are seeing, and when their perception will align with yours.
+                <br /><br />
+                Every consistent winner, no matter how chaotic their process appears, is operating on one truth:
+                <br /><br />
+                the market is a mirror of human emotion.
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/Cypherpunkgod1/status/1979459529550012648" target="_blank" rel="noopener noreferrer">
+                Every candle, every wick, every chart pattern — all of it is just psychology, made visible.
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/Cypherpunkgod1/status/1979459534578970912" target="_blank" rel="noopener noreferrer">
+                <strong>Attention: The Real Liquidity</strong>
+                <br /><br />
+                The market doesn&apos;t run on capital.
+                <br /><br />
+                It runs on attention.
+                <br /><br />
+                Attention is oxygen — the lifeblood of every token. Without it, no narrative breathes.
+                <br /><br />
+                And attention follows patterns, not randomness
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/Cypherpunkgod1/status/1979459539037569184" target="_blank" rel="noopener noreferrer">
+                Novelty: people chase what feels new.
+                <br /><br />
+                Emotion: the strongest stories make you feel something.
+                <br /><br />
+                Conflict: drama sustains engagement.
+                <br /><br />
+                Authority: validation from trusted figures accelerates adoption.
+                <br /><br />
+                Storytelling: humans remember narratives, not metrics.
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/Cypherpunkgod1/status/1979459543017918696" target="_blank" rel="noopener noreferrer">
+                If you understand how attention moves, you already understand how price moves.
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/Cypherpunkgod1/status/1979459546767626549" target="_blank" rel="noopener noreferrer">
+                <strong>Anticipation: The Hidden Meta</strong>
+                <br /><br />
+                The rarest trading skill isn&apos;t entry or exit, it&apos;s timing attention.
+                <br /><br />
+                The best traders don&apos;t react to hype; they pre-position for it.
+                <br /><br />
+                They notice subtle shifts — a format catching fire, a cultural overlap forming, a whale moving before a narrative hit
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/Cypherpunkgod1/status/1979459550689268167" target="_blank" rel="noopener noreferrer">
+                They see the shadow of the trend before the light hits it.
+                <br /><br />
+                That&apos;s not luck. That&apos;s pattern recognition trained through exposure.
+                <br /><br />
+                Anticipation is game theory with a psychological engine.
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/Cypherpunkgod1/status/1979459555114332485" target="_blank" rel="noopener noreferrer">
+                <strong>Information Asymmetry and Narrative Translation</strong>
+                <br /><br />
+                Every profitable trade is rooted in asymmetry — you either know something others don&apos;t, or you interpret the same information faster.
+                <br /><br />
+                But raw data isn&apos;t enough. Everyone sees the same on-chain analytics, the same charts.
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/Cypherpunkgod1/status/1979459559123992918" target="_blank" rel="noopener noreferrer">
+                The real difference lies in translation — turning information into narrative potential.
+                <br /><br />
+                The blockchain gives you numbers.
+                <br /><br />
+                Your cognition turns them into meaning.
+                <br /><br />
+                And meaning is what drives the crowd.
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/Cypherpunkgod1/status/1979459563859644504" target="_blank" rel="noopener noreferrer">
+                That&apos;s why the best traders sound more like storytellers than analysts.
+                <br /><br />
+                They don&apos;t trade tokens — they trade perception gaps.
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/Cypherpunkgod1/status/1979459567965655106" target="_blank" rel="noopener noreferrer">
+                <strong>IQ Isn&apos;t the Edge - Emotional Calibration Is</strong>
+                <br /><br />
+                You can have the highest IQ in the room and still blow up your account.
+                <br /><br />
+                You can have the lowest and still print.
+                <br /><br />
+                Why? Because the market doesn&apos;t reward intelligence, it rewards emotional control.
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/Cypherpunkgod1/status/1979459571790844161" target="_blank" rel="noopener noreferrer">
+                Low-IQ traders often lose because they overtrade and overbelieve in luck.
+                <br /><br />
+                High-IQ traders often lose because they can&apos;t detach from their own logic.
+                <br /><br />
+                The real alpha is clarity under stress — the ability to stay rational when your body is in fight-or-flight mode.
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/Cypherpunkgod1/status/1979459576534622507" target="_blank" rel="noopener noreferrer">
+                <strong>Adaptation Over Conviction</strong>
+                <br /><br />
+                Conviction is important. But conviction without adaptation is suicide.
+                <br /><br />
+                Markets evolve faster than human beliefs.
+                <br /><br />
+                By the time you&apos;ve formed an opinion, the meta has shifted three layers ahead.
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/Cypherpunkgod1/status/1979459580187861147" target="_blank" rel="noopener noreferrer">
+                The best traders treat conviction like code, something meant to be rewritten, not worshiped.
+                <br /><br />
+                The moment you become rigid, your edge decays.
+                <br /><br />
+                Adaptation is survival. Conviction is inertia. Know the difference.
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/Cypherpunkgod1/status/1979459584747008473" target="_blank" rel="noopener noreferrer">
+                <strong>The Internal Loop</strong>
+                <br /><br />
+                Every trade you make is an echo of your psychology.
+                <br /><br />
+                If you can&apos;t audit your own emotions, you can&apos;t audit your trades.
+                <br /><br />
+                Fear, greed, boredom — these are your real open positions.
+                <br /><br />
+                Your subconscious is the invisible trader sitting beside you, making decisions....
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/Cypherpunkgod1/status/1979459589251760636" target="_blank" rel="noopener noreferrer">
+                you&apos;ll justify later.
+                <br /><br />
+                The more self-aware you are, the sharper your cognitive edge becomes.
+                <br /><br />
+                Because no signal, no system, no alpha will save you from a foggy mind.
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/Cypherpunkgod1/status/1979459593496342725" target="_blank" rel="noopener noreferrer">
+                <strong>The Market Is a Mirror</strong>
+                <br /><br />
+                You don&apos;t need more indicators.
+                <br /><br />
+                You need better introspection.
+                <br /><br />
+                Memecoins might look chaotic, irrational, absurd — but beneath the noise, they&apos;re governed by structure.
+                <br /><br />
+                Attention fuels them.
+                <br /><br />
+                Anticipation monetizes them....
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/Cypherpunkgod1/status/1979459598483444117" target="_blank" rel="noopener noreferrer">
+                Emotion distorts them.
+                <br /><br />
+                Adaptation refines them.
+                <br /><br />
+                The traders who understand these loops aren&apos;t just making money.
+                <br /><br />
+                They&apos;re decoding human behavior in real time.
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/Cypherpunkgod1/status/1979459602606399544" target="_blank" rel="noopener noreferrer">
+                And once you see that, once you truly see it — you&apos;ll realize the market was never random.
+                <br /><br />
+                It was just reflecting us all along.
+                <br /><br />
+                &quot;The chart is human nature rendered visible.&quot;
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/Cypherpunkgod1/status/2051394665111265730?s=20" target="_blank" rel="noopener noreferrer">
+                Every trade you make is an echo of your psychology.
+                <br /><br />
+                If you can&apos;t audit your own emotions, you can&apos;t audit your trades.
+                <br /><br />
+                Fear, greed, boredom — these are your real open positions.
+                <br /><br />
+                Your subconscious is the invisible trader sitting beside you, making decisions.
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="note-card pullupso-card">
+        <div className="note-title">Cented advice for new pairs</div>
+        <div className="note-body">
+          Source: <a href="https://x.com/flipski77" target="_blank" rel="noopener noreferrer">@flipski77 on X</a>
+          <div className="pullupso-quote decu-advice-quote">
+            <p>
+              <a href="https://x.com/flipski77/status/2051479124321910947?s=20" target="_blank" rel="noopener noreferrer">
+                Good advice - only thing I can say is that you want to be in these coins BEFORE the noise. You want to anticipate what coins are going to go viral and you&apos;ll always get the wallets after you. Other thing is don&apos;t block out new pairs because while you can lose the most there
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="note-card pullupso-card">
+        <div className="note-title">Cooker advice</div>
+        <div className="note-body">
+          Source: <a href="https://x.com/CookerFlips" target="_blank" rel="noopener noreferrer">@CookerFlips on X</a>
+          <div className="pullupso-quote decu-advice-quote">
+            <p>
+              <a href="https://x.com/CookerFlips/status/2051471862023209107?s=20" target="_blank" rel="noopener noreferrer">
+                Being unprofitable solely from trenching boils down to two things (one or both)
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/CookerFlips/status/2051471862023209107?s=20" target="_blank" rel="noopener noreferrer">
+                Doing too much (scalping/reentering/selling too early/etc) when you&apos;re good at finding decent stuff but you end up doing too much so u exit before u make decent profit
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/CookerFlips/status/2051471862023209107?s=20" target="_blank" rel="noopener noreferrer">
+                Or
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/CookerFlips/status/2051471862023209107?s=20" target="_blank" rel="noopener noreferrer">
+                Gambling with no sense of direction (this one is a harder one to fix) which essentially is not understanding the market or current meta or space or whatever
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/CookerFlips/status/2051471862023209107?s=20" target="_blank" rel="noopener noreferrer">
+                The first one, its easy to fix, if u notice that you&apos;re nice at finding most good runners, just buy and walk away more often aka do less aka less is more
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/CookerFlips/status/2051471862023209107?s=20" target="_blank" rel="noopener noreferrer">
+                The second one takes a bit of learning and adapting which luckily anyone can get good at; just sometimes people longer to grasp than others
+              </a>
+            </p>
+          </div>
         </div>
       </div>
     </section>

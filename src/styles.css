@@ -559,6 +559,17 @@ h1 span {
   transition: all 0.12s;
 }
 
+.rules-links {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.rules-links .rules-link {
+  margin-top: 0;
+}
+
 .rules-link:hover {
   background: var(--bg3);
   border-color: var(--green-mid);
@@ -1497,6 +1508,41 @@ tbody td.cb-col {
 
 .pullupso-quote p:last-child {
   margin-bottom: 0;
+}
+
+.decu-advice-quote p {
+  margin-bottom: 6px;
+}
+
+.decu-advice-quote p strong {
+  display: inline-block;
+  margin-top: 6px;
+}
+
+/* Thread cards: collapse double <br> gaps so blocks read like the Decu card */
+.cognitive-thread-quote {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.cognitive-thread-quote p {
+  margin-bottom: 4px;
+}
+
+.cognitive-thread-quote br + br {
+  display: none;
+}
+
+.cognitive-thread-quote p a > strong:first-child {
+  display: block;
+  margin-bottom: 2px;
+  margin-top: 8px;
+}
+
+.cognitive-thread-quote p:first-child a > strong:first-child {
+  display: inline;
+  margin-bottom: 0;
+  margin-top: 0;
 }
 
 .sync-debug {
