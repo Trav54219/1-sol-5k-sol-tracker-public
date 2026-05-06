@@ -2572,6 +2572,172 @@ function Notes({
         </div>
       </div>
       <div className="note-card pullupso-card">
+        <div className="note-title">How people lose their ports</div>
+        <div className="note-body">
+          Source: <a href="https://x.com/LevanInSolana/status/2051734006757011605" target="_blank" rel="noopener noreferrer">@LevanInSolana on X</a>
+          <div className="pullupso-quote decu-advice-quote">
+            <p><strong>Replies</strong></p>
+            <p>
+              <a href="https://x.com/WaiterG/status/2051756739687567752" target="_blank" rel="noopener noreferrer">
+                <strong>@WaiterG:</strong> Happens to a lot everyone thinks it can’t happen to them but one over leveraged play will cause you to go on a bad streak and take you over the edge everyone thinks it can’t happen to them even with how much they’ve seen it but it still can
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/jacexbt/status/2051881272285524400" target="_blank" rel="noopener noreferrer">
+                <strong>@jacexbt:</strong> it doesnt feel real the money until you hold it, littersly only spent crypto on ubereats for food to keep trenching then rage traded and gambled away 5 figs and felt nothing, its hard to describe why
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/NachSOL/status/2051786963376546146" target="_blank" rel="noopener noreferrer">
+                <strong>@NachSOL:</strong> cause u size up with ur port if u wanna make more
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/MasterBlastorTV/status/2051748142731640878" target="_blank" rel="noopener noreferrer">
+                <strong>@MasterBlastorTV:</strong> Once you get used to bigger and bigger sizes, people have a really hard time downsizing
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/ecomsin" target="_blank" rel="noopener noreferrer">
+                <strong>@ecomsin:</strong> terrible risk management meeting a big enough ego
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/ishallrise777/status/2051757665345486880" target="_blank" rel="noopener noreferrer">
+                <strong>@ishallrise777:</strong> Slow burns and fast spirals. 1K loss 2k loss here and there add up when you don’t manage the r/r properly. People who do make it holding things they believe in will hold things they believe in to the ground. Personally I myself need to learn to sit and wait for the next play out.
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="note-card pullupso-card">
+        <div className="note-title">place high expectations on yourself</div>
+        <div className="note-body">
+          Source: <a href="https://x.com/onchainsorcerer/status/1979243563801285021" target="_blank" rel="noopener noreferrer">@onchainsorcerer on X</a>
+          <div className="pullupso-quote decu-advice-quote">
+            <p>
+              <a href="https://x.com/onchainsorcerer/status/1979243563801285021" target="_blank" rel="noopener noreferrer">
+                i think a trader&apos;s theoretical ceiling is raised when they learn to be kind to themselves. you don&apos;t make it anywhere without embracing who you are. life is so much more vibrant than the dark corners of self-doubt. its important to place high expectations on yourself, its quintessential to give yourself time to achieve them
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="note-card pullupso-card">
+        <div className="note-title">how to be Untraceable Onchain: a full Guide</div>
+        <div className="note-body">
+          Source: <a href="https://x.com/RuneCrypto_/status/2051688699478323625?s=20" target="_blank" rel="noopener noreferrer">@RuneCrypto_ on X</a>
+          <div className="pullupso-quote decu-advice-quote">
+            <p>
+              <a href="https://x.com/RuneCrypto_/status/2051688699478323625?s=20" target="_blank" rel="noopener noreferrer">
+                i&apos;ve been asked about my opsec a lot lately so here&apos;s exactly how i do it
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/RuneCrypto_/status/2051688699478323625?s=20" target="_blank" rel="noopener noreferrer">
+                the tool: @AnySwapBot
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/RuneCrypto_/status/2051688699478323625?s=20" target="_blank" rel="noopener noreferrer">
+                quick rundown if you haven&apos;t used it:
+                <br /><br />
+                → swaps route through real CEXs (binance, bybit, kucoin, htx, bitget, mexc, gate)
+                <br /><br />
+                → your withdrawal looks like a normal exchange withdrawal, not a swap provider
+                <br /><br />
+                → 0.4% fees vs 1% on fixedfloat, changenow or houdini
+                <br /><br />
+                → 15-60s execution or custom timing
+                <br /><br />
+                → seed mode: one deposit, many wallets, custom amounts, custom exchanges, custom timing
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/RuneCrypto_/status/2051688699478323625?s=20" target="_blank" rel="noopener noreferrer">
+                if you&apos;re using fixedfloat, changenow, or houdini: you&apos;re slower, paying more, and have zero anonymity. every withdrawal traces back to known hot wallets that are flagged on every chain analytics tool. you might as well be sending from your main.
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/RuneCrypto_/status/2051688699478323625?s=20" target="_blank" rel="noopener noreferrer">
+                now, here&apos;s the thing most people miss:
+                <br /><br />
+                even though @AnySwapBot is private by default (CEX withdrawals, not hot wallet sends), someone paying close attention can still try time-based tracking.
+                <br /><br />
+                you deposit 2 ETH, 30 seconds later a 2 ETH withdrawal lands somewhere. the amounts match, the timing matches. it&apos;s not proof, but it&apos;s a correlation.
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/RuneCrypto_/status/2051688699478323625?s=20" target="_blank" rel="noopener noreferrer">
+                here&apos;s how i eliminate that completely.
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/RuneCrypto_/status/2051688699478323625?s=20" target="_blank" rel="noopener noreferrer">
+                <strong>case 1: funding 1 wallet</strong>
+                <br /><br />
+                you want to send 2 ETH to wallet B.
+                <br /><br />
+                don&apos;t just swap 2 ETH. use seed mode and send 2.5-3 ETH with these settings:
+                <br /><br />
+                → wallet A (random throwaway wallet): 0.5 ETH, arrives in 1 minute
+                <br /><br />
+                → wallet B (the one you actually want to fund): 2 ETH, arrives in 30-60 minutes
+                <br /><br />
+                what happens: someone watching the chain sees your 2.5 ETH deposit.
+                <br /><br />
+                1 minute later, 0.5 ETH shows up at wallet A from kucoin. doesn&apos;t look like you
+                <br /><br />
+                then, the real withdrawal to wallet B doesn&apos;t land for another hour
+                <br /><br />
+                by then nobody&apos;s watching. the amounts don&apos;t match your deposit. the timing doesn&apos;t match. there&apos;s no link.
+                <br /><br />
+                wallet A is the decoy. wallet B is the target. you funded both from one deposit and nobody connects them.
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/RuneCrypto_/status/2051688699478323625?s=20" target="_blank" rel="noopener noreferrer">
+                <strong>case 2: funding multiple wallets</strong>
+                <br /><br />
+                same idea but bigger. say you want to fund 10 wallets for a memecoin session.
+                <br /><br />
+                send one deposit. set up seed mode:
+                <br /><br />
+                → 2-3 decoy wallets: small random amounts, fast delivery (1-5 min)
+                <br /><br />
+                → your real wallets: spread over X hours, each from a different exchange, each with a slightly different amount
+                <br /><br />
+                what this looks like on-chain: a few random small withdrawals from multiple CEXs, random exchange withdrawals start appearing at unrelated wallets with no pattern, no shared source, no timing correlation
+                <br /><br />
+                even if someone knows you made the original deposit, they can&apos;t tell which of the 12 subsequent withdrawals from 7 different exchanges over the next hours are yours. because they all look like normal exchange activity.
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/RuneCrypto_/status/2051688699478323625?s=20" target="_blank" rel="noopener noreferrer">
+                the rules i follow:
+                <br /><br />
+                → never match deposit and withdrawal amounts exactly
+                <br /><br />
+                → always add at least one decoy wallet with fast timing
+                <br /><br />
+                → spread real withdrawals over at least 30 minutes, ideally hours
+                <br /><br />
+                → use different exchanges for each withdrawal
+                <br /><br />
+                → never reuse wallets
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/RuneCrypto_/status/2051688699478323625?s=20" target="_blank" rel="noopener noreferrer">
+                this is not complicated. it&apos;s one deposit and two minutes of setup on anyswap. the alternative is doing 10 separate swaps on fixedfloat, paying 1% each time, and having every single one traced back to the same hot wallet.
+                <br /><br />
+                stop making it easy for people to map your wallets.
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="note-card pullupso-card">
         <div className="note-title">The Cognitive Game: How Top Traders Think in Chaos</div>
         <div className="note-body">
           Source: <a href="https://x.com/Cypherpunkgod1" target="_blank" rel="noopener noreferrer">@Cypherpunkgod1 on X</a>
@@ -2859,6 +3025,93 @@ function Notes({
             <p>
               <a href="https://x.com/CookerFlips/status/2051471862023209107?s=20" target="_blank" rel="noopener noreferrer">
                 The second one takes a bit of learning and adapting which luckily anyone can get good at; just sometimes people longer to grasp than others
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="note-card pullupso-card">
+        <div className="note-title">Sue&apos;s cheat sheet</div>
+        <div className="note-body narrative-guide sue-cheat-sheet">
+          <div className="sue-cheat-sheet-list">
+            <p><strong>1. Before I Enter - Pre-Trade</strong></p>
+            <ul>
+              <li>Am I early?</li><li>Is the dev a good bag worker?</li><li>Bundle healthy or selling sides?</li><li>Coin health: narrative, deployer, holders</li><li>What&apos;s my win condition?</li><li>What&apos;s the ceiling for this?</li><li>Am I overexposing myself?</li><li>Crime token or narrative/tech?</li><li>Check twitter + Dev history</li><li>Who funded the dev?</li><li>Active community?</li><li>No PVP?</li><li>Virality is what you&apos;re betting on!</li>
+            </ul>
+            <p><strong>2. While Holding - Stay Honest</strong></p>
+            <ul>
+              <li>Would I buy here right now?</li><li>Checking trade activity + holders</li><li>Making sure no big coin gets deployed that can cause a lot of fomo</li><li>Is volume fading?</li><li>Are bundles/insiders still holding?</li><li>Check dev funded wallet</li><li>Am I making excuses to hold?</li>
+            </ul>
+            <p><strong>3. Time to Peace Out - Exit With Reason</strong></p>
+            <ul>
+              <li>Am I selling with REASON?</li><li>Are there marginal buyers left?</li><li>Would I buy here?</li><li>What&apos;s the ceiling?</li><li>Is PA stagnant + volume fading?</li><li>Team/insiders dumping?</li><li>Nobody got broke taking profit</li>
+            </ul>
+            <p><strong>4. Mindset &amp; Psyche - Stay Sharp</strong></p>
+            <ul>
+              <li>Market doesn&apos;t care about my emotions</li><li>Never let a big win turn into a loss</li><li>Be robotic - mental fortitude is everything</li><li>Comparison = theft of joy - play my game</li><li>When it looks too easy, be careful</li><li>Take profit, move on - short memory</li><li>Develop a system, make it efficient</li><li>Journal mistakes - private TG channel</li><li>Label every step - think like a computer</li><li>Trading shouldn&apos;t stop me living</li>
+            </ul>
+            <p><strong>5. Coin Health - The Doctor</strong></p>
+            <ul>
+              <li>Narrative - current meta?</li><li>Deployer - rug history?</li><li>Win cond. - 10x trigger?</li><li>Holders - smart money?</li><li>Distribution - team supply?</li><li>Age - fresh/stale?</li><li>Relevancy - still talked?</li><li>Asymmetry - R/R ratio</li>
+            </ul>
+            <p><strong>6. Position &amp; Risk - Size With Intent</strong></p>
+            <ul>
+              <li>Never overexpose</li><li>Size by conviction, not fomo</li><li>Use bet size I&apos;m okay with zeroing</li><li>PvP: bid smaller, wait for winner, then size</li><li>Really low entry? leave a moonbag (if narrative/meme is good) - the R/R is too good</li><li>Book profits -&gt; storage wallet on big days</li><li>&quot;Am I a buyer here&quot; &gt; &quot;how high can this go&quot;</li>
+            </ul>
+            <p><strong>7. Market Conditions - When to Play</strong></p>
+            <ul>
+              <li>No edge = don&apos;t play - the best trade is no trade</li><li>Bad markets: trade less, observe more</li><li>Identify the meta</li><li>What chain is hottest? sol or eth?</li><li>Holders market or flippers market?</li>
+            </ul>
+            <p><strong>8. Always</strong></p>
+            <ul>
+              <li>Sell with a reason</li><li>Ask &quot;would I buy here right now?&quot;</li><li>Check bundle + insider behaviour</li><li>Journal mistakes -&gt; if/then rules</li><li>Bad markets: trade less, observe more</li><li>Book profits to storage wallet</li><li>Curate feed - quality over quantity</li><li>Stay objective - the market is honest</li>
+            </ul>
+            <p><strong>9. Never</strong></p>
+            <ul>
+              <li>Overexpose - ever</li><li>Trade when emotional</li><li>Trade when I&apos;m not fully locked in</li><li>Chase if I missed (early or nothing)</li><li>Blindly tail wallets</li><li>Ape calls without my own analysis</li><li>Let a big win turn into a loss</li>
+            </ul>
+            <p><strong>10. Best Hours - EST (Eastern Standard Time)</strong></p>
+            <ul>
+              <li>9:00am - 11:00am Warm up</li><li>11:00 am - 1:00pm Peak</li><li>2:00pm - 3:00pm Dead - skip</li><li>3:00pm - 10:00pm Peak</li><li>After 10:00pm Wind down</li>
+            </ul>
+            <p><strong>11. Mantras to Remember - Pin to Brain</strong></p>
+            <ul>
+              <li>never let a big win turn into a loss</li><li>a position I hold is a position I buy at any given moment</li><li>if there&apos;s no edge, the best trade is no trade</li><li>early, or NOTHING</li><li>the market doesn&apos;t know, care about, or desire my emotions</li><li>comparison is the theft of joy - play my own game</li><li>great traders sell with reason</li><li>when it looks too easy, be careful</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div className="note-card pullupso-card">
+        <div className="note-title">Stop bidding slop, start bidding good narratives</div>
+        <div className="note-body">
+          Source: <a href="https://x.com/heishimmy/status/2051900972595863653" target="_blank" rel="noopener noreferrer">@heishimmy on X</a>
+          <div className="pullupso-quote decu-advice-quote cognitive-thread-quote">
+            <p>
+              <a href="https://x.com/heishimmy/status/2051900972595863653" target="_blank" rel="noopener noreferrer">
+                Gone are the days where you can make money on mid tier bullshit narratives.
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/heishimmy/status/2051900972595863653" target="_blank" rel="noopener noreferrer">
+                It has to be an S tier narrative in order to fight off the bundle rape and do well past migration.
+              </a>
+            </p>
+            <p>
+              <a href="https://x.com/heishimmy/status/2051900972595863653" target="_blank" rel="noopener noreferrer">
+                Going to reduce my clicks going forward and just sit on my hands until I see those narras.
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="note-card pullupso-card">
+        <div className="note-title">wallet onchain opsec</div>
+        <div className="note-body">
+          Source: <a href="https://x.com/RuneCrypto_/status/2051688699478323625?s=20" target="_blank" rel="noopener noreferrer">@RuneCrypto_ on X</a>
+          <div className="pullupso-quote decu-advice-quote cognitive-thread-quote">
+            <p>
+              <a href="https://x.com/RuneCrypto_/status/2051688699478323625?s=20" target="_blank" rel="noopener noreferrer">
+                View tweet
               </a>
             </p>
           </div>

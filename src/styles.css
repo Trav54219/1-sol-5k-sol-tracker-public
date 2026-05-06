@@ -1545,6 +1545,52 @@ tbody td.cb-col {
   margin-top: 0;
 }
 
+.sue-cheat-sheet {
+  display: block;
+  margin-top: 6px;
+}
+
+.sue-cheat-sheet p {
+  background: rgba(10, 124, 82, 0.06);
+  border: 1px solid rgba(10, 124, 82, 0.24);
+  border-left: 3px solid var(--green);
+  border-bottom: 0;
+  border-radius: 10px 10px 0 0;
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.65;
+  margin: 0;
+  padding: 12px 14px;
+}
+
+.sue-cheat-sheet p strong {
+  color: var(--green);
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  margin-bottom: 9px;
+}
+
+.sue-cheat-sheet-list ul {
+  background: rgba(10, 124, 82, 0.06);
+  border: 1px solid rgba(10, 124, 82, 0.24);
+  border-left: 3px solid var(--green);
+  border-radius: 0 0 10px 10px;
+  border-top: 0;
+  margin: 0 0 14px;
+  padding: 6px 14px 12px 30px;
+}
+
+.sue-cheat-sheet-list li {
+  line-height: 1.55;
+  margin: 0 0 4px;
+}
+
+.sue-cheat-sheet-list li::marker {
+  color: var(--green);
+}
+
 .sync-debug {
   color: var(--muted);
   font-size: 10px;
