@@ -1559,6 +1559,10 @@ function ShikamaruOneSolTakeProfitStrategyCard() {
             least 100 to 5,000 SOL per day. That is possible without having to scalp new pairs if I do not want to, although that is still an option. It is also
             part of my thesis that I can get there while keeping my max bid size at no more than 1 SOL on every buy.
           </p>
+          <p>
+            This mainly only works when you are only buying A+ narratives and minimizing your losses — so you need to win more than you lose to make up for the
+            losses.
+          </p>
           <p>This is where the Shikamaru part comes in.</p>
           <p>
             Shikamaru would not trade memecoins with chaos, emotion, or random conviction. He would trade with minimal effort, maximum efficiency, and strict logic. He
