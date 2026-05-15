@@ -1541,6 +1541,101 @@ function TimeframeToggle({ disabled, timeframe, onChange }: { disabled?: boolean
   );
 }
 
+function ShikamaruOneSolTakeProfitStrategyCard() {
+  return (
+    <div className="note-card pullupso-card">
+      <div className="note-title">Shikamaru · 1 SOL and take profit strategy</div>
+      <div className="note-body">
+        <div className="pullupso-quote">
+          <p>This strategy is called 1 SOL and Take Profit.</p>
+          <p>
+            The idea is simple: there are enough coins launched in any given month on Pump.fun to profit at least $1,000,000 or 10,000 SOL from a pure mathematical
+            standpoint. Because of that, the goal is not to chase everything, overtrade, or force scalps on every new pair. The goal is to identify narratives where
+            there is a high probability that the coin will let you profit at some point in the future, assuming the coin and chart continue to respect your thesis at
+            a certain market cap price point.
+          </p>
+          <p>
+            My thesis is that no matter how bad market conditions are, there are still enough coins reaching certain market caps and volume levels to profit at
+            least 100 to 5,000 SOL per day. That is possible without having to scalp new pairs if I do not want to, although that is still an option. It is also
+            part of my thesis that I can get there while keeping my max bid size at no more than 1 SOL on every buy.
+          </p>
+          <p>This is where the Shikamaru part comes in.</p>
+          <p>
+            Shikamaru would not trade memecoins with chaos, emotion, or random conviction. He would trade with minimal effort, maximum efficiency, and strict logic. He
+            would not marry bags. He would not force entries. He would not waste energy trying to predict every candle. He would only take trades where the setup is
+            clean, the narrative is clear, the thesis makes sense, and the target is already defined before entry.
+          </p>
+          <p>
+            <strong>The process is:</strong>
+          </p>
+          <p>Identify the narrative.</p>
+          <p>Build the thesis on the coin.</p>
+          <p>Choose the market cap or price level where the thesis should be rewarded.</p>
+          <p>Enter with a max bid size of 1 SOL or less.</p>
+          <p>Set the take profit in advance.</p>
+          <p>Wait.</p>
+          <p>
+            If the take profit hits in 10 minutes, that is fine. If it hits in a week, that is also fine. The point is not to overmanage the trade. The point is to
+            let narratives and price expansion do the work once the position is placed.
+          </p>
+          <p>
+            This strategy assumes that enough coins and narratives eventually reach the price they deserve. Because of that, the edge is not in reacting emotionally.
+            The edge is in selecting the right narratives, getting positioned early enough, sizing safely, and letting time and volume work in your favor.
+          </p>
+          <p>
+            This is not a scalp-only strategy, even though scalping remains an option. This is a 1 SOL max bid, thesis-based, set-take-profit system built around
+            patience, repetition, and numbers. N equals coins. N equals narratives. The more quality thesis-driven positions placed across strong narratives, the
+            higher the probability that enough of them will reach target and compound into serious size.
+          </p>
+          <p>The goal is not to be hyperactive. The goal is to be efficient.</p>
+          <p>That is the Shikamaru style.</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ClukzPullupsoSizingAdvice() {
+  return (
+    <div className="note-card pullupso-card">
+      <div className="note-title">Clukz · patience, edge &amp; sizing discipline</div>
+      <div className="note-body">
+        Source:{" "}
+        <a href="https://x.com/clukz/status/2034755462818902160" rel="noopener noreferrer" target="_blank">
+          @clukz on X
+        </a>
+        <div className="pullupso-quote">
+          <p>Sit on your hands and maximize patience until 100k+ narratives come out that you can bid early.</p>
+          <p>You are NOT better than cented.</p>
+          <p>You can NOT gamble on slop.</p>
+          <p>Volume is NOT good and ceilings are LOW.</p>
+          <p>You do NOT have the entire chain tracking your wallet.</p>
+          <p>You are NOT streaming to 500+ viewers.</p>
+          <p>
+            Use your brain, if you don&apos;t have the skills, stop trying to compete with the relentless new pair flippers, experienced deployers, and splitnow
+            drillers. Find your own edge.
+          </p>
+          <p>
+            The market sucks and sentiment is at an all-time low. Yet still, there are at least 3-5 decent coins that you can reasonably catch every day. Even
+            while being an unknown trader.
+          </p>
+          <p>
+            Again, it&apos;s all about PATIENCE. Patience patience patience patience patience patience patience patience patience patience
+          </p>
+          <p>
+            Preserve your capital until the opportunities fall into your lap. It takes immense mental strength but that&apos;s what you need to surpass the 95% of
+            unprofitable traders.
+          </p>
+          <p>
+            Fuck your gambling addictions and fuck the &quot;never stop clicking&quot; mindset. Stop being stubborn and adjust your style according to the
+            current conditions.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function SizingToggle({ disabled, mode, onChange }: { disabled?: boolean; mode: SizingMode; onChange: (mode: SizingMode) => void }) {
   return (
     <section aria-disabled={disabled ?? false} className={disabled ? "sizing-toggle disabled" : "sizing-toggle"} aria-label="Sizing mode">
@@ -2236,6 +2331,8 @@ function Notes({
           </div>
         </div>
       </div>
+      <ShikamaruOneSolTakeProfitStrategyCard />
+      <ClukzPullupsoSizingAdvice />
       <div className="note-card pullupso-card">
         <div className="note-title">Bear market tip</div>
         <div className="note-body">
