@@ -143,16 +143,8 @@ function Root() {
     return (
       <AccessGate
         auth={{ isLoading: false, isSignedIn: false, userLabel: null, signIn: () => undefined, signOut: () => undefined }}
-        entitlement={{
-          configured: false,
-          hasAccess: false,
-          status: "none",
-          membershipId: null,
-          expiresAt: null,
-          lastValidatedAt: null,
-          needsRevalidation: false,
-          message: "Add VITE_CONVEX_URL and VITE_WORKOS_CLIENT_ID to enable sign-in and licensing.",
-        }}
+        deploymentIssue="Add VITE_CONVEX_URL and VITE_WORKOS_CLIENT_ID in your hosting provider, then redeploy."
+        entitlement={undefined}
         entitlementLoading={false}
         onActivateLicense={async () => ({ ok: false, message: "Sign-in is not configured yet." })}
       >
