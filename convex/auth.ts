@@ -113,10 +113,17 @@ export const signInWithWhop = action({
         message: granted.message,
       };
     } catch (error) {
-      console.error(error);
+      const detail = error instanceof Error ? error.message : String(error);
+      console.error("mintAccessToken failed:", detail);
+      if (detail.includes("AUTH_JWT_PRIVATE_KEY") || detail.includes("CONVEX_SITE_URL")) {
+        return {
+          ok: false as const,
+          message: "Server auth keys are not configured. Contact the site owner.",
+        };
+      }
       return {
         ok: false as const,
-        message: "Server auth keys are not configured. Contact the site owner.",
+        message: "Could not issue a sign-in token. Try again or contact support.",
       };
     }
   },

@@ -1,17 +1,20 @@
 "use node";
 
+import { createPrivateKey, type KeyObject } from "node:crypto";
 import { v } from "convex/values";
 import { internalAction } from "./_generated/server";
-import { exportJWK, importPKCS8, importSPKI, SignJWT } from "jose";
+import { exportJWK, importPKCS8, importSPKI, SignJWT, type CryptoKey } from "jose";
+
+import { getAuthIssuer } from "./authIssuer";
 
 const AUDIENCE = "convex";
 
-export function getAuthIssuer() {
-  const issuer = process.env.CONVEX_SITE_URL?.trim();
-  if (!issuer) {
-    throw new Error("CONVEX_SITE_URL is not configured.");
+async function importSigningKey(privateKeyPem: string): Promise<CryptoKey | KeyObject> {
+  if (privateKeyPem.includes("BEGIN PRIVATE KEY")) {
+    return await importPKCS8(privateKeyPem, "RS256");
   }
-  return issuer;
+  // openssl genrsa produces PKCS#1 ("RSA PRIVATE KEY"); jose only accepts PKCS#8 via importPKCS8.
+  return createPrivateKey(privateKeyPem);
 }
 
 export async function mintAccessToken({
@@ -26,7 +29,7 @@ export async function mintAccessToken({
     throw new Error("AUTH_JWT_PRIVATE_KEY is not configured in Convex.");
   }
 
-  const key = await importPKCS8(privateKeyPem, "RS256");
+  const key = await importSigningKey(privateKeyPem);
   const issuer = getAuthIssuer();
 
   return await new SignJWT({
