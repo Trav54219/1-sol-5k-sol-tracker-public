@@ -1808,6 +1808,12 @@ tbody td.cb-col {
   background: var(--green-mid);
 }
 
+.access-btn--link {
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
+}
+
 .access-btn--ghost {
   background: var(--bg3);
   color: var(--muted2);

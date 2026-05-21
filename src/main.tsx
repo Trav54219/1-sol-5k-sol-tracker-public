@@ -16,7 +16,7 @@ import {
   redirectEmbedToCanonical,
   shouldRedirectEmbedToCanonical,
 } from "./authRouting";
-import { startWorkOSSignIn } from "./workosSignIn";
+import { prefetchSignInUrl, startWorkOSSignIn } from "./workosSignIn";
 import "./styles.css";
 
 if (shouldRedirectEmbedToCanonical()) {
@@ -63,6 +63,36 @@ function RemoteApp() {
   const migratedLocal = useRef(false);
   const refreshedAccess = useRef(false);
   const [awaitingWhopReturn] = useState(() => consumeWhopEmbedFlag());
+  const [signInHref, setSignInHref] = useState<string | null>(null);
+  const [signInPrepFailed, setSignInPrepFailed] = useState(false);
+
+  useEffect(() => {
+    if (auth.isLoading || auth.user) {
+      setSignInHref(null);
+      setSignInPrepFailed(false);
+      return;
+    }
+
+    let active = true;
+    setSignInPrepFailed(false);
+    const returnTo = getReturnToUrl();
+    const timeoutId = window.setTimeout(() => {
+      if (active) setSignInPrepFailed(true);
+    }, 6000);
+
+    void prefetchSignInUrl(auth, returnTo).then((url) => {
+      if (!active) return;
+      if (url) {
+        setSignInHref(url);
+        setSignInPrepFailed(false);
+      }
+    });
+
+    return () => {
+      active = false;
+      window.clearTimeout(timeoutId);
+    };
+  }, [auth.isLoading, auth.user, auth.getSignInUrl]);
 
   useEffect(() => {
     if (!convexAuth.isAuthenticated || entitlement === undefined || refreshedAccess.current) return;
@@ -110,6 +140,8 @@ function RemoteApp() {
         signOut,
         embeddedInWhop: isEmbeddedInWhop(),
         awaitingWhopReturn,
+        signInHref,
+        signInPrepFailed,
       }}
       entitlement={entitlement}
       entitlementLoading={convexAuth.isAuthenticated && entitlement === undefined}

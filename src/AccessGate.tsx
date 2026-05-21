@@ -21,6 +21,9 @@ export type AccessAuthState = {
   embeddedInWhop?: boolean;
   /** Just finished OAuth in the sign-in tab; user should return to Whop. */
   awaitingWhopReturn?: boolean;
+  /** Prefetched WorkOS authorize URL — enables a real link, not a no-op button. */
+  signInHref?: string | null;
+  signInPrepFailed?: boolean;
 };
 
 type AccessGateProps = {
@@ -109,32 +112,58 @@ export default function AccessGate({
           </p>
         ) : null}
         <div className="access-actions access-actions--stack">
-          <button
-            className="access-btn access-btn--primary"
-            disabled={signInBusy || auth.isLoading}
-            onClick={() => {
-              setSignInBusy(true);
-              setSignInError(null);
-              void Promise.resolve(auth.signIn())
-                .then((result) => {
-                  if (result && !result.ok) {
-                    setSignInError(result.message ?? "Sign-in could not start.");
-                    return;
-                  }
-                  if (result?.mode === "tab") {
-                    setSignInOpenedTab(true);
-                  }
-                })
-                .catch(() => {
-                  setSignInError("Sign-in could not start. Allow pop-ups and try again.");
-                })
-                .finally(() => setSignInBusy(false));
-            }}
-            type="button"
-          >
-            {signInBusy ? "Opening sign-in…" : "Continue with email"}
-          </button>
+          {auth.signInHref ? (
+            <a
+              className="access-btn access-btn--primary access-btn--link"
+              href={auth.signInHref}
+              onClick={(event) => {
+                if (!auth.embeddedInWhop) return;
+                event.preventDefault();
+                setSignInBusy(true);
+                setSignInError(null);
+                void Promise.resolve(auth.signIn())
+                  .then((result) => {
+                    if (result && !result.ok) {
+                      setSignInError(result.message ?? "Sign-in could not start.");
+                      return;
+                    }
+                    if (result?.mode === "tab") setSignInOpenedTab(true);
+                  })
+                  .catch(() => setSignInError("Allow pop-ups for this site, then try again."))
+                  .finally(() => setSignInBusy(false));
+              }}
+              rel="noopener noreferrer"
+              target={auth.embeddedInWhop ? "_blank" : undefined}
+            >
+              {signInBusy ? "Opening sign-in…" : "Continue with email"}
+            </a>
+          ) : (
+            <button
+              className="access-btn access-btn--primary"
+              disabled={!auth.signInPrepFailed}
+              onClick={() => {
+                if (!auth.signInPrepFailed) return;
+                setSignInBusy(true);
+                setSignInError(null);
+                void Promise.resolve(auth.signIn())
+                  .then((result) => {
+                    if (result && !result.ok) setSignInError(result.message ?? "Sign-in could not start.");
+                  })
+                  .catch(() => setSignInError("Sign-in could not start. Refresh and try again."))
+                  .finally(() => setSignInBusy(false));
+              }}
+              type="button"
+            >
+              {auth.signInPrepFailed ? "Retry sign-in" : "Preparing sign-in…"}
+            </button>
+          )}
         </div>
+        {auth.signInPrepFailed && !auth.signInHref ? (
+          <p className="access-error" role="alert">
+            Sign-in could not be prepared. Hard-refresh the page. If it keeps failing, confirm WorkOS redirect URI is{" "}
+            <strong>https://sol-speedrun-tracker.vercel.app/</strong> (with trailing slash).
+          </p>
+        ) : null}
         {signInError ? (
           <p className="access-error" role="alert">
             {signInError}

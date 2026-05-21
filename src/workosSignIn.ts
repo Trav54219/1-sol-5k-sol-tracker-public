@@ -13,44 +13,65 @@ export type SignInResult =
   | { ok: false; message: string };
 
 type SignInClient = {
-  signIn: (opts?: { state?: { returnTo?: string } }) => Promise<void>;
   getSignInUrl: (opts?: { state?: { returnTo?: string } }) => Promise<string>;
 };
 
-export async function startWorkOSSignIn(client: SignInClient, returnTo: string): Promise<SignInResult> {
+async function resolveSignInUrl(
+  client: SignInClient,
+  returnTo: string,
+  attempts = 8,
+): Promise<string> {
   const opts = { state: { returnTo } };
+  let lastError: unknown;
 
+  for (let attempt = 0; attempt < attempts; attempt++) {
+    try {
+      const url = await client.getSignInUrl(opts);
+      if (url) return url;
+    } catch (error) {
+      lastError = error;
+      console.error("getSignInUrl failed", error);
+    }
+    await new Promise((resolve) => setTimeout(resolve, 120 * (attempt + 1)));
+  }
+
+  if (lastError) {
+    throw lastError;
+  }
+
+  return "";
+}
+
+export async function prefetchSignInUrl(client: SignInClient, returnTo: string) {
+  try {
+    return await resolveSignInUrl(client, returnTo, 12);
+  } catch {
+    return "";
+  }
+}
+
+export async function startWorkOSSignIn(client: SignInClient, returnTo: string): Promise<SignInResult> {
   let url: string;
   try {
-    url = await client.getSignInUrl(opts);
-  } catch (error) {
-    console.error(error);
+    url = await resolveSignInUrl(client, returnTo);
+  } catch {
     return { ok: false, message: "Sign-in could not start. Refresh the page and try again." };
   }
 
   if (!url) {
-    return { ok: false, message: "Sign-in is still loading. Wait a second and try again." };
+    return {
+      ok: false,
+      message: "Sign-in is still loading. Wait a moment and try again, or refresh the page.",
+    };
   }
 
   if (isEmbeddedInIframe()) {
-    // Whop embeds us on whop.com — browsers block changing window.top (silent failure).
     const popup = window.open(url, "_blank", "noopener,noreferrer");
     if (popup) {
       return { ok: true, mode: "tab" };
     }
-
-    try {
-      window.location.assign(url);
-      return { ok: true, mode: "same-window" };
-    } catch (error) {
-      console.error(error);
-      return {
-        ok: false,
-        message: "Your browser blocked the sign-in window. Allow pop-ups for this site, then try again.",
-      };
-    }
   }
 
-  await client.signIn(opts);
+  window.location.href = url;
   return { ok: true, mode: "same-window" };
 }
