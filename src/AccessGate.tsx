@@ -19,6 +19,8 @@ export type AccessAuthState = {
   signOut: () => void | Promise<void>;
   /** True when running inside Whop's iframe (WorkOS must open in the top window). */
   embeddedInWhop?: boolean;
+  /** Just finished OAuth in the sign-in tab; user should return to Whop. */
+  awaitingWhopReturn?: boolean;
 };
 
 type AccessGateProps = {
@@ -68,6 +70,20 @@ export default function AccessGate({
           <span className="access-loading-dot" />
           <span className="access-loading-dot" />
         </div>
+      </AccessShell>
+    );
+  }
+
+  if (auth.awaitingWhopReturn && auth.isSignedIn) {
+    return (
+      <AccessShell step={2} title="You're signed in">
+        <p className="access-lead">
+          Email login worked. Go back to your <strong>Whop</strong> tab, open <strong>Software | Sol Tracker</strong> again, and paste your license key.
+        </p>
+        <p className="access-hint access-hint--prominent">
+          If Whop still shows an error page, change the software app URL to{" "}
+          <strong>https://sol-speedrun-tracker.vercel.app/</strong> in Whop settings (not an authkit.app link).
+        </p>
       </AccessShell>
     );
   }

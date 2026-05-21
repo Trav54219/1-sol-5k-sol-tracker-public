@@ -27,7 +27,7 @@ In the **WorkOS dashboard**, add every URL where the app runs as an allowed redi
 - `https://sol-speedrun-tracker.vercel.app`
 - Your Whop software host if different (e.g. `https://….authkit.app`)
 
-Set the Whop software **download / app URL** to that same host so OAuth callbacks match.
+Set the Whop software **download / app URL** to **`https://sol-speedrun-tracker.vercel.app/`** only — do **not** use a `*.authkit.app` link (that causes “refused to connect” and a sign-in loop).
 
 If their Whop membership expires, the next refresh marks access inactive and they must renew on Whop and re-validate.
 

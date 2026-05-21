@@ -1,4 +1,4 @@
-import { StrictMode, useEffect, useRef } from "react";
+import { StrictMode, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { AuthKitProvider, useAuth } from "@workos-inc/authkit-react";
 import { ConvexReactClient, useAction, useConvexAuth, useMutation, useQuery } from "convex/react";
@@ -7,12 +7,24 @@ import { ConvexProviderWithAuthKit } from "@convex-dev/workos";
 import AccessGate from "./AccessGate";
 import App, { getLocalProgress, normalizeProgressSnapshot, type ProgressSnapshot } from "./App";
 import type { EntitlementStatus } from "./AccessGate";
+import {
+  consumeWhopEmbedFlag,
+  getCanonicalProductionUrl,
+  getReturnToUrl,
+  isEmbeddedInWhop,
+  isLocalOrigin,
+  redirectEmbedToCanonical,
+  shouldRedirectEmbedToCanonical,
+} from "./authRouting";
 import { startWorkOSSignIn } from "./workosSignIn";
 import "./styles.css";
 
+if (shouldRedirectEmbedToCanonical()) {
+  redirectEmbedToCanonical();
+}
+
 const convexUrl = import.meta.env.VITE_CONVEX_URL as string | undefined;
 const workosClientId = import.meta.env.VITE_WORKOS_CLIENT_ID as string | undefined;
-const workosRedirectUri = import.meta.env.VITE_WORKOS_REDIRECT_URI as string | undefined;
 const whopMembershipUrl = import.meta.env.VITE_WHOP_MEMBERSHIP_URL as string | undefined;
 const authConfigured = Boolean(convexUrl && workosClientId);
 
@@ -50,6 +62,7 @@ function RemoteApp() {
   const refreshAccess = useAction(accessApi.refreshAccess);
   const migratedLocal = useRef(false);
   const refreshedAccess = useRef(false);
+  const [awaitingWhopReturn] = useState(() => consumeWhopEmbedFlag());
 
   useEffect(() => {
     if (!convexAuth.isAuthenticated || entitlement === undefined || refreshedAccess.current) return;
@@ -96,6 +109,7 @@ function RemoteApp() {
         signIn,
         signOut,
         embeddedInWhop: isEmbeddedInWhop(),
+        awaitingWhopReturn,
       }}
       entitlement={entitlement}
       entitlementLoading={convexAuth.isAuthenticated && entitlement === undefined}
@@ -159,8 +173,8 @@ function Root() {
     );
   }
 
-  const canonicalUrl = getCanonicalAppUrl();
-  if (canonicalUrl && shouldRedirectToCanonical(canonicalUrl)) {
+  const canonicalUrl = getCanonicalProductionUrl();
+  if (shouldRedirectPreviewToCanonical(canonicalUrl)) {
     window.location.replace(`${canonicalUrl.origin}${window.location.pathname}${window.location.search}${window.location.hash}`);
     return null;
   }
@@ -173,11 +187,18 @@ function Root() {
       clientId={workosClientId}
       devMode={isLocalOrigin()}
       onRedirectCallback={({ state }) => {
+        const url = getCanonicalProductionUrl();
         const returnTo = typeof state?.returnTo === "string" ? state.returnTo : null;
-        if (!returnTo) return;
-
-        // After OAuth, send the user back to the Whop embed URL (may be a different origin).
-        window.location.assign(returnTo);
+        if (returnTo) {
+          try {
+            if (new URL(returnTo).searchParams.has("whop_embed")) {
+              url.searchParams.set("whop_embed", "1");
+            }
+          } catch {
+            // ignore malformed returnTo
+          }
+        }
+        window.history.replaceState({}, "", `${url.pathname}${url.search}`);
       }}
       redirectUri={redirectUri}
     >
@@ -190,69 +211,12 @@ function Root() {
 
 function getWorkOSRedirectUri() {
   if (isLocalOrigin()) return window.location.origin;
-
-  // Always use the configured production redirect (with trailing slash) so it matches WorkOS exactly.
-  if (workosRedirectUri) {
-    try {
-      return normalizeRedirectUri(new URL(workosRedirectUri, window.location.origin));
-    } catch {
-      // Fall through to the current page URL.
-    }
-  }
-
-  try {
-    return normalizeRedirectUri(new URL(window.location.href));
-  } catch {
-    return `${window.location.origin}/`;
-  }
+  return getCanonicalProductionUrl().origin + "/";
 }
 
-function isEmbeddedInWhop() {
-  try {
-    if (window.self === window.top) return false;
-    return window.location.ancestorOrigins?.length
-      ? Array.from(window.location.ancestorOrigins).some((origin) => origin.includes("whop.com"))
-      : document.referrer.includes("whop.com");
-  } catch {
-    return true;
-  }
-}
-
-function getCanonicalAppUrl() {
-  if (isLocalOrigin() || !workosRedirectUri) return null;
-
-  try {
-    return new URL(workosRedirectUri, window.location.origin);
-  } catch {
-    return null;
-  }
-}
-
-function shouldRedirectToCanonical(canonicalUrl: URL) {
+function shouldRedirectPreviewToCanonical(canonicalUrl: URL) {
   if (canonicalUrl.origin === window.location.origin) return false;
-
-  // Only bounce Vercel *preview* deployment URLs to production — never between unrelated .vercel.app projects.
   return /-trav54219s-projects\.vercel\.app$/i.test(window.location.hostname);
-}
-
-function normalizeRedirectUri(url: URL) {
-  if (url.pathname === "/" && !url.search && !url.hash) {
-    // WorkOS matches redirect URIs exactly; dashboard entries usually include a trailing slash.
-    return `${url.origin}/`;
-  }
-
-  return url.toString();
-}
-
-function isLocalOrigin() {
-  return window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-}
-
-function getReturnToUrl() {
-  const url = new URL(window.location.href);
-  url.searchParams.delete("code");
-  url.searchParams.delete("state");
-  return url.toString();
 }
 
 createRoot(document.getElementById("root")!).render(
