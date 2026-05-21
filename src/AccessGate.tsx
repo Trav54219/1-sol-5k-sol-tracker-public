@@ -17,6 +17,8 @@ export type AccessAuthState = {
   userLabel: string | null;
   signIn: () => void | Promise<void>;
   signOut: () => void | Promise<void>;
+  /** True when running inside Whop's iframe (WorkOS must open in the top window). */
+  embeddedInWhop?: boolean;
 };
 
 type AccessGateProps = {
@@ -69,20 +71,25 @@ export default function AccessGate({
 
   if (!auth.isSignedIn) {
     return (
-      <AccessShell step={1} title="Sign in to unlock the tracker">
+      <AccessShell step={1} title="Sign in to save your progress">
         <p className="access-lead">
-          This speedrun tracker is included with your course. Use the same email you purchased with so your progress stays on your account.
+          Use the <strong>same email</strong> you used on Whop. That email is how your tracker progress is stored in the cloud.
         </p>
         <ol className="access-checklist">
-          <li>Sign in securely with WorkOS</li>
-          <li>Paste your Whop license key on the next screen</li>
+          <li>Sign in with your email (one-time)</li>
+          <li>Paste your Whop license key from the sidebar on the next screen</li>
         </ol>
+        {auth.embeddedInWhop ? (
+          <p className="access-hint access-hint--prominent">
+            Sign-in opens in full screen (Whop cannot show the login page inside this panel). After you sign in, you will return here automatically.
+          </p>
+        ) : null}
         <div className="access-actions access-actions--stack">
           <button className="access-btn access-btn--primary" onClick={() => void auth.signIn()} type="button">
-            Continue with WorkOS
+            Continue with email
           </button>
         </div>
-        <p className="access-footnote">No account yet? Use the email from your purchase receipt when prompted.</p>
+        <p className="access-footnote">Your license key proves you purchased the course; your email keeps progress tied to you.</p>
       </AccessShell>
     );
   }
@@ -176,7 +183,7 @@ function AccessShell({
         </header>
 
         <nav className="access-stepper" aria-label="Access steps">
-          <StepPill done={step > 1} active={step === 1} label="Sign in" detail="WorkOS" />
+          <StepPill done={step > 1} active={step === 1} label="Sign in" detail="Your email" />
           <span className="access-stepper-line" aria-hidden="true" />
           <StepPill done={false} active={step === 2} label="License" detail="Whop key" />
         </nav>

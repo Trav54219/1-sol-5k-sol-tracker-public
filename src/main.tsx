@@ -7,6 +7,7 @@ import { ConvexProviderWithAuthKit } from "@convex-dev/workos";
 import AccessGate from "./AccessGate";
 import App, { getLocalProgress, normalizeProgressSnapshot, type ProgressSnapshot } from "./App";
 import type { EntitlementStatus } from "./AccessGate";
+import { startWorkOSSignIn } from "./workosSignIn";
 import "./styles.css";
 
 const convexUrl = import.meta.env.VITE_CONVEX_URL as string | undefined;
@@ -83,6 +84,8 @@ function RemoteApp() {
   }, [convexAuth.isAuthenticated, entitlement?.hasAccess, remoteProgress, setProgress]);
 
   const userLabel = auth.user?.email ?? auth.user?.firstName ?? "your account";
+  const signIn = () => startWorkOSSignIn(auth, getReturnToUrl());
+  const signOut = () => auth.signOut({ returnTo: getReturnToUrl() });
 
   return (
     <AccessGate
@@ -90,8 +93,9 @@ function RemoteApp() {
         isLoading: auth.isLoading,
         isSignedIn: Boolean(auth.user),
         userLabel,
-        signIn: () => auth.signIn({ state: { returnTo: getReturnToUrl() } }),
-        signOut: () => auth.signOut({ returnTo: window.location.origin }),
+        signIn,
+        signOut,
+        embeddedInWhop: isEmbeddedInWhop(),
       }}
       entitlement={entitlement}
       entitlementLoading={convexAuth.isAuthenticated && entitlement === undefined}
@@ -105,8 +109,8 @@ function RemoteApp() {
           isLoading: auth.isLoading,
           isSignedIn: Boolean(auth.user),
           userLabel,
-          signIn: () => auth.signIn({ state: { returnTo: getReturnToUrl() } }),
-          signOut: () => auth.signOut({ returnTo: window.location.origin }),
+          signIn,
+          signOut,
         }}
         onRemoteChange={
           convexAuth.isAuthenticated && entitlement?.hasAccess
@@ -170,12 +174,8 @@ function Root() {
         const returnTo = typeof state?.returnTo === "string" ? state.returnTo : null;
         if (!returnTo) return;
 
-        const target = new URL(returnTo, redirectUri);
-        if (target.origin === window.location.origin) {
-          window.history.replaceState({}, "", `${target.pathname}${target.search}${target.hash}`);
-        } else {
-          window.location.assign(target.toString());
-        }
+        // After OAuth, send the user back to the Whop embed URL (may be a different origin).
+        window.location.assign(returnTo);
       }}
       redirectUri={redirectUri}
     >
@@ -188,15 +188,24 @@ function Root() {
 
 function getWorkOSRedirectUri() {
   if (isLocalOrigin()) return window.location.origin;
-  if (!workosRedirectUri) return window.location.origin;
 
+  // Whop embeds the app on its software URL (often a custom host). OAuth must callback to that origin.
   try {
-    return normalizeRedirectUri(new URL(workosRedirectUri, window.location.origin));
+    return normalizeRedirectUri(new URL(window.location.origin));
   } catch {
-    // Fall back to the current origin if the env var is malformed.
+    return window.location.origin;
   }
+}
 
-  return window.location.origin;
+function isEmbeddedInWhop() {
+  try {
+    if (window.self === window.top) return false;
+    return window.location.ancestorOrigins?.length
+      ? Array.from(window.location.ancestorOrigins).some((origin) => origin.includes("whop.com"))
+      : document.referrer.includes("whop.com");
+  } catch {
+    return true;
+  }
 }
 
 function getCanonicalAppUrl() {
@@ -212,9 +221,8 @@ function getCanonicalAppUrl() {
 function shouldRedirectToCanonical(canonicalUrl: URL) {
   if (canonicalUrl.origin === window.location.origin) return false;
 
-  const currentHost = window.location.hostname;
-  const canonicalHost = canonicalUrl.hostname;
-  return currentHost.endsWith(".vercel.app") && canonicalHost.endsWith(".vercel.app");
+  // Only bounce Vercel *preview* deployment URLs to production — never between unrelated .vercel.app projects.
+  return /-trav54219s-projects\.vercel\.app$/i.test(window.location.hostname);
 }
 
 function normalizeRedirectUri(url: URL) {

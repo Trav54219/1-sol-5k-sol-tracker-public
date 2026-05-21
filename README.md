@@ -14,9 +14,20 @@ Without environment variables, the app shows a setup screen instead of the track
 
 ## Student access flow
 
-1. **WorkOS sign-in** — ties progress to their email/account.
-2. **Whop license key** — pasted from their Whop receipt/orders page; validated on the server against Whop.
+1. **Email sign-in (WorkOS)** — ties cloud progress to their email. Required even inside Whop; login opens in the **top window** because WorkOS cannot run inside Whop's iframe.
+2. **Whop license key** — pasted from their Whop receipt, orders page, or the license key panel in Whop; validated server-side.
 3. **Tracker** — only loads after both steps succeed.
+
+### Whop embed (Software app)
+
+Whop loads your app in an iframe. WorkOS AuthKit blocks iframe embedding (`refused to connect`). This repo breaks out to the top window for sign-in and returns users to the embed URL afterward.
+
+In the **WorkOS dashboard**, add every URL where the app runs as an allowed redirect, for example:
+
+- `https://sol-speedrun-tracker.vercel.app`
+- Your Whop software host if different (e.g. `https://….authkit.app`)
+
+Set the Whop software **download / app URL** to that same host so OAuth callbacks match.
 
 If their Whop membership expires, the next refresh marks access inactive and they must renew on Whop and re-validate.
 

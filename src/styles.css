@@ -1837,6 +1837,15 @@ tbody td.cb-col {
   margin: 4px 0 0;
 }
 
+.access-hint--prominent {
+  background: rgba(10, 124, 82, 0.06);
+  border: 0.5px solid rgba(10, 124, 82, 0.2);
+  border-radius: 8px;
+  color: var(--muted2);
+  margin-bottom: 16px;
+  padding: 10px 12px;
+}
+
 .access-footnote a {
   color: var(--green);
   text-decoration: underline;
