@@ -17,6 +17,10 @@
     {
       "source": "/api/whop/:path*",
       "destination": "https://woozy-crow-532.convex.site/whop/:path*"
+    },
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/index.html"
     }
   ]
 }

@@ -7,8 +7,18 @@ import AccessGate from "./AccessGate";
 import App, { getLocalProgress, normalizeProgressSnapshot, type ProgressSnapshot } from "./App";
 import type { EntitlementStatus } from "./AccessGate";
 import { useWhopAuth } from "./useWhopAuth";
+import { createSdk } from "@whop/iframe";
 import { redirectEmbedToCanonical, shouldRedirectEmbedToCanonical } from "./authRouting";
 import "./styles.css";
+
+const whopAppId = import.meta.env.VITE_WHOP_APP_ID as string | undefined;
+if (whopAppId) {
+  try {
+    createSdk({ appId: whopAppId });
+  } catch (error) {
+    console.warn("Whop iframe SDK init failed", error);
+  }
+}
 
 if (shouldRedirectEmbedToCanonical()) {
   redirectEmbedToCanonical();
