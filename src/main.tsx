@@ -6,6 +6,7 @@ import { makeFunctionReference } from "convex/server";
 import AccessGate from "./AccessGate";
 import App, { getLocalProgress, normalizeProgressSnapshot, type ProgressSnapshot } from "./App";
 import type { EntitlementStatus } from "./AccessGate";
+import { getExperienceIdFromPath } from "./whopSession";
 import { useWhopAccess, useWhopAuthForConvex } from "./useWhopAuth";
 import { WhopIframeSdkProvider, WhopThemeScript } from "@whop/react";
 import BootErrorBoundary from "./BootErrorBoundary";
@@ -32,9 +33,11 @@ const entitlementApi = {
 };
 
 const accessApi = {
-  refreshAccess: makeFunctionReference<"action", Record<string, never>, { ok: boolean; message: string | null }>(
-    "access:refreshAccess",
-  ),
+  refreshAccess: makeFunctionReference<
+    "action",
+    { experienceId?: string },
+    { ok: boolean; message: string | null }
+  >("access:refreshAccess"),
 };
 
 function RemoteApp({ auth }: { auth: ReturnType<typeof useWhopAccess> }) {
@@ -56,7 +59,7 @@ function RemoteApp({ auth }: { auth: ReturnType<typeof useWhopAccess> }) {
     if (!convexAuth.isAuthenticated || entitlement === undefined || refreshedAccess.current) return;
     if (!entitlement.configured) return;
     refreshedAccess.current = true;
-    void refreshAccess({});
+    void refreshAccess({ experienceId: getExperienceIdFromPath() ?? undefined });
   }, [convexAuth.isAuthenticated, entitlement, refreshAccess]);
 
   useEffect(() => {
@@ -141,7 +144,9 @@ function Root() {
           whopProfile: null,
           whopProfileLoading: false,
           embeddedInWhop: false,
-          signIn: async () => ({ ok: false, message: "Convex is not configured." }),
+          activating: false,
+          activationError: null,
+          activateMembership: async () => ({ ok: false, message: "Convex is not configured." }),
           signOut: () => undefined,
         }}
         deploymentIssue="Add VITE_CONVEX_URL in Vercel, then redeploy."

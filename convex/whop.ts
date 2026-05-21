@@ -1,10 +1,137 @@
 "use node";
 
 import { createHash } from "node:crypto";
+import { getWhopSdk } from "./whopAuth";
 
 const WHOP_V2_BASE = "https://api.whop.com/api/v2";
 const WHOP_V1_BASE = "https://api.whop.com/api/v1";
 const METADATA_USER_KEY = "whop_user_id";
+const WHOP_ACCESS_SOURCE = "whop-membership";
+
+export type WhopAccessCheckResult =
+  | {
+      ok: true;
+      membershipId: string;
+      status: string;
+      expiresAt: number | null;
+    }
+  | {
+      ok: false;
+      code: "no_access" | "misconfigured" | "network";
+      message: string;
+    };
+
+export function whopAccessIdentifier(userId: string) {
+  return createHash("sha256").update(`${WHOP_ACCESS_SOURCE}:${userId}`).digest("hex");
+}
+
+function readHasAccess(value: unknown) {
+  if (!value || typeof value !== "object") return false;
+  const record = value as Record<string, unknown>;
+  if (typeof record.hasAccess === "boolean") return record.hasAccess;
+  if (typeof record.has_access === "boolean") return record.has_access;
+  const nested = record.hasAccessToExperience ?? record.hasAccessToAccessPass ?? record.hasAccessToCompany;
+  if (nested && typeof nested === "object") {
+    const nestedRecord = nested as Record<string, unknown>;
+    if (typeof nestedRecord.hasAccess === "boolean") return nestedRecord.hasAccess;
+    if (typeof nestedRecord.has_access === "boolean") return nestedRecord.has_access;
+  }
+  return false;
+}
+
+export async function checkWhopMembershipAccess({
+  userId,
+  experienceId,
+  accessPassId,
+  companyId,
+}: {
+  userId: string;
+  experienceId?: string;
+  accessPassId?: string;
+  companyId?: string;
+}): Promise<WhopAccessCheckResult> {
+  const sdk = getWhopSdk();
+  if (!sdk) {
+    return {
+      ok: false,
+      code: "misconfigured",
+      message: "Whop API is not configured on the server.",
+    };
+  }
+
+  const resolvedExperienceId = experienceId?.trim() || process.env.WHOP_EXPERIENCE_ID?.trim() || "";
+  const resolvedAccessPassId = accessPassId?.trim() || process.env.WHOP_ACCESS_PASS_ID?.trim() || "";
+  const resolvedCompanyId = companyId?.trim() || process.env.WHOP_COMPANY_ID?.trim() || "";
+
+  try {
+    if (resolvedExperienceId) {
+      const result = await sdk.access.checkIfUserHasAccessToExperience({
+        experienceId: resolvedExperienceId,
+        userId,
+      });
+      if (readHasAccess(result)) {
+        return {
+          ok: true,
+          membershipId: resolvedExperienceId,
+          status: "active",
+          expiresAt: null,
+        };
+      }
+    }
+
+    if (resolvedAccessPassId) {
+      const result = await sdk.access.checkIfUserHasAccessToAccessPass({
+        accessPassId: resolvedAccessPassId,
+        userId,
+      });
+      if (readHasAccess(result)) {
+        return {
+          ok: true,
+          membershipId: resolvedAccessPassId,
+          status: "active",
+          expiresAt: null,
+        };
+      }
+    }
+
+    if (resolvedCompanyId) {
+      const result = await sdk.access.checkIfUserHasAccessToCompany({
+        companyId: resolvedCompanyId,
+        userId,
+      });
+      if (readHasAccess(result)) {
+        return {
+          ok: true,
+          membershipId: resolvedCompanyId,
+          status: "active",
+          expiresAt: null,
+        };
+      }
+    }
+
+    if (!resolvedExperienceId && !resolvedAccessPassId && !resolvedCompanyId) {
+      return {
+        ok: false,
+        code: "misconfigured",
+        message:
+          "Set WHOP_EXPERIENCE_ID on Convex (from your Whop experience URL) or open the app from inside Whop.",
+      };
+    }
+
+    return {
+      ok: false,
+      code: "no_access",
+      message:
+        "No active Whop membership found for this course. Purchase or renew on Whop, then reload this page.",
+    };
+  } catch {
+    return {
+      ok: false,
+      code: "network",
+      message: "Could not verify your Whop membership. Try again in a moment.",
+    };
+  }
+}
 
 export type WhopValidationResult =
   | {

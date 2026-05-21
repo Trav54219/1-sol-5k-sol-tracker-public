@@ -1921,7 +1921,7 @@ function AuthControls({ auth, remoteLoading }: { auth?: AuthState; remoteLoading
   return (
     <div className="auth-card">
       <div className="auth-title">Activate to sync</div>
-      <p>Paste your Whop license key on the access screen to save progress to the cloud.</p>
+      <p>Open Sol Tracker inside Whop and confirm membership on the access screen to save progress to the cloud.</p>
     </div>
   );
 }

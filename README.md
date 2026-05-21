@@ -1,12 +1,12 @@
 # 1 SOL to 5,000 SOL Tracker
 
-React + Convex tracker for Whop students. Access uses **Whop account + license key** (no WorkOS).
+React + Convex tracker for Whop students. Access uses **Whop iframe auth + membership** (no WorkOS, no license key).
 
 ## Student flow (inside Whop)
 
-1. Open **Software | Sol Tracker** in Whop (must use app URL `https://sol-speedrun-tracker.vercel.app/`).
+1. Open **Sol Tracker** in Whop (app URL `https://sol-speedrun-tracker.vercel.app/`).
 2. Whop verifies their account automatically.
-3. Paste **license key** from the Whop sidebar → **Activate license**.
+3. Active membership is checked via Whop API (no license key).
 4. Tracker loads; progress saves to their Whop-linked account.
 
 ## Local setup
@@ -28,6 +28,8 @@ npm run convex:dev
 ```bash
 npx convex env set WHOP_API_KEY whop_...
 npx convex env set WHOP_APP_ID app_...
+# Optional if experience id is not in the iframe URL:
+npx convex env set WHOP_EXPERIENCE_ID exp_...
 ```
 
 Generate JWT keys once (RS256):
@@ -55,8 +57,8 @@ npx convex env set WHOP_ACCESS_BYPASS true
 
 - [Install Software app](https://whop.com/apps/app_jHH5YT7jHYQANi/install/) (marketplace template; your developer app ID is separate)
 - **Download / app URL:** `https://sol-speedrun-tracker.vercel.app/` only (not `*.authkit.app`)
-- See [Whop SaaS docs](https://docs.whop.com/supported-business-models/saas) for license keys and [email login](https://docs.whop.com/supported-business-models/saas#email-login-integration)
+- See [Whop app docs](https://docs.whop.com/apps) for hosting and iframe auth
 
-## License binding
+## Membership access
 
-On activation, Convex calls Whop `validate_license` with metadata `whop_user_id` so each key binds to one Whop user ([license key docs](https://docs.whop.com/supported-business-models/saas#license-key-integration)).
+On sign-in, Convex calls Whop `checkIfUserHasAccessToExperience` (or access pass / company) for the signed-in `user_...` id. Entitlements are keyed by Whop user + experience (not a pasted license key).

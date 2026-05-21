@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useAction, useConvexAuth } from "convex/react";
 import { makeFunctionReference } from "convex/server";
 import {
   clearStoredAuthToken,
   fetchWhopSessionProfile,
+  getExperienceIdFromPath,
   getStoredAuthToken,
   isEmbeddedInWhop,
   setStoredAuthToken,
@@ -17,11 +18,11 @@ type SignInResult = {
   userLabel?: string | null;
 };
 
-const signInWithLicenseRef = makeFunctionReference<
+const signInWithWhopRef = makeFunctionReference<
   "action",
-  { licenseKey: string; whopUserId?: string },
+  { whopUserId: string; experienceId?: string },
   SignInResult
->("auth:signInWithLicense");
+>("auth:signInWithWhop");
 
 const TOKEN_CHANGED_EVENT = "sol-tracker-token-changed";
 
@@ -76,9 +77,12 @@ export function useWhopAuthForConvex() {
 /** UI auth state — call only inside ConvexProviderWithAuth. */
 export function useWhopAccess() {
   const convexAuth = useConvexAuth();
-  const signInWithLicense = useAction(signInWithLicenseRef);
+  const signInWithWhop = useAction(signInWithWhopRef);
   const [whopProfile, setWhopProfile] = useState<WhopSessionProfile | null>(null);
   const [whopProfileLoading, setWhopProfileLoading] = useState(true);
+  const [activating, setActivating] = useState(false);
+  const [activationError, setActivationError] = useState<string | null>(null);
+  const activationAttempted = useRef(false);
 
   useEffect(() => {
     let active = true;
@@ -96,42 +100,76 @@ export function useWhopAccess() {
     };
   }, []);
 
-  const signIn = useCallback(
-    async (licenseKey: string) => {
-      const result = await signInWithLicense({
-        licenseKey,
-        whopUserId: whopProfile?.userId,
+  const activateMembership = useCallback(async () => {
+    if (!whopProfile?.userId) {
+      return { ok: false, message: "Open this app from Whop so we can verify your account." };
+    }
+
+    setActivating(true);
+    setActivationError(null);
+
+    try {
+      const result = await signInWithWhop({
+        whopUserId: whopProfile.userId,
+        experienceId: getExperienceIdFromPath() ?? undefined,
       });
 
       if (result.ok && result.accessToken) {
         setStoredAuthToken(result.accessToken);
         notifyTokenChanged();
+      } else if (!result.ok) {
+        setActivationError(result.message);
       }
 
       return result;
-    },
-    [signInWithLicense, whopProfile?.userId],
-  );
+    } catch (error) {
+      console.error(error);
+      const message = "Could not verify your Whop membership. Try reloading the page.";
+      setActivationError(message);
+      return { ok: false, message };
+    } finally {
+      setActivating(false);
+    }
+  }, [signInWithWhop, whopProfile?.userId]);
+
+  useEffect(() => {
+    if (whopProfileLoading || !whopProfile?.userId || convexAuth.isAuthenticated) return;
+    if (activationAttempted.current) return;
+    activationAttempted.current = true;
+    void activateMembership();
+  }, [activateMembership, convexAuth.isAuthenticated, whopProfile?.userId, whopProfileLoading]);
 
   const signOut = useCallback(() => {
     clearStoredAuthToken();
+    activationAttempted.current = false;
     notifyTokenChanged();
   }, []);
 
-  const isLoading = whopProfileLoading || convexAuth.isLoading;
+  const isLoading = whopProfileLoading || activating || convexAuth.isLoading;
   const isAuthenticated = convexAuth.isAuthenticated;
 
   return useMemo(
     () => ({
       isLoading,
       isAuthenticated,
+      activating,
+      activationError,
       userLabel: whopProfile?.userId ?? null,
       whopProfile,
       whopProfileLoading,
       embeddedInWhop: isEmbeddedInWhop(),
-      signIn,
+      activateMembership,
       signOut,
     }),
-    [isAuthenticated, isLoading, signIn, signOut, whopProfile, whopProfileLoading],
+    [
+      activateMembership,
+      activating,
+      activationError,
+      isAuthenticated,
+      isLoading,
+      signOut,
+      whopProfile,
+      whopProfileLoading,
+    ],
   );
 }

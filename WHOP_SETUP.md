@@ -34,11 +34,13 @@ If the iframe still shows only white (no “Loading Sol Tracker…” text), Who
 
 Do **not** put `WHOP_API_KEY` in Vercel or GitHub.
 
-OAuth **redirect URLs** are not required for iframe + license key auth.
+OAuth **redirect URLs** are not required for iframe auth.
 
-## Student flow
+## Student flow (no license key)
 
-1. Open app inside Whop
-2. Whop account detected automatically
-3. Paste license key → **Activate license**
-4. Progress saves to their Whop-linked account
+1. Open **Sol Tracker** inside Whop (sidebar)
+2. Whop signs them in automatically
+3. Server checks active membership via Whop API (`checkIfUserHasAccessToExperience`)
+4. Tracker unlocks; progress saves to their Whop account
+
+If membership check fails, set **Convex** env `WHOP_EXPERIENCE_ID` to the `exp_...` id from your Whop experience URL.

@@ -45,6 +45,15 @@ export type WhopSessionProfile = {
   appId: string;
 };
 
+/** Experience id from Whop iframe URL (/experiences/exp_xxx) or env fallback. */
+export function getExperienceIdFromPath() {
+  const fromPath = window.location.pathname.match(/\/experiences\/(exp_[^/]+)/)?.[1];
+  if (fromPath) return fromPath;
+
+  const fromEnv = import.meta.env.VITE_WHOP_EXPERIENCE_ID as string | undefined;
+  return fromEnv?.trim() || null;
+}
+
 const SESSION_TIMEOUT_MS = 8000;
 
 export async function fetchWhopSessionProfile() {

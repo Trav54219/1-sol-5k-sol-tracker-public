@@ -60,7 +60,7 @@ export async function requireEntitlementAccess(ctx: QueryCtx | MutationCtx) {
 
   const record = await getRecordForSubject(ctx, identity.subject);
   if (!entitlementAllowsAccess(record)) {
-    throw new Error("Active Whop membership required. Enter your license key or renew on Whop.");
+    throw new Error("Active Whop membership required. Purchase or renew on Whop, then reload the app.");
   }
 
   return identity;
@@ -94,7 +94,7 @@ export const getStatus = query({
         expiresAt: null,
         lastValidatedAt: null,
         needsRevalidation: false,
-        message: "Paste your Whop license key to unlock the tracker.",
+        message: "Open this app from Whop to verify your membership.",
       };
     }
 
@@ -108,7 +108,7 @@ export const getStatus = query({
         expiresAt: null,
         lastValidatedAt: null,
         needsRevalidation: false,
-        message: "Enter the license key from your Whop purchase email or orders page.",
+        message: "No Whop membership on file yet. Reload after joining the course on Whop.",
       };
     }
 
@@ -127,7 +127,7 @@ export const getStatus = query({
         ? null
         : record.status === "inactive"
           ? "Your membership is inactive. Renew on Whop to continue."
-          : "Re-validate your license key to continue.",
+          : "Reload the app from Whop to refresh your membership.",
     };
   },
 });

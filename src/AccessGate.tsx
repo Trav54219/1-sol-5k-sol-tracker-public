@@ -1,4 +1,3 @@
-import { useState } from "react";
 import type { useWhopAccess } from "./useWhopAuth";
 
 export type EntitlementStatus = {
@@ -31,13 +30,9 @@ export default function AccessGate({
   deploymentIssue = null,
   children,
 }: AccessGateProps) {
-  const [licenseKey, setLicenseKey] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
   if (deploymentIssue) {
     return (
-      <AccessShell step={1} title="App setup incomplete">
+      <AccessShell title="App setup incomplete">
         <p className="access-lead">{deploymentIssue}</p>
       </AccessShell>
     );
@@ -45,8 +40,10 @@ export default function AccessGate({
 
   if (auth.isLoading || entitlementLoading) {
     return (
-      <AccessShell step={1} title="Loading">
-        <p className="access-lead">Connecting to Whop and your tracker…</p>
+      <AccessShell title="Loading">
+        <p className="access-lead">
+          {auth.activating ? "Verifying your Whop membership…" : "Connecting to Whop and your tracker…"}
+        </p>
         <div className="access-loading" aria-hidden="true">
           <span className="access-loading-dot" />
           <span className="access-loading-dot" />
@@ -59,39 +56,24 @@ export default function AccessGate({
   const hasAccess = auth.isAuthenticated && (entitlement?.hasAccess ?? false);
 
   if (!hasAccess) {
-    const handleSubmit = async () => {
-      setSubmitting(true);
-      setError(null);
-      try {
-        const result = await auth.signIn(licenseKey);
-        if (!result.ok) {
-          setError(result.message);
-          return;
-        }
-        setLicenseKey("");
-      } catch (submitError) {
-        console.error(submitError);
-        setError("Could not validate your license key. Try again or contact support.");
-      } finally {
-        setSubmitting(false);
-      }
-    };
-
     const whopConnected = Boolean(auth.whopProfile);
-    const step = whopConnected ? 2 : 1;
+    const message =
+      auth.activationError ??
+      entitlement?.message ??
+      (whopConnected
+        ? "Your Whop membership could not be verified for this course."
+        : "Open this page from your Whop course so we can verify your account.");
 
     return (
-      <AccessShell step={step} title="Activate your tracker">
+      <AccessShell title="Membership required">
         {auth.embeddedInWhop ? (
           <p className="access-hint access-hint--prominent">
             {whopConnected
-              ? "You're signed in to Whop. Paste your license key below to unlock the tracker."
-              : "Open this page from your Whop course (Software | Sol Tracker) so we can verify your Whop account."}
+              ? "You're signed in to Whop. This tracker unlocks automatically when you have an active membership."
+              : "Open this page from your Whop course (Sol Tracker) so we can verify your Whop account."}
           </p>
         ) : (
-          <p className="access-lead">
-            Open <strong>Software | Sol Tracker</strong> inside Whop, then paste your license key here.
-          </p>
+          <p className="access-lead">Open <strong>Sol Tracker</strong> inside Whop to use this app.</p>
         )}
 
         {whopConnected ? (
@@ -100,38 +82,27 @@ export default function AccessGate({
           </p>
         ) : null}
 
-        <div className="access-field">
-          <label className="access-label" htmlFor="license-key">
-            Whop license key
-          </label>
-          <input
-            autoComplete="off"
-            className="access-input"
-            id="license-key"
-            onChange={(event) => setLicenseKey(event.target.value)}
-            placeholder="Paste key from Whop (sidebar or receipt)"
-            spellCheck={false}
-            value={licenseKey}
-          />
-        </div>
+        <p className="access-error" role="alert">
+          {message}
+        </p>
+
         <div className="access-actions">
           <button
             className="access-btn access-btn--primary"
-            disabled={submitting || !licenseKey.trim() || (!whopConnected && auth.embeddedInWhop)}
-            onClick={() => void handleSubmit()}
+            disabled={auth.activating || (!whopConnected && auth.embeddedInWhop)}
+            onClick={() => void auth.activateMembership()}
             type="button"
           >
-            {submitting ? "Validating…" : "Activate license"}
+            {auth.activating ? "Checking…" : "Check membership again"}
           </button>
         </div>
-        {entitlement?.message ? <p className="access-hint">{entitlement.message}</p> : null}
-        {error ? <p className="access-error" role="alert">{error}</p> : null}
+
         <p className="access-footnote">
-          Find your key in the Whop sidebar or on{" "}
+          Manage your plan on{" "}
           <a href={whopMembershipUrl} rel="noopener noreferrer" target="_blank">
             your Whop memberships page
           </a>
-          .
+          , then click <strong>Check membership again</strong>.
         </p>
       </AccessShell>
     );
@@ -140,15 +111,7 @@ export default function AccessGate({
   return <>{children}</>;
 }
 
-function AccessShell({
-  children,
-  step,
-  title,
-}: {
-  children: React.ReactNode;
-  step: 1 | 2;
-  title: string;
-}) {
+function AccessShell({ children, title }: { children: React.ReactNode; title: string }) {
   return (
     <div className="access-gate">
       <div className="access-panel">
@@ -160,35 +123,9 @@ function AccessShell({
           <p className="access-brand-title">1 SOL → 5000 SOL Speedrun</p>
         </header>
 
-        <nav className="access-stepper" aria-label="Access steps">
-          <StepPill done={step > 1} active={step === 1} label="Whop" detail="Your account" />
-          <span className="access-stepper-line" aria-hidden="true" />
-          <StepPill done={false} active={step === 2} label="License" detail="Whop key" />
-        </nav>
-
         <h1 className="access-title">{title}</h1>
         <div className="access-body">{children}</div>
       </div>
-    </div>
-  );
-}
-
-function StepPill({
-  active,
-  done,
-  label,
-  detail,
-}: {
-  active: boolean;
-  done: boolean;
-  label: string;
-  detail: string;
-}) {
-  const state = done ? "done" : active ? "active" : "upcoming";
-  return (
-    <div className={`access-step-pill access-step-pill--${state}`}>
-      <span className="access-step-pill-label">{label}</span>
-      <span className="access-step-pill-detail">{detail}</span>
     </div>
   );
 }

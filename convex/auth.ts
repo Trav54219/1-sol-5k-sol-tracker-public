@@ -1,14 +1,10 @@
 "use node";
 
 import { v } from "convex/values";
-import { action } from "./_generated/server";
+import { action, type ActionCtx } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { mintAccessToken } from "./authKeys";
-import {
-  hashLicenseKey,
-  normalizeLicenseKey,
-  validateLicenseWithWhop,
-} from "./whop";
+import { checkWhopMembershipAccess, whopAccessIdentifier } from "./whop";
 
 function isBypassEnabled() {
   return process.env.WHOP_ACCESS_BYPASS === "true";
@@ -18,76 +14,103 @@ function subjectForWhopUser(userId: string) {
   return `whop:${userId}`;
 }
 
-export const signInWithLicense = action({
+async function grantWhopAccess(
+  ctx: ActionCtx,
+  {
+    whopUserId,
+    experienceId,
+    accessPassId,
+    companyId,
+  }: {
+    whopUserId: string;
+    experienceId?: string;
+    accessPassId?: string;
+    companyId?: string;
+  },
+) {
+  const userSubject = subjectForWhopUser(whopUserId);
+  const accessId = whopAccessIdentifier(whopUserId);
+
+  if (isBypassEnabled()) {
+    return {
+      ok: true as const,
+      userSubject,
+      userIdentifier: `${userSubject}|bypass`,
+      userLabel: "Development user",
+      message: "Signed in (development bypass).",
+    };
+  }
+
+  const apiKey = process.env.WHOP_API_KEY?.trim() ?? "";
+  if (!apiKey) {
+    return { ok: false as const, message: "Whop API key is not configured on the server." };
+  }
+
+  const access = await checkWhopMembershipAccess({
+    userId: whopUserId,
+    experienceId,
+    accessPassId,
+    companyId,
+  });
+
+  if (!access.ok) {
+    return { ok: false as const, message: access.message };
+  }
+
+  await ctx.runMutation(internal.entitlements.upsertFromValidation, {
+    userSubject,
+    userIdentifier: `${userSubject}|${accessId}`,
+    licenseKeyHash: accessId,
+    membershipId: access.membershipId,
+    status: access.status,
+    expiresAt: access.expiresAt,
+    active: true,
+  });
+
+  return {
+    ok: true as const,
+    userSubject,
+    userIdentifier: `${userSubject}|${accessId}`,
+    userLabel: whopUserId,
+    message: "Whop membership verified. Welcome back.",
+  };
+}
+
+export const signInWithWhop = action({
   args: {
-    licenseKey: v.string(),
-    whopUserId: v.optional(v.string()),
+    whopUserId: v.string(),
+    experienceId: v.optional(v.string()),
+    accessPassId: v.optional(v.string()),
+    companyId: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const apiKey = process.env.WHOP_API_KEY?.trim() ?? "";
-    if (!apiKey && !isBypassEnabled()) {
-      return { ok: false as const, message: "Whop API key is not configured on the server." };
+    const whopUserId = args.whopUserId.trim();
+    if (!whopUserId) {
+      return { ok: false as const, message: "Open this app from Whop so we can verify your account." };
     }
 
-    const whopUser = args.whopUserId ? { userId: args.whopUserId, appId: process.env.WHOP_APP_ID ?? "" } : null;
-    const licenseKey = normalizeLicenseKey(args.licenseKey);
-    if (!licenseKey) {
-      return { ok: false as const, message: "Enter your Whop license key." };
-    }
+    const granted = await grantWhopAccess(ctx, {
+      whopUserId,
+      experienceId: args.experienceId,
+      accessPassId: args.accessPassId,
+      companyId: args.companyId,
+    });
 
-    let userSubject: string;
-    let userIdentifier: string;
-    let userLabel: string | null = null;
-
-    if (isBypassEnabled()) {
-      const bypassId = whopUser?.userId ?? "dev-user";
-      userSubject = subjectForWhopUser(bypassId);
-      userIdentifier = `${userSubject}|bypass`;
-      userLabel = "Development user";
-    } else {
-      if (!whopUser) {
-        return {
-          ok: false as const,
-          message: "Open this app from Whop so we can verify your account, then paste your license key.",
-        };
-      }
-
-      const validation = await validateLicenseWithWhop({
-        licenseKey,
-        whopUserId: whopUser.userId,
-        apiKey,
-      });
-
-      if (!validation.ok) {
-        return { ok: false as const, message: validation.message };
-      }
-
-      await ctx.runMutation(internal.entitlements.upsertFromValidation, {
-        userSubject: subjectForWhopUser(whopUser.userId),
-        userIdentifier: `${subjectForWhopUser(whopUser.userId)}|${hashLicenseKey(licenseKey)}`,
-        licenseKeyHash: hashLicenseKey(licenseKey),
-        membershipId: validation.membershipId,
-        status: validation.status,
-        expiresAt: validation.expiresAt,
-        active: true,
-      });
-
-      userSubject = subjectForWhopUser(whopUser.userId);
-      userIdentifier = `${userSubject}|${hashLicenseKey(licenseKey)}`;
-      userLabel = whopUser.userId;
+    if (!granted.ok) {
+      return { ok: false as const, message: granted.message };
     }
 
     try {
       const accessToken = await mintAccessToken({
-        subject: userSubject,
-        email: userLabel,
+        subject: granted.userSubject,
+        email: granted.userLabel,
       });
 
       return {
         ok: true as const,
         accessToken,
-        userLabel,
-        message: "License activated. Welcome back.",
+        userLabel: granted.userLabel,
+        message: granted.message,
       };
     } catch (error) {
       console.error(error);
