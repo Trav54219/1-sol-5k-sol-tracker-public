@@ -3074,19 +3074,6 @@ function Notes({
           </div>
         </div>
       </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">wallet onchain opsec</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/RuneCrypto_/status/2051688699478323625?s=20" target="_blank" rel="noopener noreferrer">@RuneCrypto_ on X</a>
-          <div className="pullupso-quote decu-advice-quote cognitive-thread-quote">
-            <p>
-              <a href="https://x.com/RuneCrypto_/status/2051688699478323625?s=20" target="_blank" rel="noopener noreferrer">
-                View tweet
-              </a>
-            </p>
-          </div>
-        </div>
-      </div>
     </section>
   );
 }
