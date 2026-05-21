@@ -13,9 +13,10 @@
     "convex:dev": "convex dev"
   },
   "dependencies": {
-    "@convex-dev/workos": "0.0.1",
-    "@workos-inc/authkit-react": "0.16.1",
+    "@whop/api": "^0.0.51",
+    "@whop/iframe": "^0.0.6",
     "convex": "1.36.1",
+    "jose": "^6.2.3",
     "react": "19.2.5",
     "react-dom": "19.2.5"
   },

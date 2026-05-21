@@ -1,22 +1,13 @@
-import { StrictMode, useEffect, useRef, useState } from "react";
+import { StrictMode, useEffect, useRef } from "react";
 import { createRoot } from "react-dom/client";
-import { AuthKitProvider, useAuth } from "@workos-inc/authkit-react";
 import { ConvexReactClient, useAction, useConvexAuth, useMutation, useQuery } from "convex/react";
+import { ConvexProviderWithAuth } from "convex/react";
 import { makeFunctionReference } from "convex/server";
-import { ConvexProviderWithAuthKit } from "@convex-dev/workos";
 import AccessGate from "./AccessGate";
 import App, { getLocalProgress, normalizeProgressSnapshot, type ProgressSnapshot } from "./App";
 import type { EntitlementStatus } from "./AccessGate";
-import {
-  consumeWhopEmbedFlag,
-  getCanonicalProductionUrl,
-  getReturnToUrl,
-  isEmbeddedInWhop,
-  isLocalOrigin,
-  redirectEmbedToCanonical,
-  shouldRedirectEmbedToCanonical,
-} from "./authRouting";
-import { prefetchSignInUrl, startWorkOSSignIn } from "./workosSignIn";
+import { useWhopAuth } from "./useWhopAuth";
+import { redirectEmbedToCanonical, shouldRedirectEmbedToCanonical } from "./authRouting";
 import "./styles.css";
 
 if (shouldRedirectEmbedToCanonical()) {
@@ -24,9 +15,8 @@ if (shouldRedirectEmbedToCanonical()) {
 }
 
 const convexUrl = import.meta.env.VITE_CONVEX_URL as string | undefined;
-const workosClientId = import.meta.env.VITE_WORKOS_CLIENT_ID as string | undefined;
 const whopMembershipUrl = import.meta.env.VITE_WHOP_MEMBERSHIP_URL as string | undefined;
-const authConfigured = Boolean(convexUrl && workosClientId);
+const authConfigured = Boolean(convexUrl);
 
 const progressApi = {
   get: makeFunctionReference<"query", Record<string, never>, ProgressSnapshot>("progress:get"),
@@ -38,16 +28,12 @@ const entitlementApi = {
 };
 
 const accessApi = {
-  activateLicense: makeFunctionReference<"action", { licenseKey: string }, { ok: boolean; message: string }>(
-    "access:activateLicense",
-  ),
   refreshAccess: makeFunctionReference<"action", Record<string, never>, { ok: boolean; message: string | null }>(
     "access:refreshAccess",
   ),
 };
 
-function RemoteApp() {
-  const auth = useAuth();
+function RemoteApp({ auth }: { auth: ReturnType<typeof useWhopAuth> }) {
   const convexAuth = useConvexAuth();
   const entitlement = useQuery(
     entitlementApi.getStatus,
@@ -58,41 +44,9 @@ function RemoteApp() {
     convexAuth.isAuthenticated && entitlement?.hasAccess ? {} : "skip",
   );
   const setProgress = useMutation(progressApi.set);
-  const activateLicense = useAction(accessApi.activateLicense);
   const refreshAccess = useAction(accessApi.refreshAccess);
   const migratedLocal = useRef(false);
   const refreshedAccess = useRef(false);
-  const [awaitingWhopReturn] = useState(() => consumeWhopEmbedFlag());
-  const [signInHref, setSignInHref] = useState<string | null>(null);
-  const [signInPrepFailed, setSignInPrepFailed] = useState(false);
-
-  useEffect(() => {
-    if (auth.isLoading || auth.user) {
-      setSignInHref(null);
-      setSignInPrepFailed(false);
-      return;
-    }
-
-    let active = true;
-    setSignInPrepFailed(false);
-    const returnTo = getReturnToUrl();
-    const timeoutId = window.setTimeout(() => {
-      if (active) setSignInPrepFailed(true);
-    }, 6000);
-
-    void prefetchSignInUrl(auth, returnTo).then((url) => {
-      if (!active) return;
-      if (url) {
-        setSignInHref(url);
-        setSignInPrepFailed(false);
-      }
-    });
-
-    return () => {
-      active = false;
-      window.clearTimeout(timeoutId);
-    };
-  }, [auth.isLoading, auth.user, auth.getSignInUrl]);
 
   useEffect(() => {
     if (!convexAuth.isAuthenticated || entitlement === undefined || refreshedAccess.current) return;
@@ -126,26 +80,11 @@ function RemoteApp() {
     }
   }, [convexAuth.isAuthenticated, entitlement?.hasAccess, remoteProgress, setProgress]);
 
-  const userLabel = auth.user?.email ?? auth.user?.firstName ?? "your account";
-  const signIn = () => startWorkOSSignIn(auth, getReturnToUrl());
-  const signOut = () => auth.signOut({ returnTo: getReturnToUrl() });
-
   return (
     <AccessGate
-      auth={{
-        isLoading: auth.isLoading,
-        isSignedIn: Boolean(auth.user),
-        userLabel,
-        signIn,
-        signOut,
-        embeddedInWhop: isEmbeddedInWhop(),
-        awaitingWhopReturn,
-        signInHref,
-        signInPrepFailed,
-      }}
+      auth={auth}
       entitlement={entitlement}
       entitlementLoading={convexAuth.isAuthenticated && entitlement === undefined}
-      onActivateLicense={async (licenseKey) => activateLicense({ licenseKey })}
       whopMembershipUrl={whopMembershipUrl}
     >
       <App
@@ -153,12 +92,9 @@ function RemoteApp() {
           configured: true,
           canSync: convexAuth.isAuthenticated && Boolean(entitlement?.hasAccess),
           isLoading: auth.isLoading,
-          isSignedIn: Boolean(auth.user),
-          userLabel,
-          signIn: () => {
-            void signIn();
-          },
-          signOut,
+          isSignedIn: auth.isAuthenticated,
+          userLabel: auth.userLabel,
+          signOut: auth.signOut,
         }}
         onRemoteChange={
           convexAuth.isAuthenticated && entitlement?.hasAccess
@@ -191,64 +127,50 @@ function isSameModeProgress(left: ProgressSnapshot["sol"], right: ProgressSnapsh
 }
 
 function Root() {
-  if (!authConfigured || !convexUrl || !workosClientId) {
+  if (!authConfigured || !convexUrl) {
     return (
       <AccessGate
-        auth={{ isLoading: false, isSignedIn: false, userLabel: null, signIn: () => undefined, signOut: () => undefined }}
-        deploymentIssue="Add VITE_CONVEX_URL and VITE_WORKOS_CLIENT_ID in your hosting provider, then redeploy."
+        auth={{
+          isLoading: false,
+          isAuthenticated: false,
+          userLabel: null,
+          whopProfile: null,
+          whopProfileLoading: false,
+          embeddedInWhop: false,
+          signIn: async () => ({ ok: false, message: "Convex is not configured." }),
+          signOut: () => undefined,
+          fetchAccessToken: async () => null,
+        }}
+        deploymentIssue="Add VITE_CONVEX_URL in Vercel, then redeploy."
         entitlement={undefined}
         entitlementLoading={false}
-        onActivateLicense={async () => ({ ok: false, message: "Sign-in is not configured yet." })}
+        whopMembershipUrl={whopMembershipUrl}
       >
         {null}
       </AccessGate>
     );
   }
 
-  const canonicalUrl = getCanonicalProductionUrl();
-  if (shouldRedirectPreviewToCanonical(canonicalUrl)) {
-    window.location.replace(`${canonicalUrl.origin}${window.location.pathname}${window.location.search}${window.location.hash}`);
-    return null;
-  }
-
   const convex = new ConvexReactClient(convexUrl);
-  const redirectUri = getWorkOSRedirectUri();
+
+  return <AuthenticatedApp convex={convex} />;
+}
+
+function AuthenticatedApp({ convex }: { convex: ConvexReactClient }) {
+  const auth = useWhopAuth();
 
   return (
-    <AuthKitProvider
-      clientId={workosClientId}
-      devMode={isLocalOrigin()}
-      onRedirectCallback={({ state }) => {
-        const url = getCanonicalProductionUrl();
-        const returnTo = typeof state?.returnTo === "string" ? state.returnTo : null;
-        if (returnTo) {
-          try {
-            if (new URL(returnTo).searchParams.has("whop_embed")) {
-              url.searchParams.set("whop_embed", "1");
-            }
-          } catch {
-            // ignore malformed returnTo
-          }
-        }
-        window.history.replaceState({}, "", `${url.pathname}${url.search}`);
-      }}
-      redirectUri={redirectUri}
+    <ConvexProviderWithAuth
+      client={convex}
+      useAuth={() => ({
+        isLoading: auth.isLoading,
+        isAuthenticated: auth.isAuthenticated,
+        fetchAccessToken: auth.fetchAccessToken,
+      })}
     >
-      <ConvexProviderWithAuthKit client={convex} useAuth={useAuth}>
-        <RemoteApp />
-      </ConvexProviderWithAuthKit>
-    </AuthKitProvider>
+      <RemoteApp auth={auth} />
+    </ConvexProviderWithAuth>
   );
-}
-
-function getWorkOSRedirectUri() {
-  if (isLocalOrigin()) return window.location.origin;
-  return getCanonicalProductionUrl().origin + "/";
-}
-
-function shouldRedirectPreviewToCanonical(canonicalUrl: URL) {
-  if (canonicalUrl.origin === window.location.origin) return false;
-  return /-trav54219s-projects\.vercel\.app$/i.test(window.location.hostname);
 }
 
 createRoot(document.getElementById("root")!).render(

@@ -94,7 +94,7 @@ export const getStatus = query({
         expiresAt: null,
         lastValidatedAt: null,
         needsRevalidation: false,
-        message: "Sign in, then enter your Whop license key.",
+        message: "Paste your Whop license key to unlock the tracker.",
       };
     }
 

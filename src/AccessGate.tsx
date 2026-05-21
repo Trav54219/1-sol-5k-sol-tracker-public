@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { useWhopAuth } from "./useWhopAuth";
 
 export type EntitlementStatus = {
   configured: boolean;
@@ -11,28 +12,13 @@ export type EntitlementStatus = {
   message: string | null;
 };
 
-export type AccessAuthState = {
-  isLoading: boolean;
-  isSignedIn: boolean;
-  userLabel: string | null;
-  signIn: () => void | Promise<{ ok: boolean; message?: string; mode?: "tab" | "same-window" }>;
-  signOut: () => void | Promise<void>;
-  /** True when running inside Whop's iframe (WorkOS must open in the top window). */
-  embeddedInWhop?: boolean;
-  /** Just finished OAuth in the sign-in tab; user should return to Whop. */
-  awaitingWhopReturn?: boolean;
-  /** Prefetched WorkOS authorize URL — enables a real link, not a no-op button. */
-  signInHref?: string | null;
-  signInPrepFailed?: boolean;
-};
+export type AccessAuthState = ReturnType<typeof useWhopAuth>;
 
 type AccessGateProps = {
   auth: AccessAuthState;
   entitlement: EntitlementStatus | undefined;
   entitlementLoading: boolean;
-  onActivateLicense: (licenseKey: string) => Promise<{ ok: boolean; message: string }>;
   whopMembershipUrl?: string;
-  /** Shown only when the app deployment is missing required env vars (operators). */
   deploymentIssue?: string | null;
   children: React.ReactNode;
 };
@@ -41,7 +27,6 @@ export default function AccessGate({
   auth,
   entitlement,
   entitlementLoading,
-  onActivateLicense,
   whopMembershipUrl = "https://whop.com/@me/settings/memberships/",
   deploymentIssue = null,
   children,
@@ -49,25 +34,19 @@ export default function AccessGate({
   const [licenseKey, setLicenseKey] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [signInBusy, setSignInBusy] = useState(false);
-  const [signInError, setSignInError] = useState<string | null>(null);
-  const [signInOpenedTab, setSignInOpenedTab] = useState(false);
-
-  const step: 1 | 2 = auth.isSignedIn ? 2 : 1;
 
   if (deploymentIssue) {
     return (
       <AccessShell step={1} title="App setup incomplete">
         <p className="access-lead">{deploymentIssue}</p>
-        <p className="access-footnote">Students will see sign-in and license activation once Convex and WorkOS are configured.</p>
       </AccessShell>
     );
   }
 
   if (auth.isLoading || entitlementLoading) {
     return (
-      <AccessShell step={step} title="Checking your access">
-        <p className="access-lead">Hang tight while we load your session.</p>
+      <AccessShell step={1} title="Loading">
+        <p className="access-lead">Connecting to Whop and your tracker…</p>
         <div className="access-loading" aria-hidden="true">
           <span className="access-loading-dot" />
           <span className="access-loading-dot" />
@@ -77,110 +56,14 @@ export default function AccessGate({
     );
   }
 
-  if (auth.awaitingWhopReturn && auth.isSignedIn) {
-    return (
-      <AccessShell step={2} title="You're signed in">
-        <p className="access-lead">
-          Email login worked. Go back to your <strong>Whop</strong> tab, open <strong>Software | Sol Tracker</strong> again, and paste your license key.
-        </p>
-        <p className="access-hint access-hint--prominent">
-          If Whop still shows an error page, change the software app URL to{" "}
-          <strong>https://sol-speedrun-tracker.vercel.app/</strong> in Whop settings (not an authkit.app link).
-        </p>
-      </AccessShell>
-    );
-  }
+  const hasAccess = auth.isAuthenticated && (entitlement?.hasAccess ?? false);
 
-  if (!auth.isSignedIn) {
-    return (
-      <AccessShell step={1} title="Sign in to save your progress">
-        <p className="access-lead">
-          Use the <strong>same email</strong> you used on Whop. That email is how your tracker progress is stored in the cloud.
-        </p>
-        <ol className="access-checklist">
-          <li>Sign in with your email (one-time)</li>
-          <li>Paste your Whop license key from the sidebar on the next screen</li>
-        </ol>
-        {auth.embeddedInWhop ? (
-          <p className="access-hint access-hint--prominent">
-            Sign-in opens in a <strong>new tab</strong> (Whop blocks login inside this panel). After you finish, come back to this Whop tab and refresh if needed.
-          </p>
-        ) : null}
-        {signInOpenedTab ? (
-          <p className="access-hint access-hint--prominent">
-            Sign-in tab opened. Complete login there, then return here and refresh this page.
-          </p>
-        ) : null}
-        <div className="access-actions access-actions--stack">
-          {auth.signInHref ? (
-            <a
-              className="access-btn access-btn--primary access-btn--link"
-              href={auth.signInHref}
-              onClick={(event) => {
-                if (!auth.embeddedInWhop) return;
-                event.preventDefault();
-                setSignInBusy(true);
-                setSignInError(null);
-                void Promise.resolve(auth.signIn())
-                  .then((result) => {
-                    if (result && !result.ok) {
-                      setSignInError(result.message ?? "Sign-in could not start.");
-                      return;
-                    }
-                    if (result?.mode === "tab") setSignInOpenedTab(true);
-                  })
-                  .catch(() => setSignInError("Allow pop-ups for this site, then try again."))
-                  .finally(() => setSignInBusy(false));
-              }}
-              rel="noopener noreferrer"
-              target={auth.embeddedInWhop ? "_blank" : undefined}
-            >
-              {signInBusy ? "Opening sign-in…" : "Continue with email"}
-            </a>
-          ) : (
-            <button
-              className="access-btn access-btn--primary"
-              disabled={!auth.signInPrepFailed}
-              onClick={() => {
-                if (!auth.signInPrepFailed) return;
-                setSignInBusy(true);
-                setSignInError(null);
-                void Promise.resolve(auth.signIn())
-                  .then((result) => {
-                    if (result && !result.ok) setSignInError(result.message ?? "Sign-in could not start.");
-                  })
-                  .catch(() => setSignInError("Sign-in could not start. Refresh and try again."))
-                  .finally(() => setSignInBusy(false));
-              }}
-              type="button"
-            >
-              {auth.signInPrepFailed ? "Retry sign-in" : "Preparing sign-in…"}
-            </button>
-          )}
-        </div>
-        {auth.signInPrepFailed && !auth.signInHref ? (
-          <p className="access-error" role="alert">
-            Sign-in could not be prepared. Hard-refresh the page. If it keeps failing, confirm WorkOS redirect URI is{" "}
-            <strong>https://sol-speedrun-tracker.vercel.app/</strong> (with trailing slash).
-          </p>
-        ) : null}
-        {signInError ? (
-          <p className="access-error" role="alert">
-            {signInError}
-          </p>
-        ) : null}
-        <p className="access-footnote">Your license key proves you purchased the course; your email keeps progress tied to you.</p>
-      </AccessShell>
-    );
-  }
-
-  const hasAccess = entitlement?.hasAccess ?? false;
   if (!hasAccess) {
     const handleSubmit = async () => {
       setSubmitting(true);
       setError(null);
       try {
-        const result = await onActivateLicense(licenseKey);
+        const result = await auth.signIn(licenseKey);
         if (!result.ok) {
           setError(result.message);
           return;
@@ -194,11 +77,29 @@ export default function AccessGate({
       }
     };
 
+    const whopConnected = Boolean(auth.whopProfile);
+    const step = whopConnected ? 2 : 1;
+
     return (
-      <AccessShell step={2} title="Activate your license">
-        <p className="access-lead">
-          Signed in as <strong>{auth.userLabel ?? "your account"}</strong>. Paste the license key from your Whop receipt or orders page to unlock the tracker.
-        </p>
+      <AccessShell step={step} title="Activate your tracker">
+        {auth.embeddedInWhop ? (
+          <p className="access-hint access-hint--prominent">
+            {whopConnected
+              ? "You're signed in to Whop. Paste your license key below to unlock the tracker."
+              : "Open this page from your Whop course (Software | Sol Tracker) so we can verify your Whop account."}
+          </p>
+        ) : (
+          <p className="access-lead">
+            Open <strong>Software | Sol Tracker</strong> inside Whop, then paste your license key here.
+          </p>
+        )}
+
+        {whopConnected ? (
+          <p className="access-lead">
+            Whop account: <strong>{auth.whopProfile?.userId}</strong>
+          </p>
+        ) : null}
+
         <div className="access-field">
           <label className="access-label" htmlFor="license-key">
             Whop license key
@@ -208,7 +109,7 @@ export default function AccessGate({
             className="access-input"
             id="license-key"
             onChange={(event) => setLicenseKey(event.target.value)}
-            placeholder="e.g. mem_xxxxxxxx or key from your receipt"
+            placeholder="Paste key from Whop (sidebar or receipt)"
             spellCheck={false}
             value={licenseKey}
           />
@@ -216,24 +117,21 @@ export default function AccessGate({
         <div className="access-actions">
           <button
             className="access-btn access-btn--primary"
-            disabled={submitting || !licenseKey.trim()}
+            disabled={submitting || !licenseKey.trim() || (!whopConnected && auth.embeddedInWhop)}
             onClick={() => void handleSubmit()}
             type="button"
           >
             {submitting ? "Validating…" : "Activate license"}
           </button>
-          <button className="access-btn access-btn--ghost" onClick={() => void auth.signOut()} type="button">
-            Sign out
-          </button>
         </div>
         {entitlement?.message ? <p className="access-hint">{entitlement.message}</p> : null}
         {error ? <p className="access-error" role="alert">{error}</p> : null}
         <p className="access-footnote">
-          Find your key in your Whop purchase email or on{" "}
+          Find your key in the Whop sidebar or on{" "}
           <a href={whopMembershipUrl} rel="noopener noreferrer" target="_blank">
             your Whop memberships page
           </a>
-          . Need to renew? Manage billing there.
+          .
         </p>
       </AccessShell>
     );
@@ -263,7 +161,7 @@ function AccessShell({
         </header>
 
         <nav className="access-stepper" aria-label="Access steps">
-          <StepPill done={step > 1} active={step === 1} label="Sign in" detail="Your email" />
+          <StepPill done={step > 1} active={step === 1} label="Whop" detail="Your account" />
           <span className="access-stepper-line" aria-hidden="true" />
           <StepPill done={false} active={step === 2} label="License" detail="Whop key" />
         </nav>

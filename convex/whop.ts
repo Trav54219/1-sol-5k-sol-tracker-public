@@ -4,7 +4,7 @@ import { createHash } from "node:crypto";
 
 const WHOP_V2_BASE = "https://api.whop.com/api/v2";
 const WHOP_V1_BASE = "https://api.whop.com/api/v1";
-const METADATA_SUBJECT_KEY = "workos_subject";
+const METADATA_USER_KEY = "whop_user_id";
 
 export type WhopValidationResult =
   | {
@@ -29,11 +29,11 @@ export function normalizeLicenseKey(licenseKey: string) {
 
 export async function validateLicenseWithWhop({
   licenseKey,
-  workosSubject,
+  whopUserId,
   apiKey,
 }: {
   licenseKey: string;
-  workosSubject: string;
+  whopUserId: string;
   apiKey: string;
 }): Promise<WhopValidationResult> {
   const normalizedKey = normalizeLicenseKey(licenseKey);
@@ -52,7 +52,7 @@ export async function validateLicenseWithWhop({
         },
         body: JSON.stringify({
           metadata: {
-            [METADATA_SUBJECT_KEY]: workosSubject,
+            [METADATA_USER_KEY]: whopUserId,
           },
         }),
       },

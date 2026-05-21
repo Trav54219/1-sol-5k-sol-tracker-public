@@ -1,26 +1,11 @@
-declare const process: {
-  env: {
-    WORKOS_CLIENT_ID?: string;
-  };
-};
-
-const clientId = process.env.WORKOS_CLIENT_ID;
+const siteUrl = process.env.CONVEX_SITE_URL;
 
 export default {
-  providers: clientId
+  providers: siteUrl
     ? [
         {
-          type: "customJwt",
-          issuer: "https://api.workos.com/",
-          algorithm: "RS256",
-          jwks: `https://api.workos.com/sso/jwks/${clientId}`,
-          applicationID: clientId,
-        },
-        {
-          type: "customJwt",
-          issuer: `https://api.workos.com/user_management/${clientId}`,
-          algorithm: "RS256",
-          jwks: `https://api.workos.com/sso/jwks/${clientId}`,
+          domain: siteUrl,
+          applicationID: "convex",
         },
       ]
     : [],

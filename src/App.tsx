@@ -1890,13 +1890,11 @@ function Stat({ label, value, hint }: { label: string; value: string; hint?: str
 }
 
 function AuthControls({ auth, remoteLoading }: { auth?: AuthState; remoteLoading: boolean }) {
-  const [authError, setAuthError] = useState<string | null>(null);
-
   if (!auth?.configured) {
     return (
       <div className="auth-card">
         <div className="auth-title">Sign-in not configured</div>
-        <p>Add your Convex and WorkOS env vars to enable cloud progress.</p>
+        <p>Add your Convex and Whop env vars to enable cloud progress.</p>
       </div>
     );
   }
@@ -1920,25 +1918,10 @@ function AuthControls({ auth, remoteLoading }: { auth?: AuthState; remoteLoading
     );
   }
 
-  const handleSignIn = async () => {
-    setAuthError(null);
-
-    try {
-      await auth.signIn?.();
-    } catch (error) {
-      console.error(error);
-      setAuthError("Sign-in could not start. Check the configured WorkOS redirect URL and allowed origin.");
-    }
-  };
-
   return (
     <div className="auth-card">
-      <div className="auth-title">Save your progress</div>
-      <p>Sign in to sync checked days across devices.</p>
-      <button className="auth-btn" onClick={() => void handleSignIn()} type="button">
-        Sign in
-      </button>
-      {authError ? <p className="auth-error">{authError}</p> : null}
+      <div className="auth-title">Activate to sync</div>
+      <p>Paste your Whop license key on the access screen to save progress to the cloud.</p>
     </div>
   );
 }
