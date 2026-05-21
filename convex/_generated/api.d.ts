@@ -9,8 +9,10 @@
  */
 
 import type * as access from "../access.js";
+import type * as auth from "../auth.js";
 import type * as authKeys from "../authKeys.js";
 import type * as entitlements from "../entitlements.js";
+import type * as http from "../http.js";
 import type * as progress from "../progress.js";
 import type * as whop from "../whop.js";
 import type * as whopAuth from "../whopAuth.js";
@@ -23,8 +25,10 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   access: typeof access;
+  auth: typeof auth;
   authKeys: typeof authKeys;
   entitlements: typeof entitlements;
+  http: typeof http;
   progress: typeof progress;
   whop: typeof whop;
   whopAuth: typeof whopAuth;

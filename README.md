@@ -53,7 +53,7 @@ npx convex env set WHOP_ACCESS_BYPASS true
 
 ## Whop software app
 
-- [Install Software app](https://whop.com/apps/app_jHH5YT7jHYQANi/install/)
+- [Install Software app](https://whop.com/apps/app_jHH5YT7jHYQANi/install/) (marketplace template; your developer app ID is separate)
 - **Download / app URL:** `https://sol-speedrun-tracker.vercel.app/` only (not `*.authkit.app`)
 - See [Whop SaaS docs](https://docs.whop.com/supported-business-models/saas) for license keys and [email login](https://docs.whop.com/supported-business-models/saas#email-login-integration)
 
