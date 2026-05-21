@@ -45,11 +45,17 @@ export type WhopSessionProfile = {
   appId: string;
 };
 
+const SESSION_TIMEOUT_MS = 8000;
+
 export async function fetchWhopSessionProfile() {
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), SESSION_TIMEOUT_MS);
+
   try {
     const response = await fetch("/api/whop/session", {
       method: "POST",
       credentials: "include",
+      signal: controller.signal,
     });
     if (!response.ok) return null;
     const body = (await response.json()) as { ok?: boolean; userId?: string; appId?: string };
@@ -57,5 +63,7 @@ export async function fetchWhopSessionProfile() {
     return { userId: body.userId, appId: body.appId };
   } catch {
     return null;
+  } finally {
+    window.clearTimeout(timeout);
   }
 }

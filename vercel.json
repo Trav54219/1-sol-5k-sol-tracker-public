@@ -8,7 +8,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "frame-ancestors 'self' https://whop.com https://*.whop.com;"
+          "value": "frame-ancestors 'self' https://whop.com https://*.whop.com https://whop.io https://*.whop.io;"
         }
       ]
     }

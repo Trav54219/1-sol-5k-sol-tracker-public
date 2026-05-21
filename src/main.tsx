@@ -8,11 +8,13 @@ import App, { getLocalProgress, normalizeProgressSnapshot, type ProgressSnapshot
 import type { EntitlementStatus } from "./AccessGate";
 import { useWhopAuth } from "./useWhopAuth";
 import { createSdk } from "@whop/iframe";
+import BootErrorBoundary from "./BootErrorBoundary";
 import { redirectEmbedToCanonical, shouldRedirectEmbedToCanonical } from "./authRouting";
+import { isEmbeddedInWhop } from "./whopSession";
 import "./styles.css";
 
 const whopAppId = import.meta.env.VITE_WHOP_APP_ID as string | undefined;
-if (whopAppId) {
+if (whopAppId && isEmbeddedInWhop()) {
   try {
     createSdk({ appId: whopAppId });
   } catch (error) {
@@ -183,8 +185,13 @@ function AuthenticatedApp({ convex }: { convex: ConvexReactClient }) {
   );
 }
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <Root />
-  </StrictMode>,
-);
+const rootElement = document.getElementById("root");
+if (rootElement) {
+  createRoot(rootElement).render(
+    <StrictMode>
+      <BootErrorBoundary>
+        <Root />
+      </BootErrorBoundary>
+    </StrictMode>,
+  );
+}
