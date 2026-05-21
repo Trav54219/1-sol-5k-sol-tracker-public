@@ -31,6 +31,17 @@ const activePlan = v.object({
 });
 
 export default defineSchema({
+  entitlements: defineTable({
+    expiresAt: v.optional(v.number()),
+    lastValidatedAt: v.number(),
+    licenseKeyHash: v.string(),
+    membershipId: v.string(),
+    status: v.string(),
+    updatedAt: v.number(),
+    userIdentifier: v.string(),
+    userSubject: v.string(),
+  })
+    .index("by_user_subject", ["userSubject"]),
   progress: defineTable({
     activePlan: v.optional(v.union(activePlan, v.null())),
     checkedDays: v.array(v.number()),

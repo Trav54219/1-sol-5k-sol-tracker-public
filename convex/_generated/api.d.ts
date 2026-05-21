@@ -8,7 +8,10 @@
  * @module
  */
 
+import type * as access from "../access.js";
+import type * as entitlements from "../entitlements.js";
 import type * as progress from "../progress.js";
+import type * as whop from "../whop.js";
 
 import type {
   ApiFromModules,
@@ -17,7 +20,10 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  access: typeof access;
+  entitlements: typeof entitlements;
   progress: typeof progress;
+  whop: typeof whop;
 }>;
 
 /**

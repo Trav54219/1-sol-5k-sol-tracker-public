@@ -1,30 +1,72 @@
 import { StrictMode, useEffect, useRef } from "react";
 import { createRoot } from "react-dom/client";
 import { AuthKitProvider, useAuth } from "@workos-inc/authkit-react";
-import { ConvexReactClient, useConvexAuth, useMutation, useQuery } from "convex/react";
+import { ConvexReactClient, useAction, useConvexAuth, useMutation, useQuery } from "convex/react";
 import { makeFunctionReference } from "convex/server";
 import { ConvexProviderWithAuthKit } from "@convex-dev/workos";
+import AccessGate from "./AccessGate";
 import App, { getLocalProgress, normalizeProgressSnapshot, type ProgressSnapshot } from "./App";
+import type { EntitlementStatus } from "./AccessGate";
 import "./styles.css";
 
 const convexUrl = import.meta.env.VITE_CONVEX_URL as string | undefined;
 const workosClientId = import.meta.env.VITE_WORKOS_CLIENT_ID as string | undefined;
 const workosRedirectUri = import.meta.env.VITE_WORKOS_REDIRECT_URI as string | undefined;
+const whopMembershipUrl = import.meta.env.VITE_WHOP_MEMBERSHIP_URL as string | undefined;
 const authConfigured = Boolean(convexUrl && workosClientId);
+
 const progressApi = {
   get: makeFunctionReference<"query", Record<string, never>, ProgressSnapshot>("progress:get"),
   set: makeFunctionReference<"mutation", ProgressSnapshot, null>("progress:set"),
 };
 
+const entitlementApi = {
+  getStatus: makeFunctionReference<"query", Record<string, never>, EntitlementStatus>("entitlements:getStatus"),
+};
+
+const accessApi = {
+  activateLicense: makeFunctionReference<"action", { licenseKey: string }, { ok: boolean; message: string }>(
+    "access:activateLicense",
+  ),
+  refreshAccess: makeFunctionReference<"action", Record<string, never>, { ok: boolean; message: string | null }>(
+    "access:refreshAccess",
+  ),
+};
+
 function RemoteApp() {
   const auth = useAuth();
   const convexAuth = useConvexAuth();
-  const remoteProgress = useQuery(progressApi.get, convexAuth.isAuthenticated ? {} : "skip");
+  const entitlement = useQuery(
+    entitlementApi.getStatus,
+    convexAuth.isAuthenticated ? {} : "skip",
+  );
+  const remoteProgress = useQuery(
+    progressApi.get,
+    convexAuth.isAuthenticated && entitlement?.hasAccess ? {} : "skip",
+  );
   const setProgress = useMutation(progressApi.set);
+  const activateLicense = useAction(accessApi.activateLicense);
+  const refreshAccess = useAction(accessApi.refreshAccess);
   const migratedLocal = useRef(false);
+  const refreshedAccess = useRef(false);
 
   useEffect(() => {
-    if (!convexAuth.isAuthenticated || remoteProgress === undefined || migratedLocal.current) return;
+    if (!convexAuth.isAuthenticated || entitlement === undefined || refreshedAccess.current) return;
+    if (!entitlement.configured) return;
+    refreshedAccess.current = true;
+    void refreshAccess({});
+  }, [convexAuth.isAuthenticated, entitlement, refreshAccess]);
+
+  useEffect(() => {
+    if (!entitlement?.hasAccess) {
+      refreshedAccess.current = false;
+    }
+  }, [entitlement?.hasAccess]);
+
+  useEffect(() => {
+    if (!convexAuth.isAuthenticated || !entitlement?.hasAccess || remoteProgress === undefined || migratedLocal.current) {
+      return;
+    }
 
     const localProgress = getLocalProgress();
     const normalizedRemoteProgress = normalizeProgressSnapshot(remoteProgress);
@@ -38,31 +80,45 @@ function RemoteApp() {
       migratedLocal.current = true;
       void setProgress(mergedProgress);
     }
-  }, [convexAuth.isAuthenticated, remoteProgress, setProgress]);
+  }, [convexAuth.isAuthenticated, entitlement?.hasAccess, remoteProgress, setProgress]);
 
   const userLabel = auth.user?.email ?? auth.user?.firstName ?? "your account";
 
   return (
-    <App
+    <AccessGate
       auth={{
-        configured: true,
-        canSync: convexAuth.isAuthenticated,
         isLoading: auth.isLoading,
         isSignedIn: Boolean(auth.user),
         userLabel,
         signIn: () => auth.signIn({ state: { returnTo: getReturnToUrl() } }),
         signOut: () => auth.signOut({ returnTo: window.location.origin }),
       }}
-      onRemoteChange={
-        convexAuth.isAuthenticated
-          ? async (progress) => {
-              await setProgress(progress);
-            }
-          : undefined
-      }
-      remoteProgress={convexAuth.isAuthenticated ? remoteProgress : undefined}
-      remoteLoading={convexAuth.isAuthenticated && remoteProgress === undefined}
-    />
+      entitlement={entitlement}
+      entitlementLoading={convexAuth.isAuthenticated && entitlement === undefined}
+      onActivateLicense={async (licenseKey) => activateLicense({ licenseKey })}
+      whopMembershipUrl={whopMembershipUrl}
+    >
+      <App
+        auth={{
+          configured: true,
+          canSync: convexAuth.isAuthenticated && Boolean(entitlement?.hasAccess),
+          isLoading: auth.isLoading,
+          isSignedIn: Boolean(auth.user),
+          userLabel,
+          signIn: () => auth.signIn({ state: { returnTo: getReturnToUrl() } }),
+          signOut: () => auth.signOut({ returnTo: window.location.origin }),
+        }}
+        onRemoteChange={
+          convexAuth.isAuthenticated && entitlement?.hasAccess
+            ? async (progress) => {
+                await setProgress(progress);
+              }
+            : undefined
+        }
+        remoteProgress={convexAuth.isAuthenticated && entitlement?.hasAccess ? remoteProgress : undefined}
+        remoteLoading={convexAuth.isAuthenticated && entitlement?.hasAccess && remoteProgress === undefined}
+      />
+    </AccessGate>
   );
 }
 
@@ -84,7 +140,25 @@ function isSameModeProgress(left: ProgressSnapshot["sol"], right: ProgressSnapsh
 
 function Root() {
   if (!authConfigured || !convexUrl || !workosClientId) {
-    return <App auth={{ configured: false, canSync: false, isLoading: false, isSignedIn: false, userLabel: null }} />;
+    return (
+      <AccessGate
+        auth={{ isLoading: false, isSignedIn: false, userLabel: null, signIn: () => undefined, signOut: () => undefined }}
+        entitlement={{
+          configured: false,
+          hasAccess: false,
+          status: "none",
+          membershipId: null,
+          expiresAt: null,
+          lastValidatedAt: null,
+          needsRevalidation: false,
+          message: "Add VITE_CONVEX_URL and VITE_WORKOS_CLIENT_ID to enable sign-in and licensing.",
+        }}
+        entitlementLoading={false}
+        onActivateLicense={async () => ({ ok: false, message: "Sign-in is not configured yet." })}
+      >
+        {null}
+      </AccessGate>
+    );
   }
 
   const canonicalUrl = getCanonicalAppUrl();

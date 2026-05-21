@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import type { MutationCtx, QueryCtx } from "./_generated/server";
+import { requireEntitlementAccess } from "./entitlements";
 
 const tradeJournalEntryValidator = v.object({
   createdAt: v.number(),
@@ -71,14 +72,6 @@ type ActivePlanInput = {
   }[];
 } | null;
 
-async function requireUserIdentity(ctx: QueryCtx | MutationCtx) {
-  const identity = await ctx.auth.getUserIdentity();
-  if (!identity) {
-    throw new Error("Sign in to save progress.");
-  }
-  return identity;
-}
-
 async function getOptionalUserIdentity(ctx: QueryCtx | MutationCtx) {
   return await ctx.auth.getUserIdentity();
 }
@@ -102,6 +95,8 @@ export const get = query({
   handler: async (ctx) => {
     const identity = await getOptionalUserIdentity(ctx);
     if (!identity) return emptyProgress();
+
+    await requireEntitlementAccess(ctx);
 
     const progress = await getProgressForUser(ctx, identity);
 
@@ -149,7 +144,7 @@ export const set = mutation({
     planHistory: planHistoryValidator,
   },
   handler: async (ctx, args) => {
-    const identity = await requireUserIdentity(ctx);
+    const identity = await requireEntitlementAccess(ctx);
     const solCheckedDays = sanitizeCheckedDays(args.sol.checkedDays);
     const solCompletions = clampCompletions(args.sol.completions);
     const usdcCheckedDays = sanitizeCheckedDays(args.usdc.checkedDays);
