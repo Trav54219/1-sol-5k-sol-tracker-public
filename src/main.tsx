@@ -6,7 +6,7 @@ import { makeFunctionReference } from "convex/server";
 import AccessGate from "./AccessGate";
 import App, { getLocalProgress, normalizeProgressSnapshot, type ProgressSnapshot } from "./App";
 import type { EntitlementStatus } from "./AccessGate";
-import { useWhopAuth } from "./useWhopAuth";
+import { useWhopAccess, useWhopAuthForConvex } from "./useWhopAuth";
 import { WhopIframeSdkProvider, WhopThemeScript } from "@whop/react";
 import BootErrorBoundary from "./BootErrorBoundary";
 import { redirectEmbedToCanonical, shouldRedirectEmbedToCanonical } from "./authRouting";
@@ -37,7 +37,7 @@ const accessApi = {
   ),
 };
 
-function RemoteApp({ auth }: { auth: ReturnType<typeof useWhopAuth> }) {
+function RemoteApp({ auth }: { auth: ReturnType<typeof useWhopAccess> }) {
   const convexAuth = useConvexAuth();
   const entitlement = useQuery(
     entitlementApi.getStatus,
@@ -143,7 +143,6 @@ function Root() {
           embeddedInWhop: false,
           signIn: async () => ({ ok: false, message: "Convex is not configured." }),
           signOut: () => undefined,
-          fetchAccessToken: async () => null,
         }}
         deploymentIssue="Add VITE_CONVEX_URL in Vercel, then redeploy."
         entitlement={undefined}
@@ -161,20 +160,16 @@ function Root() {
 }
 
 function AuthenticatedApp({ convex }: { convex: ConvexReactClient }) {
-  const auth = useWhopAuth();
-
   return (
-    <ConvexProviderWithAuth
-      client={convex}
-      useAuth={() => ({
-        isLoading: auth.isLoading,
-        isAuthenticated: auth.isAuthenticated,
-        fetchAccessToken: auth.fetchAccessToken,
-      })}
-    >
-      <RemoteApp auth={auth} />
+    <ConvexProviderWithAuth client={convex} useAuth={useWhopAuthForConvex}>
+      <RemoteAppWithAuth />
     </ConvexProviderWithAuth>
   );
+}
+
+function RemoteAppWithAuth() {
+  const auth = useWhopAccess();
+  return <RemoteApp auth={auth} />;
 }
 
 const rootElement = document.getElementById("root");

@@ -23,12 +23,63 @@ const signInWithLicenseRef = makeFunctionReference<
   SignInResult
 >("auth:signInWithLicense");
 
-export function useWhopAuth() {
+const TOKEN_CHANGED_EVENT = "sol-tracker-token-changed";
+
+function notifyTokenChanged() {
+  window.dispatchEvent(new Event(TOKEN_CHANGED_EVENT));
+}
+
+/** Passed to ConvexProviderWithAuth — must not call useConvexAuth. */
+export function useWhopAuthForConvex() {
+  const [token, setToken] = useState<string | null>(() => getStoredAuthToken());
+  const [whopProfileLoading, setWhopProfileLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    setWhopProfileLoading(true);
+
+    void (async () => {
+      await fetchWhopSessionProfile();
+      if (!active) return;
+      setWhopProfileLoading(false);
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    const syncToken = () => setToken(getStoredAuthToken());
+    window.addEventListener(TOKEN_CHANGED_EVENT, syncToken);
+    window.addEventListener("storage", syncToken);
+    return () => {
+      window.removeEventListener(TOKEN_CHANGED_EVENT, syncToken);
+      window.removeEventListener("storage", syncToken);
+    };
+  }, []);
+
+  const fetchAccessToken = useCallback(async () => {
+    return getStoredAuthToken();
+  }, []);
+
+  return useMemo(
+    () => ({
+      isLoading: whopProfileLoading,
+      isAuthenticated: Boolean(token),
+      fetchAccessToken,
+    }),
+    [fetchAccessToken, token, whopProfileLoading],
+  );
+}
+
+/** UI auth state — call only inside ConvexProviderWithAuth. */
+export function useWhopAccess() {
   const convexAuth = useConvexAuth();
   const signInWithLicense = useAction(signInWithLicenseRef);
-  const [token, setToken] = useState<string | null>(() => getStoredAuthToken());
   const [whopProfile, setWhopProfile] = useState<WhopSessionProfile | null>(null);
   const [whopProfileLoading, setWhopProfileLoading] = useState(true);
+
   useEffect(() => {
     let active = true;
     setWhopProfileLoading(true);
@@ -45,11 +96,6 @@ export function useWhopAuth() {
     };
   }, []);
 
-  const fetchAccessToken = useCallback(async () => {
-    if (!token) return null;
-    return token;
-  }, [token]);
-
   const signIn = useCallback(
     async (licenseKey: string) => {
       const result = await signInWithLicense({
@@ -59,7 +105,7 @@ export function useWhopAuth() {
 
       if (result.ok && result.accessToken) {
         setStoredAuthToken(result.accessToken);
-        setToken(result.accessToken);
+        notifyTokenChanged();
       }
 
       return result;
@@ -69,11 +115,11 @@ export function useWhopAuth() {
 
   const signOut = useCallback(() => {
     clearStoredAuthToken();
-    setToken(null);
+    notifyTokenChanged();
   }, []);
 
   const isLoading = whopProfileLoading || convexAuth.isLoading;
-  const isAuthenticated = Boolean(token) && convexAuth.isAuthenticated;
+  const isAuthenticated = convexAuth.isAuthenticated;
 
   return useMemo(
     () => ({
@@ -85,8 +131,7 @@ export function useWhopAuth() {
       embeddedInWhop: isEmbeddedInWhop(),
       signIn,
       signOut,
-      fetchAccessToken,
     }),
-    [fetchAccessToken, isAuthenticated, isLoading, signIn, signOut, whopProfile, whopProfileLoading],
+    [isAuthenticated, isLoading, signIn, signOut, whopProfile, whopProfileLoading],
   );
 }

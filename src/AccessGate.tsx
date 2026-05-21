@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { useWhopAuth } from "./useWhopAuth";
+import type { useWhopAccess } from "./useWhopAuth";
 
 export type EntitlementStatus = {
   configured: boolean;
@@ -12,7 +12,7 @@ export type EntitlementStatus = {
   message: string | null;
 };
 
-export type AccessAuthState = ReturnType<typeof useWhopAuth>;
+export type AccessAuthState = ReturnType<typeof useWhopAccess>;
 
 type AccessGateProps = {
   auth: AccessAuthState;
