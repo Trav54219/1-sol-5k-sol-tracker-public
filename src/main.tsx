@@ -7,20 +7,12 @@ import AccessGate from "./AccessGate";
 import App, { getLocalProgress, normalizeProgressSnapshot, type ProgressSnapshot } from "./App";
 import type { EntitlementStatus } from "./AccessGate";
 import { useWhopAuth } from "./useWhopAuth";
-import { createSdk } from "@whop/iframe";
+import { WhopIframeSdkProvider, WhopThemeScript } from "@whop/react";
 import BootErrorBoundary from "./BootErrorBoundary";
 import { redirectEmbedToCanonical, shouldRedirectEmbedToCanonical } from "./authRouting";
-import { isEmbeddedInWhop } from "./whopSession";
 import "./styles.css";
 
 const whopAppId = import.meta.env.VITE_WHOP_APP_ID as string | undefined;
-if (whopAppId && isEmbeddedInWhop()) {
-  try {
-    createSdk({ appId: whopAppId });
-  } catch (error) {
-    console.warn("Whop iframe SDK init failed", error);
-  }
-}
 
 if (shouldRedirectEmbedToCanonical()) {
   redirectEmbedToCanonical();
@@ -187,11 +179,20 @@ function AuthenticatedApp({ convex }: { convex: ConvexReactClient }) {
 
 const rootElement = document.getElementById("root");
 if (rootElement) {
+  const app = (
+    <BootErrorBoundary>
+      <Root />
+    </BootErrorBoundary>
+  );
+
   createRoot(rootElement).render(
     <StrictMode>
-      <BootErrorBoundary>
-        <Root />
-      </BootErrorBoundary>
+      <WhopThemeScript />
+      {whopAppId ? (
+        <WhopIframeSdkProvider options={{ appId: whopAppId }}>{app}</WhopIframeSdkProvider>
+      ) : (
+        app
+      )}
     </StrictMode>,
   );
 }

@@ -2,17 +2,6 @@
   "framework": "vite",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "Content-Security-Policy",
-          "value": "frame-ancestors 'self' https://whop.com https://*.whop.com https://whop.io https://*.whop.io;"
-        }
-      ]
-    }
-  ],
   "rewrites": [
     {
       "source": "/api/whop/:path*",

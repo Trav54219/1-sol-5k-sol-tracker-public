@@ -15,6 +15,7 @@
   "dependencies": {
     "@whop/api": "^0.0.51",
     "@whop/iframe": "^0.0.6",
+    "@whop/react": "^0.3.2",
     "convex": "1.36.1",
     "jose": "^6.2.3",
     "react": "19.2.5",
