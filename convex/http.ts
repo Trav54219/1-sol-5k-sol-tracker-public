@@ -1,7 +1,7 @@
 import { httpRouter } from "convex/server";
 import { httpAction } from "./_generated/server";
-import { getAuthIssuer, getJwksJson } from "./authKeys";
-import { readWhopTokenFromRequest, verifyWhopUserToken } from "./whopAuth";
+import { internal } from "./_generated/api";
+import { getAuthIssuer } from "./authKeys";
 
 const http = httpRouter();
 
@@ -23,9 +23,9 @@ http.route({
 http.route({
   path: "/.well-known/jwks.json",
   method: "GET",
-  handler: httpAction(async () => {
+  handler: httpAction(async (ctx) => {
     try {
-      const jwks = await getJwksJson();
+      const jwks = await ctx.runAction(internal.authKeys.jwksJson, {});
       return new Response(JSON.stringify(jwks), {
         headers: { "Content-Type": "application/json" },
       });
@@ -42,9 +42,9 @@ http.route({
 http.route({
   path: "/whop/session",
   method: "POST",
-  handler: httpAction(async (_ctx, request) => {
-    const token = readWhopTokenFromRequest(request);
-    const user = await verifyWhopUserToken(token);
+  handler: httpAction(async (ctx, request) => {
+    const token = request.headers.get("x-whop-user-token");
+    const user = await ctx.runAction(internal.whopAuth.resolveSession, { token });
 
     if (!user) {
       return new Response(JSON.stringify({ ok: false, message: "Not signed in to Whop." }), {
@@ -53,14 +53,9 @@ http.route({
       });
     }
 
-    return new Response(
-      JSON.stringify({
-        ok: true,
-        userId: user.userId,
-        appId: user.appId,
-      }),
-      { headers: { "Content-Type": "application/json" } },
-    );
+    return new Response(JSON.stringify({ ok: true, ...user }), {
+      headers: { "Content-Type": "application/json" },
+    });
   }),
 });
 

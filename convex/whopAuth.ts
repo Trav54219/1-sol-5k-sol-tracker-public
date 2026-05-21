@@ -1,5 +1,7 @@
 "use node";
 
+import { v } from "convex/values";
+import { internalAction } from "./_generated/server";
 import { WhopServerSdk } from "@whop/api";
 
 export type WhopUserIdentity = {
@@ -43,6 +45,13 @@ export async function verifyWhopUserToken(token: string | null | undefined) {
   }
 }
 
-export function readWhopTokenFromRequest(request: Request) {
-  return request.headers.get("x-whop-user-token");
-}
+export const resolveSession = internalAction({
+  args: {
+    token: v.union(v.string(), v.null()),
+  },
+  handler: async (_ctx, args) => {
+    const user = await verifyWhopUserToken(args.token ?? undefined);
+    if (!user) return null;
+    return user;
+  },
+});

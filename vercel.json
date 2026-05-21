@@ -5,7 +5,7 @@
   "rewrites": [
     {
       "source": "/api/whop/:path*",
-      "destination": "https://hardy-aardvark-89.convex.site/whop/:path*"
+      "destination": "https://woozy-crow-532.convex.site/whop/:path*"
     }
   ]
 }

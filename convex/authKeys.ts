@@ -1,5 +1,7 @@
 "use node";
 
+import { v } from "convex/values";
+import { internalAction } from "./_generated/server";
 import { exportJWK, importPKCS8, importSPKI, SignJWT } from "jose";
 
 const AUDIENCE = "convex";
@@ -38,6 +40,11 @@ export async function mintAccessToken({
     .setExpirationTime("30d")
     .sign(key);
 }
+
+export const jwksJson = internalAction({
+  args: {},
+  handler: async () => getJwksJson(),
+});
 
 export async function getJwksJson() {
   const publicKeyPem = process.env.AUTH_JWT_PUBLIC_KEY?.trim();
