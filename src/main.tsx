@@ -191,11 +191,19 @@ function Root() {
 function getWorkOSRedirectUri() {
   if (isLocalOrigin()) return window.location.origin;
 
-  // Whop embeds the app on its software URL (often a custom host). OAuth must callback to that origin.
+  // Always use the configured production redirect (with trailing slash) so it matches WorkOS exactly.
+  if (workosRedirectUri) {
+    try {
+      return normalizeRedirectUri(new URL(workosRedirectUri, window.location.origin));
+    } catch {
+      // Fall through to the current page URL.
+    }
+  }
+
   try {
-    return normalizeRedirectUri(new URL(window.location.origin));
+    return normalizeRedirectUri(new URL(window.location.href));
   } catch {
-    return window.location.origin;
+    return `${window.location.origin}/`;
   }
 }
 
@@ -229,7 +237,8 @@ function shouldRedirectToCanonical(canonicalUrl: URL) {
 
 function normalizeRedirectUri(url: URL) {
   if (url.pathname === "/" && !url.search && !url.hash) {
-    return url.origin;
+    // WorkOS matches redirect URIs exactly; dashboard entries usually include a trailing slash.
+    return `${url.origin}/`;
   }
 
   return url.toString();
