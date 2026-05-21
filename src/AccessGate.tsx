@@ -15,7 +15,7 @@ export type AccessAuthState = {
   isLoading: boolean;
   isSignedIn: boolean;
   userLabel: string | null;
-  signIn: () => void | Promise<void>;
+  signIn: () => void | Promise<{ ok: boolean; message?: string; mode?: "tab" | "same-window" }>;
   signOut: () => void | Promise<void>;
   /** True when running inside Whop's iframe (WorkOS must open in the top window). */
   embeddedInWhop?: boolean;
@@ -44,6 +44,9 @@ export default function AccessGate({
   const [licenseKey, setLicenseKey] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [signInBusy, setSignInBusy] = useState(false);
+  const [signInError, setSignInError] = useState<string | null>(null);
+  const [signInOpenedTab, setSignInOpenedTab] = useState(false);
 
   const step: 1 | 2 = auth.isSignedIn ? 2 : 1;
 
@@ -81,14 +84,46 @@ export default function AccessGate({
         </ol>
         {auth.embeddedInWhop ? (
           <p className="access-hint access-hint--prominent">
-            Sign-in opens in full screen (Whop cannot show the login page inside this panel). After you sign in, you will return here automatically.
+            Sign-in opens in a <strong>new tab</strong> (Whop blocks login inside this panel). After you finish, come back to this Whop tab and refresh if needed.
+          </p>
+        ) : null}
+        {signInOpenedTab ? (
+          <p className="access-hint access-hint--prominent">
+            Sign-in tab opened. Complete login there, then return here and refresh this page.
           </p>
         ) : null}
         <div className="access-actions access-actions--stack">
-          <button className="access-btn access-btn--primary" onClick={() => void auth.signIn()} type="button">
-            Continue with email
+          <button
+            className="access-btn access-btn--primary"
+            disabled={signInBusy || auth.isLoading}
+            onClick={() => {
+              setSignInBusy(true);
+              setSignInError(null);
+              void Promise.resolve(auth.signIn())
+                .then((result) => {
+                  if (result && !result.ok) {
+                    setSignInError(result.message ?? "Sign-in could not start.");
+                    return;
+                  }
+                  if (result?.mode === "tab") {
+                    setSignInOpenedTab(true);
+                  }
+                })
+                .catch(() => {
+                  setSignInError("Sign-in could not start. Allow pop-ups and try again.");
+                })
+                .finally(() => setSignInBusy(false));
+            }}
+            type="button"
+          >
+            {signInBusy ? "Opening sign-in…" : "Continue with email"}
           </button>
         </div>
+        {signInError ? (
+          <p className="access-error" role="alert">
+            {signInError}
+          </p>
+        ) : null}
         <p className="access-footnote">Your license key proves you purchased the course; your email keeps progress tied to you.</p>
       </AccessShell>
     );

@@ -109,7 +109,9 @@ function RemoteApp() {
           isLoading: auth.isLoading,
           isSignedIn: Boolean(auth.user),
           userLabel,
-          signIn,
+          signIn: () => {
+            void signIn();
+          },
           signOut,
         }}
         onRemoteChange={
