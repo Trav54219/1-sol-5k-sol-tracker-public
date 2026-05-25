@@ -142,6 +142,64 @@ h1 span {
   margin-top: 6px;
 }
 
+.header-actions-row {
+  align-items: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.header-actions-row .rules-links {
+  flex-shrink: 0;
+  margin-top: 0;
+}
+
+.trade-hours {
+  background: var(--bg2);
+  border: 0.5px solid var(--border2);
+  border-radius: 8px;
+  flex: 0 0 auto;
+  margin-top: 0;
+  max-width: 100%;
+  padding: 10px 36px 10px 12px;
+  width: max-content;
+}
+
+.trade-hours-line {
+  color: var(--muted);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.trade-hours-line + .trade-hours-line {
+  margin-top: 2px;
+}
+
+.trade-hours-line-title {
+  margin-bottom: 4px;
+}
+
+.trade-hours-label {
+  color: var(--text);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.trade-hours-region {
+  color: var(--green);
+  font-weight: 600;
+}
+
+.trade-hours-sep,
+.trade-hours-pipe {
+  color: var(--muted);
+}
+
 .summary-row {
   display: flex;
   flex-wrap: wrap;
@@ -1307,6 +1365,12 @@ tbody td.cb-col {
   padding: 14px 16px;
 }
 
+.note-intro {
+  color: var(--muted);
+  font-size: 12px;
+  margin: 0 0 8px;
+}
+
 .note-title {
   color: var(--muted);
   font-size: 10px;
@@ -1397,42 +1461,208 @@ tbody td.cb-col {
   border-bottom-color: var(--green);
 }
 
-.pullupso-card {
+.pullupso-card,
+.travis-tip-card {
   grid-column: 1 / -1;
 }
 
-.pre-trade-checklist-card {
-  background: rgba(138, 104, 0, 0.05);
+.travis-tip-card .note-body p {
+  margin: 0;
 }
 
-.pre-trade-checklist-grid {
-  display: grid;
-  gap: 10px;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+.travis-tip-card .note-body p + p {
   margin-top: 10px;
 }
 
-.pre-trade-checklist-note {
+.travis-tip-footnote {
   color: var(--muted);
-  margin: 0;
+  font-size: 11px;
+  margin-top: 10px;
 }
 
-.pre-trade-checklist-row {
-  background: var(--bg3);
+.travis-tip-4-card,
+.travis-tip-15-card,
+.travis-tip-16-card,
+.travis-tip-17-card,
+.travis-tip-18-card,
+.travis-tip-19-card,
+.travis-tip-20-card,
+.travis-tip-28-card,
+.travis-tip-34-card,
+.travis-tip-36-card,
+.travis-tip-38-card,
+.travis-tip-41-card,
+.travis-tip-42-card,
+.travis-tip-46-card,
+.travis-tip-52-card {
+  background: #f8f7f4;
+  border-color: rgba(176, 141, 74, 0.22);
+}
+
+.travis-tip-28-lead {
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+  margin: 0 0 14px;
+}
+
+.travis-tip-17-em {
+  color: #b08d4a;
+  font-weight: 600;
+}
+
+.travis-tip-4-lead {
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+  margin: 0 0 14px;
+}
+
+.travis-tip-4-em {
+  color: #b08d4a;
+  font-weight: 700;
+}
+
+.travis-tip-4-checklist {
+  display: grid;
+  gap: 8px;
+}
+
+.travis-tip-4-item {
+  align-items: start;
+  background: var(--bg2);
   border: 0.5px solid var(--border);
   border-radius: 8px;
-  padding: 10px 12px;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 32px 1fr;
+  padding: 12px 14px;
 }
 
-.pre-trade-checklist-row strong {
-  color: #8a6800;
+.travis-tip-4-num {
+  align-items: center;
+  background: #f3efe6;
+  border-radius: 6px;
+  color: #b08d4a;
+  display: flex;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 13px;
+  font-weight: 700;
+  height: 28px;
+  justify-content: center;
+  width: 28px;
+}
+
+.travis-tip-4-item-title {
+  color: #b08d4a;
   display: block;
   font-size: 13px;
+  font-weight: 600;
   margin-bottom: 4px;
 }
 
-.pre-trade-checklist-row p {
+.travis-tip-4-item p {
+  color: var(--muted2);
+  font-size: 12px;
+  line-height: 1.6;
   margin: 0;
+}
+
+.travis-tip-4-example {
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 6px;
+}
+
+.travis-tip-15-lead {
+  color: #b08d4a;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+  margin: 0 0 14px;
+}
+
+.travis-tip-15-sections {
+  display: grid;
+  gap: 8px;
+}
+
+.travis-tip-15-section {
+  background: var(--bg2);
+  border: 0.5px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.travis-tip-15-section-title {
+  color: #b08d4a;
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.travis-tip-15-section p {
+  color: var(--muted2);
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.travis-tip-15-section p + p {
+  margin-top: 4px;
+}
+
+.travis-tip-15-em-line {
+  color: #b08d4a;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.travis-tip-16-lead {
+  color: #b08d4a;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+  margin: 0 0 14px;
+}
+
+.travis-tip-16-sessions {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.travis-tip-16-session {
+  background: var(--bg2);
+  border: 0.5px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.travis-tip-16-session-title {
+  color: #b08d4a;
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.travis-tip-16-time {
+  color: var(--muted2);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.travis-tip-16-eq {
+  color: var(--muted);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px;
+  margin: 6px 0;
 }
 
 .evaluating-coins-card {
@@ -1589,6 +1819,158 @@ tbody td.cb-col {
 
 .sue-cheat-sheet-list li::marker {
   color: var(--green);
+}
+
+.trade-hours-styles-card {
+  background: #f5f2eb;
+  border-color: rgba(176, 141, 74, 0.28);
+}
+
+.trade-hours-styles-sections {
+  display: grid;
+  gap: 10px;
+}
+
+.trade-hours-styles-block {
+  background: var(--bg);
+  border: 0.5px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+.trade-hours-styles-region {
+  color: #b08d4a;
+  display: block;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.trade-hours-styles-block p {
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.memecoin-mindset-card {
+  background: var(--bg);
+  border-color: var(--border2);
+}
+
+.memecoin-mindset-heading {
+  margin-bottom: 4px;
+}
+
+.memecoin-mindset-subtitle {
+  color: var(--muted);
+  font-size: 13px;
+  font-style: italic;
+  line-height: 1.5;
+  margin: 0 0 18px;
+}
+
+.memecoin-mindset-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+
+.memecoin-mindset-lesson {
+  background: var(--bg2);
+  border: 0.5px solid var(--border);
+  border-radius: 10px;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 44px 1fr;
+  padding: 14px;
+}
+
+.memecoin-mindset-num {
+  color: var(--green);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.memecoin-mindset-lesson-title {
+  color: var(--text);
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.35;
+  margin-bottom: 6px;
+}
+
+.memecoin-mindset-lesson ul {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+  margin: 0;
+  padding-left: 16px;
+}
+
+.memecoin-mindset-lesson li + li {
+  margin-top: 4px;
+}
+
+.playbook-attribution {
+  color: var(--muted);
+  font-size: 12px;
+  font-style: italic;
+  line-height: 1.45;
+  margin: 16px 0 0;
+  text-align: center;
+}
+
+.playbook-section-card {
+  background: var(--bg);
+  border-color: var(--border2);
+}
+
+.playbook-observation-list {
+  margin-top: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.playbook-observation-item {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.playbook-observation-item:last-child {
+  border-bottom: none;
+}
+
+.playbook-observation-item p {
+  margin: 0 0 8px;
+  font-style: italic;
+}
+
+.playbook-observation-item p:last-child {
+  margin-bottom: 0;
+}
+
+.playbook-observation-source {
+  font-style: normal !important;
+  font-size: 0.9rem;
+  color: var(--accent, #0d7a6b);
+  font-weight: 600;
+}
+
+.playbook-observation-source a {
+  color: inherit;
+}
+
+.playbook-section-title {
+  text-transform: capitalize;
 }
 
 .sync-debug {
@@ -1902,6 +2284,15 @@ tbody td.cb-col {
     flex-direction: column;
   }
 
+  .header-actions-row {
+    flex-direction: column;
+  }
+
+  .header-actions-row .trade-hours {
+    padding-right: 24px;
+    width: 100%;
+  }
+
   .auth-card {
     flex: auto;
     width: 100%;
@@ -2018,7 +2409,7 @@ tbody td.cb-col {
     grid-template-columns: 1fr;
   }
 
-  .pre-trade-checklist-grid {
+  .travis-tip-16-sessions {
     grid-template-columns: 1fr;
   }
 
