@@ -1856,15 +1856,6 @@ tbody td.cb-col {
   margin: 0;
 }
 
-.memecoin-mindset-card {
-  background: var(--bg);
-  border-color: var(--border2);
-}
-
-.memecoin-mindset-heading {
-  margin-bottom: 4px;
-}
-
 .memecoin-mindset-subtitle {
   color: var(--muted);
   font-size: 13px;

@@ -22,14 +22,10 @@ import {
   type SizingMode,
   type TimeframeId,
 } from "./trackerData";
-import { ALPHA_PLAYBOOK_LESSONS } from "./alphaPlaybookLessons";
 import { FORTUNE_PLAYBOOK_LESSONS } from "./fortunePlaybookLessons";
 import { SOL_MAFIA_PLAYBOOK_LESSONS } from "./solMafiaPlaybookLessons";
 import { SOL_MAFIA_OBSERVATIONS } from "./solMafiaObservations";
 import type { MemecoinMindsetLesson } from "./memecoinMindsetLessons";
-import { MEMECOIN_MINDSET_LESSONS } from "./memecoinMindsetLessons";
-import { STRATEGY_PLAYBOOK_LESSONS } from "./strategyPlaybookLessons";
-
 const CHALLENGE_MODE_KEY = "sol_speedrun_challenge_mode";
 const SOL_CHALLENGE_START_KEY = "sol_speedrun_sol_start";
 const USDC_CHALLENGE_START_KEY = "sol_speedrun_usdc_start";
@@ -2567,25 +2563,6 @@ function Notes({
         </div>
       </div>
       <div className="note-card pullupso-card">
-        <div className="note-title">Reality check on high-entry buys</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/cap100x" target="_blank" rel="noopener noreferrer">@cap100x on X</a>
-          <div className="pullupso-quote">
-            <p>
-              <a href="https://x.com/cap100x/status/2048581578452828523?s=46" target="_blank" rel="noopener noreferrer">
-                no ur just wasting ur time buying coins this high and wasting more time tweeting about it for attention -
-                <br /><br />
-                buying lowcaps, compound ur money and grow.
-                <br /><br />
-                u just look retarded buying $20 in a 5.4m coin and posting about it, maybe some delusional bagworkers will say good job but be realistic
-                <br /><br />
-                coming from someone who not too long ago was BROKE and lost his port MANY times.
-              </a>
-            </p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card">
         <div className="note-title">Reality of becoming a full-time trader</div>
         <div className="note-body">
           Source: <a href="https://x.com/cryptomikli" target="_blank" rel="noopener noreferrer">@cryptomikli on X</a>
@@ -2599,25 +2576,6 @@ function Notes({
                 "Then you have your long-only or relatively safe bucket, where you either identify if you actually have alpha or just hold quality assets that appreciate over time. After that, you have your actively traded bucket"
                 <br /><br />
                 "I have no empathy for people who say they lost everything because of a mistake like a resting limit order or getting filled during a crash. You should never have all your assets on a single exchange because of user error risk. If you do, you're not a serious person"
-              </a>
-            </p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">gh0strider tweet</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/0xghostrider" target="_blank" rel="noopener noreferrer">@0xghostrider on X</a>
-          <div className="pullupso-quote">
-            <p>
-              <a href="https://x.com/0xghostrider/status/2048273413031247970?s=46" target="_blank" rel="noopener noreferrer">
-                Zero utility in following sound money management protocols in the current gambling economy when you are trying to get the wheels off the ground.
-                <br /><br />
-                Doesn't matter if you're trying to trade, become a streamer, launch ecom store, info product, personal brand, it's all gambling in the initial stages.
-                <br /><br />
-                Every grand slam in the modern era is sparked by a degenerate play and it ain't worth embarking on any of these journeys for a lesser outcome.
-                <br /><br />
-                Can thank your lucky stars if your sensitivity to money reflexes were ripped out from an early age so you can commit to punting for 10+ years until one of your ventures inevitably moons.
               </a>
             </p>
           </div>
@@ -2663,11 +2621,6 @@ function Notes({
               </a>
             </p>
             <p><strong>Replies</strong></p>
-            <p>
-              <a href="https://x.com/Megga/status/2049353413259939907" target="_blank" rel="noopener noreferrer">
-                <strong>@Megga:</strong> bid with size ur comfy with and just set a price target on what u think it'll go to and clip around there if thesis is the same
-              </a>
-            </p>
             <p>
               <a href="https://x.com/XScharo/status/2049358794136904087" target="_blank" rel="noopener noreferrer">
                 <strong>@XScharo:</strong> do your research on the coin real quick, you should be able to price it in quickly - based on that u just hold ur conviction if ur conviction can play out in 12s good if it needs 15min okay
@@ -2989,44 +2942,6 @@ function Notes({
         </div>
       </div>
       <div className="note-card pullupso-card">
-        <div className="note-title">Cooker advice</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/CookerFlips" target="_blank" rel="noopener noreferrer">@CookerFlips on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>
-              <a href="https://x.com/CookerFlips/status/2051471862023209107?s=20" target="_blank" rel="noopener noreferrer">
-                Being unprofitable solely from trenching boils down to two things (one or both)
-              </a>
-            </p>
-            <p>
-              <a href="https://x.com/CookerFlips/status/2051471862023209107?s=20" target="_blank" rel="noopener noreferrer">
-                Doing too much (scalping/reentering/selling too early/etc) when you&apos;re good at finding decent stuff but you end up doing too much so u exit before u make decent profit
-              </a>
-            </p>
-            <p>
-              <a href="https://x.com/CookerFlips/status/2051471862023209107?s=20" target="_blank" rel="noopener noreferrer">
-                Or
-              </a>
-            </p>
-            <p>
-              <a href="https://x.com/CookerFlips/status/2051471862023209107?s=20" target="_blank" rel="noopener noreferrer">
-                Gambling with no sense of direction (this one is a harder one to fix) which essentially is not understanding the market or current meta or space or whatever
-              </a>
-            </p>
-            <p>
-              <a href="https://x.com/CookerFlips/status/2051471862023209107?s=20" target="_blank" rel="noopener noreferrer">
-                The first one, its easy to fix, if u notice that you&apos;re nice at finding most good runners, just buy and walk away more often aka do less aka less is more
-              </a>
-            </p>
-            <p>
-              <a href="https://x.com/CookerFlips/status/2051471862023209107?s=20" target="_blank" rel="noopener noreferrer">
-                The second one takes a bit of learning and adapting which luckily anyone can get good at; just sometimes people longer to grasp than others
-              </a>
-            </p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card">
         <div className="note-title">Sue&apos;s cheat sheet</div>
         <div className="note-body narrative-guide sue-cheat-sheet">
           <div className="sue-cheat-sheet-list">
@@ -3305,27 +3220,11 @@ function Notes({
           </div>
         </div>
       </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">50-100 SOL/month now → 2k at peak trenches</div>
-        <div className="note-body">
-          Source:{" "}
-          <a href="https://x.com/pinkprintersol" target="_blank" rel="noopener noreferrer">
-            @pinkprintersol on X
-          </a>
-          <div className="pullupso-quote">
-            <p>
-              <a href="https://x.com/pinkprintersol" target="_blank" rel="noopener noreferrer">
-                Making 50–100 SOL a month in current conditions translates to 2k SOL a month once trenches go back to the 2024 peak.
-              </a>
-            </p>
-          </div>
-        </div>
-      </div>
       <div className="note-card travis-tip-card">
         <div className="note-title">Travis tip #1</div>
         <div className="note-body">
           <p>
-            <strong>On holding:</strong> If the narrative is really, really good, people will not want to hard rape it at bonding — and even if it does get hard raped at bonding, it will eventually get bought up to the price target the narrative/coin deserves. Don&apos;t sell on the first FUD if the narrative is genuinely good.
+            <strong>On holding:</strong> If the narrative is really, really good, people will not want to hard destroy it at bonding — and even if it does get hard destroyed at bonding, it will eventually get bought up to the price target the narrative/coin deserves. Don&apos;t sell on the first FUD if the narrative is genuinely good.
           </p>
         </div>
       </div>
@@ -3348,63 +3247,8 @@ function Notes({
           </p>
         </div>
       </div>
-      <div className="note-card travis-tip-card travis-tip-4-card">
-        <div className="note-title">Travis tip #4</div>
-        <div className="note-body">
-          <p className="travis-tip-4-lead">
-            Don&apos;t start grinding new pairs until <strong className="travis-tip-4-em">all</strong> of the following are checked:
-          </p>
-          <div className="travis-tip-4-checklist">
-            <div className="travis-tip-4-item">
-              <span className="travis-tip-4-num" aria-hidden="true">
-                1
-              </span>
-              <div>
-                <strong className="travis-tip-4-item-title">Kolscan rank</strong>
-                <p>
-                  You have a tracked wallet on Kolscan where you&apos;re ranking near the top 10 on the monthly leaderboard for PNL.
-                </p>
-              </div>
-            </div>
-            <div className="travis-tip-4-item">
-              <span className="travis-tip-4-num" aria-hidden="true">
-                2
-              </span>
-              <div>
-                <strong className="travis-tip-4-item-title">3–6 SOL quick buys</strong>
-                <p>
-                  You can comfortably quick-buy 3–6 SOL on new pairs and it&apos;s not a huge chunk of your portfolio or net worth.
-                </p>
-                <p className="travis-tip-4-example">
-                  Example: ~3.7k SOL in the wallet — even losing, you don&apos;t notice or see Axiom balance down even 1 SOL (top-right).
-                </p>
-              </div>
-            </div>
-            <div className="travis-tip-4-item">
-              <span className="travis-tip-4-num" aria-hidden="true">
-                3
-              </span>
-              <div>
-                <strong className="travis-tip-4-item-title">Multi-wallet flow</strong>
-                <p>You can use 2–3 wallets comfortably when trading.</p>
-              </div>
-            </div>
-            <div className="travis-tip-4-item">
-              <span className="travis-tip-4-num" aria-hidden="true">
-                4
-              </span>
-              <div>
-                <strong className="travis-tip-4-item-title">No panic jeets</strong>
-                <p>
-                  You don&apos;t feel the need to jeet out of the coin quickly because you&apos;re scared to lose money or your port is low.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #5</div>
+        <div className="note-title">Travis tip #4</div>
         <div className="note-body">
           <p>
             <strong>On nightly animal / community coins:</strong> Almost every day there&apos;s a nightly animal or community coin — if the narrative is good enough, it runs to at least $80k–$200k+.
@@ -3415,7 +3259,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #6</div>
+        <div className="note-title">Travis tip #5</div>
         <div className="note-body">
           <p>
             <strong>When deciding whether to buy:</strong> Ask yourself — &quot;What else are you even going to buy right now?&quot; — when evaluating the coin and whether it&apos;s good.
@@ -3423,18 +3267,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #7 — understanding incentives</div>
-        <div className="note-body">
-          <p>
-            Traders on CT are here to extract the most possible with the least amount of effort. If someone is positioned in a good narrative and it migrates — if the coin is truly that good — they&apos;ll want to maximize profit. That means ideally it&apos;s a -EV move to dump their whole supply at $30k if they know the coin can go to at least $100k.
-          </p>
-          <p>
-            <strong>For you:</strong> don&apos;t be afraid to buy at $40k if you believe it deserves $100k, just because you&apos;re scared of getting dumped on. If the narrative is good, it will hit its target.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #8</div>
+        <div className="note-title">Travis tip #6</div>
         <div className="note-body">
           <p>
             <strong>On main vs PvP:</strong> When there&apos;s a main and then a PvP launches — if most people get wrecked on the main, they&apos;re less inclined to buy the PvP (down on the main, exhausted).
@@ -3443,18 +3276,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #9</div>
-        <div className="note-body">
-          <p>
-            <strong>Setup until 8 figures:</strong> Until you&apos;re at 8 figures where 3 SOL is essentially nothing, you most likely don&apos;t need a Twitter tracker — just Gem Bot on the left and Axiom on the right.
-          </p>
-          <p>
-            If you&apos;re playing new pairs: hold <strong>X</strong> for tweet hover, then quick buy if the narrative is good.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #10</div>
+        <div className="note-title">Travis tip #7</div>
         <div className="note-body">
           <p>
             <strong>Remember you&apos;re buying memecoins:</strong> On new pairs — or buying coins in general — left-curve them a bit. If people don&apos;t buy, they don&apos;t like the joke (or what others may call the narrative).
@@ -3462,7 +3284,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #11</div>
+        <div className="note-title">Travis tip #8</div>
         <div className="note-body">
           <p>
             <strong>EU vs NA migration standards:</strong> Standards for coins to migrate are a lot lower in EU time vs NA time — less volume. If you see a coin in EU and think it&apos;s good enough to catch bids or run up, bid and hold until migration or about $15k–$20k.
@@ -3470,27 +3292,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #12</div>
-        <div className="note-body">
-          <p>
-            <strong>Elon coin in EU time:</strong> If it&apos;s an Elon coin in EU and the tweet or narrative is centered — bid it and hold through migration, then hodl a bit. There is literally nothing else that will come out in EU time that will top it.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #13</div>
-        <div className="note-body">
-          <p>
-            <strong>First tx Elon / giga runners — EU window:</strong> Your best chance at first-txing an Elon narrative or a giga-million runner is EU time — roughly{" "}
-            <strong>5pm–8am EST</strong>, mainly around the <strong>8pm EST</strong> mark.
-          </p>
-          <p>
-            <strong>Case study:</strong> me first-txing ewon musk at $3.5k market cap, jeeting, and it went to $2M market cap.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #14</div>
+        <div className="note-title">Travis tip #9</div>
         <div className="note-body">
           <p>
             <strong>Screen time for 100 SOL/day:</strong> Be online as long as possible every day if the goal is at least 100 SOL/day. From a numbers perspective — if you see most of the good coins each day and you&apos;re online to catch and bid them, the probability you make more money goes up (obviously with proper risk management, being selective, and actually <strong>holding</strong>).
@@ -3501,7 +3303,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card travis-tip-15-card">
-        <div className="note-title">Travis tip #15</div>
+        <div className="note-title">Travis tip #10</div>
         <div className="note-body">
           <p className="travis-tip-15-lead">
             If new pairs aren&apos;t your game — you don&apos;t have to play their game.
@@ -3533,7 +3335,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card travis-tip-16-card">
-        <div className="note-title">Travis tip #16 — most important tip</div>
+        <div className="note-title">Travis tip #11 — most important tip</div>
         <div className="note-body">
           <p className="travis-tip-16-lead">Trade during EU, Asia, and NA hours</p>
           <div className="travis-tip-16-sessions">
@@ -3548,91 +3350,8 @@ function Notes({
           </div>
         </div>
       </div>
-      <div className="note-card travis-tip-card travis-tip-15-card travis-tip-17-card">
-        <div className="note-title">Travis tip #17</div>
-        <div className="note-body">
-          <div className="travis-tip-15-sections">
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Front-run wallets — smart degen toasts on</strong>
-              <p>
-                Have any front-run wallets you track tagged with <strong className="travis-tip-17-em">smart degen toasts on</strong> so you see them immediately.
-              </p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Wallet tracking — 1 SOL minimum on charts</strong>
-              <p>
-                For wallet tracking, set a <strong className="travis-tip-17-em">minimum 1 SOL buys</strong> filter on charts so you only see meaningful size — that&apos;s how you get <strong className="travis-tip-17-em">confluence</strong>.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card travis-tip-15-card travis-tip-18-card">
-        <div className="note-title">Travis tip #18</div>
-        <div className="note-body">
-          <p className="travis-tip-16-lead">During Asia and EU time — one of the only good narratives out right now.</p>
-          <div className="travis-tip-15-sections">
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Bid ~$20k on Gem Bot</strong>
-              <p>
-                Bidding at <strong className="travis-tip-17-em">$20k</strong> is safer on Gem Bot during these sessions — you can feel comfortable holding longer.
-              </p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Less violent than NA</strong>
-              <p>
-                Fewer violent dips and sell-offs vs NA — people know it&apos;s lower volume and don&apos;t want to jeet or sell early.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card travis-tip-15-card travis-tip-19-card">
-        <div className="note-title">Travis tip #19</div>
-        <div className="note-body">
-          <div className="travis-tip-15-sections">
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Undoxxed wallet</strong>
-              <p>
-                If you&apos;re an undoxxed wallet, your edge will be <strong className="travis-tip-17-em">wallet tracking</strong> and{" "}
-                <strong className="travis-tip-17-em">front running</strong>.
-              </p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Heavily tracked / doxxed wallet</strong>
-              <p>
-                If you&apos;re a heavily tracked doxxed wallet, your edge will be <strong className="travis-tip-17-em">flipping new pairs</strong>.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card travis-tip-15-card travis-tip-20-card">
-        <div className="note-title">Travis tip #20</div>
-        <div className="note-body">
-          <p className="travis-tip-16-lead">
-            Most people on-chain don&apos;t trade like Cupsey or Cented — they&apos;re a small minority.
-          </p>
-          <div className="travis-tip-15-sections">
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Undoxxed holders — buy &amp; hold narratives</strong>
-              <p>
-                Lots of people making money are undoxxed — one of the only ways they can make money is{" "}
-                <strong className="travis-tip-17-em">buying and holding good narratives</strong>. Keep that in mind.
-              </p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Not every coin is a $25k topper</strong>
-              <p>
-                Stop thinking every coin is a $25k topper. If it&apos;s actually good and consolidating in{" "}
-                <strong className="travis-tip-17-em">final stretch before migration</strong>, don&apos;t be afraid to bid when you know for certain the narrative is good.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #21</div>
+        <div className="note-title">Travis tip #12</div>
         <div className="note-body">
           <p>
             Instead of thinking whether this coin can migrate, evaluate the narrative itself — if it&apos;s good enough, migration is investable. All coins get brought up to the price they deserve.
@@ -3640,7 +3359,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #22</div>
+        <div className="note-title">Travis tip #13</div>
         <div className="note-body">
           <p>
             Buy stuff where, when people see it pop up on migration, they will blast or bid. This is especially true when bidding those coins at ~$20k and scalping to sell for a 2-5x.
@@ -3648,7 +3367,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #23</div>
+        <div className="note-title">Travis tip #14</div>
         <div className="note-body">
           <p>Red and green candles are a picture of the market&apos;s reaction to a coin.</p>
           <p>
@@ -3660,7 +3379,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #24</div>
+        <div className="note-title">Travis tip #15</div>
         <div className="note-body">
           <p>
             Trading and executing your game plan and edge should be <strong>extremely boring</strong> — never get high or low after a W. Execute like a robot, follow your plan, and <strong>WAIT</strong> for your setups and the looks you like.
@@ -3671,7 +3390,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #25</div>
+        <div className="note-title">Travis tip #16</div>
         <div className="note-body">
           <p>
             <strong>As a mindset:</strong> It&apos;s almost never a lack of volume — it&apos;s almost always just a lack of good narratives available at the moment. There&apos;s millions of capital sidelined that is ready and waiting to blast once good or S-tier narratives pop up or arrive. (Ex: Elon getting a new dog and naming it.)
@@ -3679,7 +3398,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #26</div>
+        <div className="note-title">Travis tip #17</div>
         <div className="note-body">
           <p>
             Be <strong>absolutely cool</strong> with being boring and not doing anything for hours if there&apos;s nothing you deem good or you don&apos;t like the setup.
@@ -3691,7 +3410,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #27</div>
+        <div className="note-title">Travis tip #18</div>
         <div className="note-body">
           <p>
             <strong>Most people do not want to trade like Cented and Cupsey.</strong> Understand that the vast majority of wallets and traders who are undoxxed and making money are <strong>front-running and wallet tracking.</strong>
@@ -3701,41 +3420,8 @@ function Notes({
           </p>
         </div>
       </div>
-      <div className="note-card travis-tip-card travis-tip-15-card travis-tip-28-card">
-        <div className="note-title">Travis tip #28</div>
-        <div className="note-body">
-          <p className="travis-tip-28-lead">
-            Whenever there&apos;s a new Gem Bot call, make it a <strong className="travis-tip-17-em">non-negotiable habit</strong> to read everything about the coin:
-          </p>
-          <div className="travis-tip-15-sections">
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Do your homework before you bid</strong>
-              <p>
-                Tweet, website, ticker, picture, name — understanding the narrative. Always know exactly what you&apos;re buying and holding.
-              </p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Case study</strong>
-              <p>
-                This is how I jeeted <strong className="travis-tip-17-em">$EWON</strong> and <strong className="travis-tip-17-em">$SCAM</strong> — just because I was too lazy to read the tweets and understand the narratives.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #29</div>
-        <div className="note-body">
-          <p>
-            Make it a habit to start checking the <strong>Balanced</strong> tab frequently in Gem Bot when trading — win rate is higher.
-          </p>
-          <p>
-            If the narrative is good and it shows up in Balanced, you can almost always get at least a <strong>1.5x</strong>.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #30</div>
+        <div className="note-title">Travis tip #19</div>
         <div className="note-body">
           <p>
             To make money on a coin you know will go up, you may have to hold the coin <strong>longer than you&apos;re comfortable with</strong> to let the thesis play out.
@@ -3743,7 +3429,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #31</div>
+        <div className="note-title">Travis tip #20</div>
         <div className="note-body">
           <p>
             When looking at a coin and evaluating, also keep in mind the <strong>dev wallet that launched</strong> — especially if you already have it tracked.
@@ -3752,7 +3438,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #32</div>
+        <div className="note-title">Travis tip #21</div>
         <div className="note-body">
           <p>
             If the narrative or tweet is overly <strong>complicated or convoluted</strong>, that doesn&apos;t mean the coin is bad — but people are more inclined to buy things where the narrative is <strong>simple and easy to understand</strong>.
@@ -3760,48 +3446,15 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #33</div>
+        <div className="note-title">Travis tip #22</div>
         <div className="note-body">
           <p>
             If a lot of the other coins launching suck right now, the best coin — or the one that stands out the most — is more than likely going to be bid higher, as there&apos;s nothing else to buy comparatively speaking.
           </p>
         </div>
       </div>
-      <div className="note-card travis-tip-card travis-tip-15-card travis-tip-34-card">
-        <div className="note-title">Travis tip #34</div>
-        <div className="note-body">
-          <div className="travis-tip-15-sections">
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Buy, set TP, walk away</strong>
-              <p>
-                If you identify a coin and you believe it&apos;s actually good — buy it and set take profit. Yeah, there may be some dips and it may fall below your entry on the way up. But don&apos;t be afraid to buy, set TP for a
-              </p>
-              <p className="travis-tip-15-em-line">1.5x</p>
-              <p className="travis-tip-15-em-line">2x</p>
-              <p>, and walk away from the computer.</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Don&apos;t stare at dips</strong>
-              <p>
-                Staring at the chart obsessively on dips will more than likely cause you to jeet or sell early before the coin reaches its full potential.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #35</div>
-        <div className="note-body">
-          <p>
-            For the most part, <strong>trust the market caps Gem Bot called the coins at</strong> — more than likely there is a reason. If the coin is good, it will go up over time.
-          </p>
-          <p>
-            <strong>Main goal:</strong> stop fading decent coins that get called just because price action doesn&apos;t look the greatest.
-          </p>
-        </div>
-      </div>
       <div className="note-card travis-tip-card travis-tip-15-card travis-tip-36-card">
-        <div className="note-title">Travis tip #36</div>
+        <div className="note-title">Travis tip #23</div>
         <div className="note-body">
           <p className="travis-tip-28-lead">
             Most new-pairs traders like <strong className="travis-tip-17-em">Cented</strong>, <strong className="travis-tip-17-em">DV</strong>, and{" "}
@@ -3824,7 +3477,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #37</div>
+        <div className="note-title">Travis tip #24</div>
         <div className="note-body">
           <p>
             Assume — <strong>most of the time, not all</strong> — that new-pairs traders, if the narrative is good, will try to hold or not dump a token that has bonding potential if it&apos;s actually good.
@@ -3835,7 +3488,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card travis-tip-15-card travis-tip-38-card">
-        <div className="note-title">Travis tip #38</div>
+        <div className="note-title">Travis tip #25</div>
         <div className="note-body">
           <div className="travis-tip-15-sections">
             <div className="travis-tip-15-section">
@@ -3860,37 +3513,15 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #39</div>
-        <div className="note-body">
-          <p>
-            Always have <strong>Cipher Telegram</strong> and <strong>Gem Bot</strong> open when trading — and always be watching your <strong>wallet tracker</strong>.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #40</div>
+        <div className="note-title">Travis tip #26</div>
         <div className="note-body">
           <p>
             Always be <strong>actively scanning</strong>. If you&apos;re passive when trading or scanning, you&apos;re wasting your time.
           </p>
         </div>
       </div>
-      <div className="note-card travis-tip-card travis-tip-15-card travis-tip-41-card">
-        <div className="note-title">Travis tip #41</div>
-        <div className="note-body">
-          <p className="travis-tip-28-lead">
-            <strong className="travis-tip-17-em">Stop jeeting Gem Bot calls so early.</strong> Even if it dips a lot, if the narrative is decent — not everything is only up. Dips are okay.
-          </p>
-          <div className="travis-tip-15-sections">
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Be firm and hold</strong>
-              <p>Know that you&apos;re early since you&apos;re using Gem Bot.</p>
-            </div>
-          </div>
-        </div>
-      </div>
       <div className="note-card travis-tip-card travis-tip-15-card travis-tip-42-card">
-        <div className="note-title">Travis tip #42</div>
+        <div className="note-title">Travis tip #27</div>
         <div className="note-body">
           <p className="travis-tip-28-lead">
             <strong className="travis-tip-17-em">Tweet plays and Elon tweets</strong> will get sniped and often do a{" "}
@@ -3905,7 +3536,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #43</div>
+        <div className="note-title">Travis tip #28</div>
         <div className="note-body">
           <p>
             If you want consistent <strong>$100k months</strong>, keep farming <strong>2–3x</strong> with the occasional hold for a <strong>7x+</strong> on good narratives — do that over and over until <strong>100 SOL days</strong> are easy.
@@ -3913,51 +3544,13 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #44</div>
-        <div className="note-body">
-          <p>
-            Occasionally check the <strong>Gem Bot trending</strong> page for coins that were called a while ago but are doing slow climbs / run-ups.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #45</div>
-        <div className="note-body">
-          <p>
-            For your mental health, don&apos;t check <strong>Twitter</strong>, <strong>TikTok</strong>, <strong>Instagram</strong>, or <strong>Kolscan</strong> — so you can stop comparing yourself.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card travis-tip-15-card travis-tip-46-card">
-        <div className="note-title">Travis tip #46</div>
-        <div className="note-body">
-          <p className="travis-tip-28-lead">
-            <strong className="travis-tip-17-em">Wallet tracking exits:</strong> if you enter because you see a wallet you like in, don&apos;t automatically jeet just because you see them sell.
-          </p>
-          <div className="travis-tip-15-sections">
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Evaluate your own exit</strong>
-              <p>You don&apos;t know their plan — decide on your own terms.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #47</div>
-        <div className="note-body">
-          <p>
-            If you&apos;re looking at a coin and you see a <strong>skinny chart</strong> — sell candles are small, buy candles are small, but the chart is <strong>rapidly moving up</strong> — you might be in a runner.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #48</div>
+        <div className="note-title">Travis tip #29</div>
         <div className="note-body">
           <p>Don&apos;t be afraid to take risks bidding a coin to grow your port.</p>
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #49</div>
+        <div className="note-title">Travis tip #30</div>
         <div className="note-body">
           <p>
             Once you smash through low-port psychology and fear, that&apos;s when you can start going faster and bidding more coins without being scared it goes to zero.
@@ -3965,45 +3558,15 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #50</div>
-        <div className="note-body">
-          <p>
-            I&apos;m pretty much online for almost every runner — I just have to be not afraid to bid it. <strong>(Based on past experience.)</strong>
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #51</div>
+        <div className="note-title">Travis tip #31</div>
         <div className="note-body">
           <p>
             When buying or holding a coin, if you think <strong>&quot;this needs a DEX payment and this goes&quot;</strong> — you should most likely hold the coin for a bit.
           </p>
         </div>
       </div>
-      <div className="note-card travis-tip-card travis-tip-15-card travis-tip-52-card">
-        <div className="note-title">Travis tip #52</div>
-        <div className="note-body">
-          <div className="travis-tip-15-sections">
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Get exposure when you&apos;re scared</strong>
-              <p>
-                If you see a coin that&apos;s good and you&apos;re afraid to enter, get some exposure to it through your{" "}
-                <strong className="travis-tip-17-em">Solana-funded account</strong>.
-              </p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Pick your mode for the day</strong>
-              <p>Decide how you&apos;re going to trade for the day:</p>
-              <p className="travis-tip-15-em-line">live trading</p>
-              <p>or</p>
-              <p className="travis-tip-15-em-line">funded account</p>
-              <p>.</p>
-            </div>
-          </div>
-        </div>
-      </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #53</div>
+        <div className="note-title">Travis tip #32</div>
         <div className="note-body">
           <p>
             Don&apos;t get fudded out of entering if you see flipper or dumper KOLs in the mix with your front-run wallets — especially on a runner. If the narrative is good, that&apos;s a reason they&apos;re bidding or blasting high.
@@ -4011,7 +3574,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #54</div>
+        <div className="note-title">Travis tip #33</div>
         <div className="note-body">
           <p>
             <strong>New Pairs</strong> (NA and EU) on weekends is not bad — bundle snipers still exist, but people let good narratives run a bit.
@@ -4019,7 +3582,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #55</div>
+        <div className="note-title">Travis tip #34</div>
         <div className="note-body">
           <p>
             You can&apos;t assume every <strong>new pair</strong> is going to be a <strong>bundle drill</strong> — that mindset prevents you from buying.
@@ -4027,7 +3590,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #56</div>
+        <div className="note-title">Travis tip #35</div>
         <div className="note-body">
           <p>
             On <strong>New Pairs</strong>, it&apos;s <strong>quick buy or no buy</strong>.
@@ -4035,7 +3598,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #57</div>
+        <div className="note-title">Travis tip #36</div>
         <div className="note-body">
           <p>
             Don&apos;t strain your brain on <strong>new pairs</strong> overthinking every narrative — let it come to you. <strong>Conserve your energy.</strong>
@@ -4043,7 +3606,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #58</div>
+        <div className="note-title">Travis tip #37</div>
         <div className="note-body">
           <p>
             Trust your own <strong>narrative analysis</strong> &amp; <strong>conviction</strong>.
@@ -4051,7 +3614,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #59</div>
+        <div className="note-title">Travis tip #38</div>
         <div className="note-body">
           <p>
             Be grateful for the smaller days — even if it&apos;s only like <strong>5–20 SOL.</strong>
@@ -4059,15 +3622,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #60 — trade like Shai</div>
-        <div className="note-body">
-          <p>
-            Get to your spots — don&apos;t force trades. Let the good narratives come to you and <strong>be open.</strong>
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #61</div>
+        <div className="note-title">Travis tip #39</div>
         <div className="note-body">
           <p>
             <strong>New Pairs:</strong> wait for actual good narratives.
@@ -4075,23 +3630,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #62</div>
-        <div className="note-body">
-          <p>
-            Don&apos;t get shaken out or scared when you see <strong>cented</strong> buy with you on a new pair.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #63</div>
-        <div className="note-body">
-          <p>
-            Watch the <strong>trades panel</strong> and tracked wallets for bid sizes above <strong>3–5 SOL</strong> — that usually means they like the narrative.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #64 — final stretch</div>
+        <div className="note-title">Travis tip #40 — final stretch</div>
         <div className="note-body">
           <p>
             Look for coins where momentum is <strong>only up</strong>.
@@ -4099,23 +3638,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #65</div>
-        <div className="note-body">
-          <p>
-            Trade the <strong>narratives</strong>, not the price action.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #66</div>
-        <div className="note-body">
-          <p>
-            People are always looking for something to buy at <strong>migration</strong> if the narrative is good.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #67 — final stretch</div>
+        <div className="note-title">Travis tip #41 — final stretch</div>
         <div className="note-body">
           <p>
             Look for things that have been chilling on <strong>Final Stretch</strong> for a minute — consolidating, haven&apos;t been dumped — especially if you catch it in your peripheral while you were staring at new pairs.
@@ -4123,15 +3646,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #68 — final stretch</div>
-        <div className="note-body">
-          <p>
-            If you&apos;re on <strong>Final Stretch</strong> and see a smart degen wallet who bought earlier — and you&apos;re contemplating buying — if you have the port, <strong>take a punt at it.</strong>
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #69</div>
+        <div className="note-title">Travis tip #42</div>
         <div className="note-body">
           <p>
             Understand <strong>volume vamps</strong> — if something is running a lot of the volume, CT is focused on that one thing and it may not be the one you&apos;re currently staring at.
@@ -4139,7 +3654,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #70</div>
+        <div className="note-title">Travis tip #43</div>
         <div className="note-body">
           <p>
             Be able to switch your mindset and targets from <strong>New Pairs thinking</strong> to <strong>holding quickly</strong> if you see something on Final Stretch that you have a feeling can go.
@@ -4147,7 +3662,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #71</div>
+        <div className="note-title">Travis tip #44</div>
         <div className="note-body">
           <p>
             Stop jeeting a new pair because you&apos;re afraid of getting <strong>full stacked</strong> on — or because you see a known KOL flipper buy after you. Hold it a bit. This gets easier as your port gets bigger.
@@ -4155,7 +3670,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #72 — new pairs</div>
+        <div className="note-title">Travis tip #45 — new pairs</div>
         <div className="note-body">
           <p>
             On <strong>New Pairs</strong>: buy, then research more.
@@ -4163,7 +3678,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #73 — new pairs</div>
+        <div className="note-title">Travis tip #46 — new pairs</div>
         <div className="note-body">
           <p>
             Hundreds of people are staring at <strong>new pairs</strong> waiting for something good or different.
@@ -4171,7 +3686,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #74 — new pairs</div>
+        <div className="note-title">Travis tip #47 — new pairs</div>
         <div className="note-body">
           <p>
             On <strong>New Pairs</strong> you&apos;re evaluating the narrative based on the tweet or context, then quickly deciding if picture, name, ticker, and packaging are good on the coin — then buying.
@@ -4179,7 +3694,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #75 — new pairs</div>
+        <div className="note-title">Travis tip #48 — new pairs</div>
         <div className="note-body">
           <p>
             On <strong>New Pairs</strong>, good narratives won&apos;t get destroyed to complete zero immediately if it&apos;s good — unless you quick-bought a <strong>bundle snipe that&apos;s through</strong>.
@@ -4187,15 +3702,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #76 — new pairs</div>
-        <div className="note-body">
-          <p>
-            If you&apos;re going to play <strong>new pairs</strong>, you can print a calm <strong>20–100 SOL a day</strong> only buying good-quality new pairs and not slop — on a single wallet, without risking too much of your port every play.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #77</div>
+        <div className="note-title">Travis tip #49</div>
         <div className="note-body">
           <p>
             If you see <strong>vamps</strong> or <strong>PvP</strong>, sometimes it&apos;s bullish for the main narratives — it kinda validates the main more.
@@ -4203,7 +3710,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #78 — new pairs</div>
+        <div className="note-title">Travis tip #50 — new pairs</div>
         <div className="note-body">
           <p>
             Most people&apos;s mindset on <strong>new pairs</strong> is to try to be early to good narratives and hold a bit.
@@ -4211,7 +3718,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #79 — new pairs</div>
+        <div className="note-title">Travis tip #51 — new pairs</div>
         <div className="note-body">
           <p>
             Most people won&apos;t want to destroy a coin/narrative on <strong>new pairs</strong> if it&apos;s good — they want to let it run for a bit.
@@ -4219,7 +3726,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #80 — new pairs</div>
+        <div className="note-title">Travis tip #52 — new pairs</div>
         <div className="note-body">
           <p>
             On <strong>New Pairs</strong>, trade the narrative — not the chart or price action.
@@ -4227,7 +3734,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #81 — new pairs</div>
+        <div className="note-title">Travis tip #53 — new pairs</div>
         <div className="note-body">
           <p>
             Don&apos;t FOMO or fall for <strong>fake vol</strong> on new pairs — <strong>snipe bundles</strong>. Most new pairs are never worth top blast FOMOing into; you risk a worse entry.
@@ -4235,23 +3742,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #82</div>
-        <div className="note-body">
-          <p>
-            If you buy something and it goes up really fast, don&apos;t just jeet it — it probably means it&apos;s really good.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #83 — new pairs</div>
-        <div className="note-body">
-          <p>
-            Do <strong>not</strong> play new pairs when my mom is home and wants me doing stuff.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #84</div>
+        <div className="note-title">Travis tip #54</div>
         <div className="note-body">
           <p>
             Actually <strong>understand the narrative</strong> before buying.
@@ -4259,7 +3750,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #85 — new pairs</div>
+        <div className="note-title">Travis tip #55 — new pairs</div>
         <div className="note-body">
           <p>
             Be wary of <strong>new pairs</strong> that get crazy vol and market cap rising when they literally came out a second ago — most of the time it&apos;s <strong>sniper farms and bundling</strong>. Real vol isn&apos;t that crazy; new pairs don&apos;t get instantly bought up by more than 15 people at once organically.
@@ -4267,7 +3758,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #86 — final stretch</div>
+        <div className="note-title">Travis tip #56 — final stretch</div>
         <div className="note-body">
           <p>
             Don&apos;t FOMO on <strong>Final Stretch</strong> unless the narrative is actually good and you can see buy pressure pushing it to <strong>migration.</strong>
@@ -4275,15 +3766,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #87</div>
-        <div className="note-body">
-          <p>
-            Don&apos;t buy from <strong>poor devs</strong> — unprofitable, or if <strong>Absol</strong> is getting rekt. Don&apos;t buy an Absol deploy unless the narrative is good — he&apos;ll start deploying slop when he&apos;s taken losses.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #88</div>
+        <div className="note-title">Travis tip #57</div>
         <div className="note-body">
           <p>
             Never get <strong>attached</strong> to coins and their prices.
@@ -4291,23 +3774,15 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #89</div>
+        <div className="note-title">Travis tip #58</div>
         <div className="note-body">
           <p>
             <strong>Scared money don&apos;t make money.</strong>
           </p>
         </div>
       </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #90 — migration plays</div>
-        <div className="note-body">
-          <p>
-            On <strong>migration plays</strong>, if you know where the narrative can go higher, it&apos;s ranging a bit, and <strong>Gem Bot</strong> called it at that exact market cap — take a chance at bidding it.
-          </p>
-        </div>
-      </div>
       <div className="note-card travis-tip-card travis-tip-4-card">
-        <div className="note-title">Travis tip #91 — scanning coins</div>
+        <div className="note-title">Travis tip #59 — scanning coins</div>
         <div className="note-body">
           <p className="travis-tip-4-lead">When scanning coins, in order of priority:</p>
           <div className="travis-tip-4-checklist">
@@ -4347,7 +3822,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #92</div>
+        <div className="note-title">Travis tip #60</div>
         <div className="note-body">
           <p>
             Read the <strong>whole tweet</strong> when buying the token.
@@ -4355,7 +3830,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #93</div>
+        <div className="note-title">Travis tip #61</div>
         <div className="note-body">
           <p>
             Never trade <strong>angry</strong> or <strong>desperate</strong>.
@@ -4363,45 +3838,15 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #94</div>
-        <div className="note-body">
-          <p>
-            Let other people <strong>move coins up for you</strong> — KOLs who are heavily tracked — assuming you get in <strong>before them</strong>.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #95 — tweet plays</div>
+        <div className="note-title">Travis tip #62 — tweet plays</div>
         <div className="note-body">
           <p>
             Expect <strong>migration dumps</strong> on tweet plays — but if it&apos;s good, it will reverse.
           </p>
         </div>
       </div>
-      <div className="note-card travis-tip-card travis-tip-15-card">
-        <div className="note-title">Travis tip #96 — who won&apos;t dump on each other</div>
-        <div className="note-body">
-          <p className="travis-tip-15-lead">
-            Understand who&apos;s friends with who and who won&apos;t dump on each other:
-          </p>
-          <div className="travis-tip-15-sections">
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Group A</strong>
-              <p>Cupsey, DV, Jack Duval, Ethan Prosper, Kreo, Waddles</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Group B</strong>
-              <p>Cented, Kadenox, Sliderrzz</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Group C</strong>
-              <p>Til Crypto, Absol Quant</p>
-            </div>
-          </div>
-        </div>
-      </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #97</div>
+        <div className="note-title">Travis tip #63</div>
         <div className="note-body">
           <p>
             Decide on playing <strong>one style at a time</strong>, not two — <strong>New Pairs</strong> or <strong>Final Stretch</strong> holds.
@@ -4409,7 +3854,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #98</div>
+        <div className="note-title">Travis tip #64</div>
         <div className="note-body">
           <p>
             Not every bit of sell pressure is a <strong>full stack</strong> — sometimes it&apos;s just people taking partials.
@@ -4417,7 +3862,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #99</div>
+        <div className="note-title">Travis tip #65</div>
         <div className="note-body">
           <p>
             Not everything is a <strong>10k topper</strong>.
@@ -4425,7 +3870,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #100</div>
+        <div className="note-title">Travis tip #66</div>
         <div className="note-body">
           <p>
             A bit of <strong>sell pressure</strong> if you&apos;re early is normal — don&apos;t jeet your whole bag because of it.
@@ -4433,7 +3878,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #101</div>
+        <div className="note-title">Travis tip #67</div>
         <div className="note-body">
           <p>
             If the rate of good coins coming out is slow and volume is a bit low — and you&apos;re in a good narrative early — people are less likely to jeet on you, since they&apos;ll have to wait until the next good one comes out.
@@ -4441,7 +3886,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #102</div>
+        <div className="note-title">Travis tip #68</div>
         <div className="note-body">
           <p>
             If the narrative is good, don&apos;t get <strong>fudded out</strong> by bundles and snipes in the beginning.
@@ -4449,7 +3894,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #103</div>
+        <div className="note-title">Travis tip #69</div>
         <div className="note-body">
           <p>
             <strong>Narratives</strong> and potential <strong>future catalysts</strong> are what drive price up.
@@ -4457,7 +3902,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #104</div>
+        <div className="note-title">Travis tip #70</div>
         <div className="note-body">
           <p>
             Don&apos;t let a previous loss prevent you from taking a chance on a new good coin.
@@ -4465,7 +3910,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #105 — new pairs</div>
+        <div className="note-title">Travis tip #71 — new pairs</div>
         <div className="note-body">
           <p>
             On <strong>New Pairs</strong>, wait for something good — your only mindset should be looking for <strong>good narratives</strong>.
@@ -4473,23 +3918,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #106</div>
-        <div className="note-body">
-          <p>
-            Never trade when my mom makes me angry for the day.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #107 — gem bot</div>
-        <div className="note-body">
-          <p>
-            Take note of coins that get called on <strong>Gem Bot</strong> where the chart looks a bit weird — it might be <strong>crimed up</strong>. You could potentially profit on it.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #108</div>
+        <div className="note-title">Travis tip #72</div>
         <div className="note-body">
           <p>
             If you see a variety of different tracked wallets bidding on the way up, the coin is probably pretty good.
@@ -4497,15 +3926,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #109 — new pairs</div>
-        <div className="note-body">
-          <p>
-            Never get FOMO on <strong>new pairs</strong> — you don&apos;t have to be in 100 new pairs a day. That&apos;s how you get chopped up.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #110</div>
+        <div className="note-title">Travis tip #73</div>
         <div className="note-body">
           <p>
             Always think about the narrative when trading a coin — that means reading the tweet.
@@ -4513,7 +3934,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #111</div>
+        <div className="note-title">Travis tip #74</div>
         <div className="note-body">
           <p>
             Always start out with a <strong>daily trading budget</strong> and a <strong>daily stop loss</strong>.
@@ -4521,15 +3942,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #112</div>
-        <div className="note-body">
-          <p>
-            Stop giving a fuck about other traders&apos; PnLs on the day, week, or month — it does nothing for you. It just distracts you and makes you feel bad.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #113</div>
+        <div className="note-title">Travis tip #75</div>
         <div className="note-body">
           <p>
             Liquidity is always moving enough to where you can make at least <strong>250 SOL a day</strong> — you just have to be positioned accordingly and hold.
@@ -4537,23 +3950,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #114</div>
-        <div className="note-body">
-          <p>
-            If you see a coin and you&apos;re thinking about front running <strong>Gem Bot</strong>, just hold and wait for <strong>Gem Bot</strong> to officially call it.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #115</div>
-        <div className="note-body">
-          <p>
-            If you&apos;re not seeing a lot of <strong>front-run wallets</strong> in your token, it might not be a great coin you can hold for a bit.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #116</div>
+        <div className="note-title">Travis tip #76</div>
         <div className="note-body">
           <p>
             You just have to hold a coin successfully once to know you can do it multiple times. Just have to be cool with the dips.
@@ -4561,7 +3958,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #117</div>
+        <div className="note-title">Travis tip #77</div>
         <div className="note-body">
           <p>
             Ideally buy coins and narratives you&apos;ve never seen before that are good.
@@ -4569,15 +3966,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #118</div>
-        <div className="note-body">
-          <p>
-            When you grow your port to a bigger size, start tailing some <strong>front-run wallets</strong> more.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #119</div>
+        <div className="note-title">Travis tip #78</div>
         <div className="note-body">
           <p>
             Sometimes zoom out on the chart if you&apos;re thinking of selling because of dips.
@@ -4585,7 +3974,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #120</div>
+        <div className="note-title">Travis tip #79</div>
         <div className="note-body">
           <p>
             If you see a coin/narrative you DD on and you can immediately get bullish on it and be like &quot;this is so good,&quot; you should definitely hold the coin for a bit — even through the expected <strong>post-migration dump</strong>.
@@ -4593,7 +3982,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #121</div>
+        <div className="note-title">Travis tip #80</div>
         <div className="note-body">
           <p>
             Look at the <strong>trades panel</strong> and the <strong>bid buy sizes</strong> — if it&apos;s like <strong>5+ SOL</strong> a trade or 2 traders think this can double. Only applicable if the narrative is objectively good.
@@ -4601,7 +3990,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #122</div>
+        <div className="note-title">Travis tip #81</div>
         <div className="note-body">
           <p>
             Check the <strong>dev wallet</strong> for <strong>past launched tokens</strong>.
@@ -4609,23 +3998,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #123</div>
-        <div className="note-body">
-          <p>
-            Don&apos;t blindly ape <strong>balanced calls</strong> — check if they&apos;re good first.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #124</div>
-        <div className="note-body">
-          <p>
-            Be cautious of calls from <strong>Gembot</strong> on <strong>newer coins</strong> — they could be good, but watch for a lot of <strong>KOLs</strong> and <strong>multi-wallet supply</strong>.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #125</div>
+        <div className="note-title">Travis tip #82</div>
         <div className="note-body">
           <p>
             Buy <strong>narratives</strong> people would want to <strong>buy and hold</strong>.
@@ -4633,15 +4006,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #126</div>
-        <div className="note-body">
-          <p>
-            Stop <strong>mid-curving coins</strong> — <strong>average trencher on-chain</strong> is dumb af.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #127</div>
+        <div className="note-title">Travis tip #83</div>
         <div className="note-body">
           <p>
             <strong>Thesis</strong> should be <strong>simple</strong>.
@@ -4649,15 +4014,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #128</div>
-        <div className="note-body">
-          <p>
-            Watch for coins that enter <strong>Gembot trending</strong>.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #129 — final stretch</div>
+        <div className="note-title">Travis tip #84 — final stretch</div>
         <div className="note-body">
           <p>
             If you get <strong>early entry</strong> on something at like <strong>20–60k</strong> and it&apos;s a <strong>Final Stretch</strong> coin and you know it&apos;s good — <strong>hold</strong> and don&apos;t sell until it&apos;s almost certain it&apos;s hitting <strong>near zero</strong> at some point.
@@ -4665,15 +4022,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #130</div>
-        <div className="note-body">
-          <p>
-            If you see a good coin on <strong>Gembot</strong>, bid it — doesn&apos;t matter if you bid on <strong>live</strong> or <strong>funded</strong>. You&apos;re not poor; you have <strong>capital</strong>, so stop acting like you don&apos;t.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #131 — new pairs / final stretch</div>
+        <div className="note-title">Travis tip #85 — new pairs / final stretch</div>
         <div className="note-body">
           <p>
             When <strong>volume</strong> is low on <strong>new pairs</strong> or there&apos;s a lack of good narratives, people will just end up bidding the <strong>Final Stretch</strong> cooks to <strong>migration</strong> — most of these are/can be <strong>Gembot</strong> calls.
@@ -4681,15 +4030,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #132</div>
-        <div className="note-body">
-          <p>
-            Try to <strong>front-run Gembot</strong> when you can and you have the <strong>port</strong> to allow it.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #133</div>
+        <div className="note-title">Travis tip #86</div>
         <div className="note-body">
           <p>
             If a coin is <strong>consolidating</strong> and almost none of the <strong>top holders</strong> are <strong>in profit</strong>, it&apos;s gonna <strong>dump</strong> more — more than likely.
@@ -4697,7 +4038,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #134</div>
+        <div className="note-title">Travis tip #87</div>
         <div className="note-body">
           <p>
             Don&apos;t buy <strong>slop deploys</strong>.
@@ -4705,7 +4046,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #135</div>
+        <div className="note-title">Travis tip #88</div>
         <div className="note-body">
           <p>
             If you want exposure to a coin, your <strong>bid size</strong> should be in proportion to your <strong>confidence</strong> and how long you&apos;re <strong>willing to hold</strong>.
@@ -4713,15 +4054,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #136</div>
-        <div className="note-body">
-          <p>
-            Take note of those <strong>.sol wallets</strong> on my tracker — especially when they bid <strong>2–3 SOL</strong>. For some reason they&apos;re <strong>early</strong> on a lot of <strong>narratives</strong>.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #137</div>
+        <div className="note-title">Travis tip #89</div>
         <div className="note-body">
           <p>
             Don&apos;t be afraid to play <strong>metas</strong> and <strong>derivs</strong>.
@@ -4729,7 +4062,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #138</div>
+        <div className="note-title">Travis tip #90</div>
         <div className="note-body">
           <p>
             Bid coins where, if they were to <strong>migrate</strong>, they <strong>stand out</strong> compared to others — where people have <strong>no choice but to bid</strong>.
@@ -4737,15 +4070,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #139</div>
-        <div className="note-body">
-          <p>
-            Don&apos;t ignore the <strong>top trader wallets</strong> I have tracked — <strong>front run</strong> them. They are top traders for a reason: they identified good coins early and held. Don&apos;t copy trade them, but use them for <strong>confluence</strong>.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #140</div>
+        <div className="note-title">Travis tip #91</div>
         <div className="note-body">
           <p>
             Don&apos;t ignore the <strong>.sol wallets</strong> I have tracked either.
@@ -4753,7 +4078,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #141</div>
+        <div className="note-title">Travis tip #92</div>
         <div className="note-body">
           <p>
             <strong>Top 10, 20, 100 holders</strong> I have tracked could just be wallets who bought, <strong>round tripped</strong>, and forgot — not the case all the time, but keep in mind.
@@ -4761,7 +4086,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #142</div>
+        <div className="note-title">Travis tip #93</div>
         <div className="note-body">
           <p>
             Only buy stuff where you know at minimum you can make <strong>1 SOL</strong> on them.
@@ -4772,15 +4097,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #143</div>
-        <div className="note-body">
-          <p>
-            If I&apos;m gonna track <strong>top wallets</strong>, only keep them on if their X&apos;s are <strong>500%+</strong> or PNL is <strong>$40k+</strong>.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #144</div>
+        <div className="note-title">Travis tip #94</div>
         <div className="note-body">
           <p>
             Bid coins where the <strong>narrative</strong> makes people <strong>feel something</strong> — an emotion like <strong>happiness, warmth</strong>, or feeling bad like it&apos;s a <strong>sad story</strong>.
@@ -4788,7 +4105,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #145</div>
+        <div className="note-title">Travis tip #95</div>
         <div className="note-body">
           <p>
             Always check <strong>website</strong> and <strong>social</strong> on a coin — if it looks good, there will be <strong>buyers on top of you</strong>.
@@ -4796,7 +4113,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #146</div>
+        <div className="note-title">Travis tip #96</div>
         <div className="note-body">
           <p>
             Before you buy a coin, ask yourself: will you get a couple <strong>buyers on top of you</strong>?
@@ -4804,7 +4121,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #147</div>
+        <div className="note-title">Travis tip #97</div>
         <div className="note-body">
           <p>
             Don&apos;t just enter a trade because of a <strong>single wallet</strong> — you need <strong>confluence.</strong>
@@ -4812,15 +4129,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #148</div>
-        <div className="note-body">
-          <p>
-            Up until a couple thousand <strong>SOL</strong> and you move out, just stalk <strong>Gem Bot</strong> and wait for something good.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #149</div>
+        <div className="note-title">Travis tip #98</div>
         <div className="note-body">
           <p>
             Don&apos;t try to predict price — that&apos;s not your job. Play <strong>narrative</strong> and <strong>flow</strong>; don&apos;t try to time the top. <strong>Take profits on the way up</strong> so even if you lose, your <strong>downside is mitigated.</strong>
@@ -4828,15 +4137,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #150</div>
-        <div className="note-body">
-          <p>
-            If you see a <strong>skinny chart</strong> pattern run up with very little sells, it&apos;s probably <strong>crime</strong> — so you should bid it.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #151</div>
+        <div className="note-title">Travis tip #99</div>
         <div className="note-body">
           <p>
             If you can&apos;t hold your position, you probably <strong>sized in way too much.</strong>
@@ -4844,7 +4145,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #152</div>
+        <div className="note-title">Travis tip #100</div>
         <div className="note-body">
           <p>
             If you see less than a <strong>15 minute</strong> difference between <strong>bonded coin times</strong> on <strong>migration</strong>, that means <strong>volume is good.</strong>
@@ -4852,7 +4153,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #153</div>
+        <div className="note-title">Travis tip #101</div>
         <div className="note-body">
           <p>
             Don&apos;t be afraid to bid <strong>pico bottom</strong> on coins that are <strong>dipping</strong> — just make sure you do it in a <strong>size that doesn&apos;t wreck you</strong>.
@@ -4860,7 +4161,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #154</div>
+        <div className="note-title">Travis tip #102</div>
         <div className="note-body">
           <p>
             Buy stuff people <strong>won&apos;t want to destroy pre migration</strong>.
@@ -4868,7 +4169,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #155</div>
+        <div className="note-title">Travis tip #103</div>
         <div className="note-body">
           <p>
             As long as you have <strong>3–4 wins</strong> for every <strong>1 loss</strong>, you can <strong>scale your port infinitely</strong>.
@@ -4876,15 +4177,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #156</div>
-        <div className="note-body">
-          <p>
-            Stop thinking too much about the <strong>downside</strong> before entering a trade — think of the <strong>upside potential gain</strong>.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #157</div>
+        <div className="note-title">Travis tip #104</div>
         <div className="note-body">
           <p>
             Control your <strong>ADHD</strong> and <strong>hold coins</strong> — even if volume is slow or fast, you don&apos;t have to <strong>schizo press every button</strong> just because the coin went up or <strong>dipped a bit</strong>.
@@ -4892,39 +4185,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #158 — new pairs</div>
-        <div className="note-body">
-          <p>
-            If you&apos;re on <strong>new pairs</strong>, even if you have <strong>tracked wallets turned off</strong>, don&apos;t <strong>jeet</strong> just because you don&apos;t see <strong>tracks on the chart.</strong>
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #159</div>
-        <div className="note-body">
-          <p>
-            Make <strong>minimum buy size 0.8</strong> on charts.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #160</div>
-        <div className="note-body">
-          <p>
-            Sometimes you&apos;ll just be <strong>too early</strong> to a coin — <strong>it is what it is.</strong>
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #161</div>
-        <div className="note-body">
-          <p>
-            Don&apos;t let anyone shame you for being a <strong>good trader</strong> and <strong>profitable</strong> — you&apos;re here to <strong>make money.</strong>
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #162 — new pairs</div>
+        <div className="note-title">Travis tip #105 — new pairs</div>
         <div className="note-body">
           <p>
             On <strong>new pairs</strong>, make sure you have every <strong>tracked wallet toggled on</strong> — you need to know <strong>who&apos;s in your coin</strong> and <strong>who can destroy the chart</strong> on you.
@@ -4932,23 +4193,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #163 — new pairs</div>
-        <div className="note-body">
-          <p>
-            Just &apos;cause you <strong>quick buy</strong> a <strong>new pair</strong> and you see <strong>Cented buy</strong> right after you doesn&apos;t mean he&apos;s gonna automatically <strong>dump on you</strong> — you don&apos;t have to <strong>jeet your position</strong>.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #164</div>
-        <div className="note-body">
-          <p>
-            If you see a <strong>smart degen wallet</strong> that <strong>bid early</strong> and it&apos;s <strong>ranging pre migration</strong>, look into it.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #165</div>
+        <div className="note-title">Travis tip #106</div>
         <div className="note-body">
           <p>
             Sometimes coins are just <strong>not worth migrating</strong> — and that&apos;s okay. You can <strong>sit on your hands</strong> for a bit; you don&apos;t need to <strong>bid everything</strong>.
@@ -4956,7 +4201,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #166 — new pairs</div>
+        <div className="note-title">Travis tip #107 — new pairs</div>
         <div className="note-body">
           <p>
             Do <strong>not</strong> try to bid in the <strong>12k range</strong> on those <strong>new pairs rainbow charts</strong>. However, <strong>do bid</strong> on those <strong>slower run up coins</strong> where there&apos;s not a crazy amount of <strong>sell pressure from multi wallets</strong>.
@@ -4964,7 +4209,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #167</div>
+        <div className="note-title">Travis tip #108</div>
         <div className="note-body">
           <p>
             After enough time on the charts, you can tell when something is a <strong>multi wallet through bundle</strong> based on <strong>price action</strong>.
@@ -4972,7 +4217,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #168</div>
+        <div className="note-title">Travis tip #109</div>
         <div className="note-body">
           <p>
             Not every retrace is <strong>permanent</strong> — sometimes it&apos;s <strong>temporary</strong> or a <strong>shakeout</strong>.
@@ -4980,7 +4225,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #169</div>
+        <div className="note-title">Travis tip #110</div>
         <div className="note-body">
           <p>
             On <strong>new pairs</strong>, <strong>final stretch</strong>, and <strong>migrated</strong> — most people have the <strong>same filters</strong>, so if you see something that&apos;s good and know it&apos;s good, <strong>other people will see it</strong>.
@@ -4988,7 +4233,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #170</div>
+        <div className="note-title">Travis tip #111</div>
         <div className="note-body">
           <p>
             If it&apos;s an <strong>agent mode narrative</strong> and <strong>agent mode</strong> just now starts turning on — you can <strong>bid it</strong> when it just turns on, and most of the time it <strong>goes up</strong>.
@@ -4996,7 +4241,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #171 — new pairs / final stretch</div>
+        <div className="note-title">Travis tip #112 — new pairs / final stretch</div>
         <div className="note-body">
           <p>
             If you&apos;re scanning <strong>new pairs</strong> and nothing good is coming out, but you see something <strong>holding strong on final stretch</strong> and it&apos;s a <strong>good narrative</strong> — <strong>bid it</strong>.
@@ -5004,7 +4249,7 @@ function Notes({
         </div>
       </div>
       <div className="note-card travis-tip-card">
-        <div className="note-title">Travis tip #172</div>
+        <div className="note-title">Travis tip #113</div>
         <div className="note-body">
           <p>
             You actually need to be an <strong>active participant</strong> and <strong>pay attention</strong> when you&apos;re trading memecoins — always be <strong>scanning</strong>, always be <strong>hunting for opportunities</strong> to make money. <strong>Fast &amp; slow things.</strong>
@@ -5058,83 +4303,6 @@ function Notes({
           </div>
         </div>
       </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis gem bot tip</div>
-        <div className="note-body">
-          <p>
-            If you see the 🔥 on <strong>Gem Bot</strong> and it&apos;s on the <strong>2x filter</strong> stat — start taking more bids.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis gem bot tip</div>
-        <div className="note-body">
-          <p>
-            Take note of the <strong>average</strong>, the <strong>median</strong>, and the <strong>symbol</strong> next to the <strong>Risky</strong>, <strong>Balanced</strong>, and <strong>Conservative</strong> sections.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis gem bot tip</div>
-        <div className="note-body">
-          <p>
-            If you&apos;re in a position, stop cutting it so early because you&apos;re scared it&apos;s gonna top or go down — <strong>let it breathe</strong> a bit.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis gem bot tip</div>
-        <div className="note-body">
-          <p>
-            Understand whether coins are hitting <strong>2–3x</strong> because of <strong>new pairs / KOL volume</strong> or <strong>community slow cook volume</strong>. If it&apos;s <strong>community slow cook volume</strong> — start bidding <strong>Final Stretch</strong>. If it&apos;s coming from <strong>new pairs / KOL volume</strong> — start bidding <strong>new pairs</strong>.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis gem bot tip</div>
-        <div className="note-body">
-          <p>
-            Keep in mind the <strong>up/down multiple %</strong> to the left of the <strong>peak</strong> on <strong>Gem Bot</strong> calls.
-          </p>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card">
-        <div className="note-title">Travis gem bot tip</div>
-        <div className="note-body">
-          <p>
-            Watch for coins where if you&apos;re holding them and they enter the <strong>Gem Bot trending page</strong> — if they&apos;re good, the coin will get <strong>blasted</strong> or at least <strong>bid up some more</strong>.
-          </p>
-        </div>
-      </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">Playing new pairs — @bigwarzeth</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/bigwarzeth" target="_blank" rel="noopener noreferrer">@bigwarzeth on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>I have genuine respect for anyone who can trench new launches all day right now.</p>
-            <p>Not because I think you&apos;re smart but because I genuinely don&apos;t understand how you do it.</p>
-            <p>It&apos;s the same trash repackaged as slightly different trash every few minutes.</p>
-            <p><strong>Pattern recognition helps.</strong></p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">Making decisions — @IAmAlenSultanic</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/IAmAlenSultanic" target="_blank" rel="noopener noreferrer">@IAmAlenSultanic on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>If there&apos;s one ability you need to succeed, it&apos;s the ability to make decisions.</p>
-            <p>Most people are terrible at making decisions, and that&apos;s why people who are good at making decisions end up making decisions for them.</p>
-            <p>They decide what they work on.</p>
-            <p>When they show up.</p>
-            <p>When they take lunch.</p>
-            <p>When they clock out.</p>
-            <p>And how much they get paid.</p>
-            <p>Get good at making decisions, or someone will make them for you.</p>
-            <p>— Alen</p>
-          </div>
-        </div>
-      </div>
       <div className="note-card pullupso-card">
         <div className="note-title">High quality decisions — Jeff Bezos</div>
         <div className="note-body">
@@ -5143,21 +4311,6 @@ function Notes({
             <p>
               Bezos said that as a senior executive: &quot;you get paid to make a <strong>small number of high quality decisions</strong>.&quot; He then added: &quot;If I make, like, <strong>three good decisions a day</strong>, that&apos;s enough. And they should be as <strong>high quality</strong> as I can make them.&quot;
             </p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card travis-tip-card travis-tip-15-card">
-        <div className="note-title">Mental note — funded vs live blocks</div>
-        <div className="note-body">
-          <div className="travis-tip-15-sections">
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Plan the day before you trade</strong>
-              <p>Decide which blocks you&apos;ll grind your <strong>funded account</strong> and when you&apos;ll grind <strong>live</strong>.</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Funded first</strong>
-              <p>Prioritize getting your <strong>payout</strong> and passing your <strong>eval profit target</strong> for the day before grinding live.</p>
-            </div>
           </div>
         </div>
       </div>
@@ -5245,52 +4398,6 @@ function Notes({
             <p>
               If you spare time to learn and have patience to hold good things you believe in — instead of gambling and rotating all the time (after understanding what you buy) — you can easily turn <strong>$1.5k to $300k</strong> in memecoins. Maybe not in 10 days, maybe in 100 days — but that&apos;s still a gain no other place can offer.
             </p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">Stay feeling broke (theisaacsomto)</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/theisaacsomto" target="_blank" rel="noopener noreferrer">@theisaacsomto on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>When money starts coming in, keep buying things — assets preferably.</p>
-            <p>Stay feeling broke — it&apos;ll fuel the grind.</p>
-            <p>A huge sum sitting in your wallet is a dangerous illusion of safety tbh.</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">Paper trade first (WhiteWhaleLabs)</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/WhiteWhaleLabs" target="_blank" rel="noopener noreferrer">@WhiteWhaleLabs on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>
-              If every person new to crypto was forced to paper trade their first 3–12 months, we would have many more crypto millionaires. Unfortunately the tuition in this space is some of the highest on the planet.
-            </p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">Exiting your 20s (0xGhostRider)</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/0xghostrider" target="_blank" rel="noopener noreferrer">@0xGhostRider on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>You want to exit your 20s under the following circumstances:</p>
-          </div>
-          <div className="travis-tip-15-sections">
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Zero&apos;d out from experimenting</strong>
-              <p>47 careers, multiple full-throttle business attempts, indiscriminate risk on trades/wagers, abundance of life wisdom, wildly desensitized to numbers on screen.</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Massive momentum in one realm</strong>
-              <p>About to print a ton of bread and lay foundation for early 30s.</p>
-            </div>
-          </div>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>Definitely don&apos;t want to land on a massive bag of cash at 22 — almost guaranteed you eject and blow it all, end up mentally ill.</p>
-            <p>Also don&apos;t want to emerge at 30 without any battle scars and having played it even remotely safe.</p>
-            <p>Middle always cucked.</p>
           </div>
         </div>
       </div>
@@ -5432,19 +4539,6 @@ function Notes({
             <p>
               No real playbook — learn through experience and intuition. Analyze why coins worked or failed. You&apos;re a trader, not a community member &quot;investing.&quot; P is P — take it and move on.
             </p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">Practice makes permanent — trading muscle memory</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/sonder_crypto" target="_blank" rel="noopener noreferrer">@sonder_crypto on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>My first Muay Thai coach told me practice makes permanent, not perfect.</p>
-            <p>This applies to trading — you get shaped by the conditions you start in. After hundreds of trades you get used to the way things are.</p>
-            <p>The problem is when conditions change and your muscle memory doesn&apos;t. The new pair warrior falls behind when the meta shifts.</p>
-            <p>The guy who holds for longer when ceilings were higher gets rinsed when bearish conditions take over.</p>
-            <p>It&apos;s important to be mindful of this so you don&apos;t get caught when things change. The best time to start believing is when everyone is overly bearish — and vice versa.</p>
           </div>
         </div>
       </div>
@@ -5591,26 +4685,6 @@ function Notes({
           </div>
         </div>
       </div>
-      <div className="note-card travis-tip-card travis-tip-15-card">
-        <div className="note-title">Skip daily income goals</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/shaams" target="_blank" rel="noopener noreferrer">@shaams on X</a>
-          <div className="travis-tip-15-sections">
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Don&apos;t chase &quot;$100/day&quot; or &quot;$10k/mo&quot;</strong>
-              <p>Another thing new traders get wrong: focusing on making &quot;$100/day&quot; or &quot;$10k/mo.&quot; That&apos;s a concept manipulated by crypto course sellers to lure you into scams.</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Crypto isn&apos;t linear</strong>
-              <p>Regardless of your experience level — even GCR probably has dry spells where he makes $0 (or is negative), then randomly hits a big trade.</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Become the best trader, not a number</strong>
-              <p>Rather than setting monetary goals, just try to become the best trader possible. The money and opportunities will come, eventually, to those who stay consistent.</p>
-            </div>
-          </div>
-        </div>
-      </div>
       <div className="note-card pullupso-card">
         <div className="note-title">How to find a good narrative</div>
         <div className="note-body">
@@ -5653,81 +4727,6 @@ function Notes({
           <div className="pullupso-quote decu-advice-quote">
             <p>The only thing you need to be successful in crypto or any financial field is mastering bet size &amp; EV.</p>
             <p>When you accomplish mastery in those two, consider everything else taken care of.</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">Zero-sum game — grinders vs entitled CT</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/clukz" target="_blank" rel="noopener noreferrer">@clukz on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>Seeing washed-up entitled CT uncs wish death upon newgen traders for being profitable is so funny.</p>
-            <p>You had hundreds of chances to make generational wealth over the years and retire — yet you&apos;re sitting here hating on grinders putting in 16 hours a day under the worst possible conditions for a tiny chance at making it out. Against gruesome competition, by the way.</p>
-            <p>Keep covering up your inability to switch risk-off with a facade of righteousness. Someone has to lose — and this time it&apos;s you. Did we forget it&apos;s a zero-sum game? Someone thought the same exact thing about you at one point.</p>
-            <p>Holding times are indifferent to each other in terms of morality. Everyone here has the same intention of making money — for what reason does your laid-back trading style deserve more success than others?</p>
-            <p>In no way am I glorifying current conditions. I would absolutely love to conviction-hold coins for days/weeks and hit potentially monumental trades. Maybe that works again someday — but it doesn&apos;t right now.</p>
-            <p>Why should anyone be expected to lose for <strong>your</strong> sake?</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card travis-tip-4-card">
-        <div className="note-title">New to the trenches — 1 year of advice</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/ferbsol" target="_blank" rel="noopener noreferrer">@ferbsol on X</a>
-          <p className="travis-tip-4-lead">If you&apos;re new to the trenches, here&apos;s 1 year of 12h/day advice:</p>
-          <div className="travis-tip-4-checklist">
-            <div className="travis-tip-4-item">
-              <span className="travis-tip-4-num" aria-hidden="true">·</span>
-              <div><strong className="travis-tip-4-item-title">Never get cocky</strong></div>
-            </div>
-            <div className="travis-tip-4-item">
-              <span className="travis-tip-4-num" aria-hidden="true">·</span>
-              <div><strong className="travis-tip-4-item-title">Never get too depressed</strong></div>
-            </div>
-            <div className="travis-tip-4-item">
-              <span className="travis-tip-4-num" aria-hidden="true">·</span>
-              <div><strong className="travis-tip-4-item-title">Never act like you&apos;re always winning</strong></div>
-            </div>
-            <div className="travis-tip-4-item">
-              <span className="travis-tip-4-num" aria-hidden="true">·</span>
-              <div><strong className="travis-tip-4-item-title">Get some friends (easier with NFTs, still possible with fnfs)</strong></div>
-            </div>
-            <div className="travis-tip-4-item">
-              <span className="travis-tip-4-num" aria-hidden="true">·</span>
-              <div><strong className="travis-tip-4-item-title">Talk about your losses with friends</strong></div>
-            </div>
-            <div className="travis-tip-4-item">
-              <span className="travis-tip-4-num" aria-hidden="true">·</span>
-              <div><strong className="travis-tip-4-item-title">If you find something early, share it with your friends</strong></div>
-            </div>
-            <div className="travis-tip-4-item">
-              <span className="travis-tip-4-num" aria-hidden="true">·</span>
-              <div><strong className="travis-tip-4-item-title">Only buy the amount you can sleep on</strong></div>
-            </div>
-            <div className="travis-tip-4-item">
-              <span className="travis-tip-4-num" aria-hidden="true">·</span>
-              <div><strong className="travis-tip-4-item-title">Never full port (I did a couple times — none worked out well)</strong></div>
-            </div>
-            <div className="travis-tip-4-item">
-              <span className="travis-tip-4-num" aria-hidden="true">·</span>
-              <div><strong className="travis-tip-4-item-title">Never try to hold more than 2% of the supply (I had 2% of PNUT — felt huge at $10M with the dick fud, so I sold)</strong></div>
-            </div>
-            <div className="travis-tip-4-item">
-              <span className="travis-tip-4-num" aria-hidden="true">·</span>
-              <div><strong className="travis-tip-4-item-title">Never dump on your friends for 3–5 SOL profits</strong></div>
-            </div>
-            <div className="travis-tip-4-item">
-              <span className="travis-tip-4-num" aria-hidden="true">·</span>
-              <div><strong className="travis-tip-4-item-title">Share your wins to motivate others</strong></div>
-            </div>
-            <div className="travis-tip-4-item">
-              <span className="travis-tip-4-num" aria-hidden="true">·</span>
-              <div><strong className="travis-tip-4-item-title">Never doxx yourself</strong></div>
-            </div>
-            <div className="travis-tip-4-item">
-              <span className="travis-tip-4-num" aria-hidden="true">·</span>
-              <div><strong className="travis-tip-4-item-title">Never talk about your money in real life</strong></div>
-            </div>
           </div>
         </div>
       </div>
@@ -5796,41 +4795,6 @@ function Notes({
             <p>BTW if you&apos;re new to trading, you don&apos;t have to hold coins for multiple X&apos;s to make money.</p>
             <p>IMO the best way I built capital was scalping coins until I had enough SOL to hold coins for longer periods.</p>
             <p>Big PnLs are cool — but at the end of the day it&apos;s you vs you. Play your own game.</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card travis-tip-4-card">
-        <div className="note-title">All you need to succeed</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/notsxlty" target="_blank" rel="noopener noreferrer">@notsxlty on X</a>
-          <p className="travis-tip-4-lead"><strong>This is all you need to succeed:</strong></p>
-          <div className="travis-tip-4-checklist">
-            <div className="travis-tip-4-item">
-              <span className="travis-tip-4-num" aria-hidden="true">·</span>
-              <div><strong className="travis-tip-4-item-title">Memescope</strong></div>
-            </div>
-            <div className="travis-tip-4-item">
-              <span className="travis-tip-4-num" aria-hidden="true">·</span>
-              <div><strong className="travis-tip-4-item-title">Twitter tracker</strong></div>
-            </div>
-            <div className="travis-tip-4-item">
-              <span className="travis-tip-4-num" aria-hidden="true">·</span>
-              <div><strong className="travis-tip-4-item-title">Patience</strong></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">Notes from $GOAT — session timing</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/tradinghoex" target="_blank" rel="noopener noreferrer">@tradinghoex on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>Notes from a trader that caught $GOAT:</p>
-            <p>If something with potential is holding up during dead hours (8pm EST–3am), I usually bid the tail end of the bleed before the US session wakes up to bid late. Mitigates risk IMO for waking up early — found GOAT this way.</p>
-            <p>East session has a culture gap on memes, unless it&apos;s something globally viral.</p>
-            <p>8–10pm EST is when they are extremely careful when looking at new pairs.</p>
-            <p>Culture gap: memes that drive volume in the US don&apos;t tend to translate well with other countries during the night — vol falls off a cliff because of that.</p>
-            <p>Stay disciplined, stick to your rules, and don&apos;t overtrade.</p>
           </div>
         </div>
       </div>
@@ -5915,30 +4879,6 @@ function Notes({
           </div>
         </div>
       </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">Comfortable port — easier to take profit</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/miragemunny" target="_blank" rel="noopener noreferrer">@miragemunny on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>Ironically — once you trade your portfolio up to a decent, stable, &quot;comfortable&quot; value, it becomes so much easier to take profit from trades in the trenches.</p>
-            <p>When you are most hungry, you are most susceptible to round-tripping.</p>
-            <p>Ironic, fascinating.</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">Breathe, reflect, adapt — gambler vs trader</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/kilorippy" target="_blank" rel="noopener noreferrer">@kilorippy on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>Your life has been a roller coaster the last year or so. Portfolio hit 6 figs with joy in your eyes — later it all got wiped in weeks/months. Now you&apos;re stuck in a loop.</p>
-            <p>The loop: hyper gambling / &quot;emotional trading.&quot; You burnt your last few SOL thinking you&apos;ll make it work this time. You fear you need to make it out right now or time runs out — betting against the market instead of adapting. Rinsing SOL like nothing because you lost 6 figs.</p>
-            <p>Breathe, reflect, adapt. Have you asked if what you&apos;re doing will satisfy your family, future, or God? Was fast money the journey — or were you trying to become a &quot;good&quot; trader? Which was it?</p>
-            <p>A gambler doesn&apos;t know when to stop; a good trader knows when to step back. This CT &quot;lock in&quot; push is nonsense — you&apos;re hyper gambling instead of learning.</p>
-            <p>Adapt and journal mistakes each step as you progress. You will have to adapt — that&apos;s the only way to make it.</p>
-          </div>
-        </div>
-      </div>
       <div className="note-card pullupso-card travis-tip-15-card">
         <div className="note-title">.1 SOL to 7 figures in 1 year (Euris thread)</div>
         <div className="note-body">
@@ -6015,17 +4955,6 @@ function Notes({
           </div>
         </div>
       </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">Your future if you don&apos;t make it this cycle</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/GRITCULT" target="_blank" rel="noopener noreferrer">@GRITCULT on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>You&apos;re in your mid 30s. You just round-tripped 8 figs — back down to 5. You spent your 20s hyper-gambling, spending all day replying to internet celebrities.</p>
-            <p>You have no transferable skills, no friends, no family, no dating prospects.</p>
-            <p>Your future if you don&apos;t make it this cycle.</p>
-          </div>
-        </div>
-      </div>
       <div className="note-card pullupso-card travis-tip-4-card">
         <div className="note-title">Your problem is size (Mr Waller)</div>
         <div className="note-body">
@@ -6053,124 +4982,12 @@ function Notes({
         </div>
       </div>
       <div className="note-card pullupso-card">
-        <div className="note-title">Don&apos;t be lazy in your 20s</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/assasin_eth" target="_blank" rel="noopener noreferrer">@assasin_eth on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>Being lazy in your 20s is one of the worst mistakes you can make in life.</p>
-            <p>Take advantage of those years, live below your means, and take risks — even harder later if you have responsibilities, family, children, etc.</p>
-            <p>Don&apos;t be like most people who will live their lives with regrets; act now.</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">Owari weekly notes — PVE, thesis, 5–10x only</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/OwariETH" target="_blank" rel="noopener noreferrer">@OwariETH on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>New notes this week — past 24 hrs, coins over $1M as reference for endless opportunities.</p>
-            <p>Coin being strong = for a reason (why sell when it&apos;s strong?). If holding dead coins — selling out of emotion or confirmation?</p>
-            <p>ONLY buy with confirmation and a clear thesis. Majority of trenchers&apos; biggest losses: no socials / no info FOMO right before a DS rape candle. Gooncoin / gork / dupe / useless were <strong>obvious narratives</strong> — simple thesis on potential, not guessing if AI dev is legit. Only entry and sizing weren&apos;t obvious.</p>
-            <p>Remove emotions, reset, next trade — literal $50M coins again and again. After Dupe: multiple $10–30M coins.</p>
-            <p>PVE only. Less trades. Less noise.</p>
-            <p>&quot;Free 2x with size&quot; is a psyop — risking -99% for +100%.</p>
-            <p>5–10x opportunities only.</p>
-            <p><strong>DCA once.</strong> Bid at $1M and it&apos;s down? Don&apos;t DCA every 10k MC drop. Bid once more, be selective — or DCA into death of a weak coin. One of the only ways to fuck up this cycle; 5 wins wiped by one oversized loss.</p>
-            <p><strong>Always another trade.</strong> After the first majority move, next leg is a gamble. Example: KOL blast + big influencers in a few hours — anything after is gamble.</p>
-            <p><strong>Don&apos;t fear money. Don&apos;t trade PNL or the chart — trade the narrative.</strong> Don&apos;t stare at red/green candles or PnL up/down; look at narrative and possibilities. Think twice before selling — why are you slamming the red button?</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card">
         <div className="note-title">Accountability — every loss is yours</div>
         <div className="note-body">
           Source: <a href="https://x.com/MVsaga7" target="_blank" rel="noopener noreferrer">@MVsaga7 on X</a>
           <div className="pullupso-quote decu-advice-quote">
             <p>No good trader I know has ever blamed someone else after a bad trade. They understand any loss is always their own fault — even if someone else told them to buy it, they still blame themselves.</p>
             <p>You have to be this extreme to make it. Learn accountability.</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card travis-tip-15-card">
-        <div className="note-title">~300k in 30 days — simple memecoin strategy</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/saint_pablo123" target="_blank" rel="noopener noreferrer">@saint_pablo123 on X</a>
-          <p className="travis-tip-15-lead">I&apos;ve made almost $300k in the last 30 days with a super simple memecoin trading strategy — how you can do the same (thread).</p>
-          <div className="travis-tip-15-sections">
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Time is everything</strong>
-              <p>— trade Europe session 2pm–10pm EST. Easier to spot runners, less PvP.</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Stick to new pairs</strong>
-              <p>— don&apos;t look at post-migration unless it&apos;s the next moodeng. New pairs = best way to make money day in, day out. Fresh narratives and volume.</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Risk 2–5% per trade</strong>
-              <p>20 SOL port → ~0.5 SOL per play, take profit at 2x, ride by vol and narrative quality. Never full port — that&apos;s gambling.</p>
-            </div>
-          </div>
-          <div className="pullupso-quote decu-advice-quote">
-            <p><strong>Summary:</strong> Scan new pairs in Europe session, ape 2–5% of port per trade. Look for profit / initials at 2x, cut losses at -20% to -50%. You won&apos;t make as much at first — skills sharpen, money flows over time.</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">Patience — don&apos;t chase volume</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/bandeez" target="_blank" rel="noopener noreferrer">@bandeez on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>Something every trencher on CT needs to hear: with new volume coming in, you&apos;ll catch yourself chasing it — either (1) rinsing your port or (2) getting lucky (fine, but you can&apos;t rely on luck).</p>
-            <p>It&apos;s okay to be sidelined sometimes — don&apos;t jump into volume just because KOLs are buying. They have money to gamble. Sit back, wait for something real and actually good. Patience will be your best friend. All it takes is one good trade and you&apos;re set.</p>
-            <p>As volume keeps rising — to new people: it isn&apos;t as easy as it seems. You will win a lot and lose a lot. Take losses as lessons to better yourself as a trader.</p>
-            <p>Good luck to everyone out there. Keep clicking every day — your time will come.</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card travis-tip-4-card">
-        <div className="note-title">$10 to $1k/day — just cook</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/0xpeely" target="_blank" rel="noopener noreferrer">@0xpeely on X</a>
-          <p className="travis-tip-4-lead">This is how you go from $10 to $1k/day:</p>
-          <div className="travis-tip-4-checklist">
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><strong className="travis-tip-4-item-title">Wake up</strong></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><strong className="travis-tip-4-item-title">Open Pump.fun new pairs</strong></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><strong className="travis-tip-4-item-title">Load tweet trackers</strong></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><strong className="travis-tip-4-item-title">Scan TG group chats</strong></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><strong className="travis-tip-4-item-title">Eyes glued to screen</strong></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><strong className="travis-tip-4-item-title">No FOMO</strong></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><strong className="travis-tip-4-item-title">Wait for the one</strong></div></div>
-          </div>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>That&apos;s it. Nothing else. Just cook.</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card travis-tip-15-card">
-        <div className="note-title">How to trade memecoins in 2025 (30 tips)</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/yaevwastaken" target="_blank" rel="noopener noreferrer">@yaevwastaken on X</a>
-          <p className="travis-tip-15-lead">How to trade memecoins in 2025 — 30 tips/tricks for new and struggling traders (thread).</p>
-          <div className="travis-tip-15-sections">
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Part 1 — The basics</strong>
-              <p>1) No platform/extension makes you better — put in time. 2) Join a group (@ProsperityDAO_, @shocked, or find free traders). 3) Follow the right people; unfollow daily garbage shills. 4) Paranoid about links/downloads or get drained. 5) Don&apos;t touch leverage. 6) Memecoins = X/TikTok. 7) Learn culture fast — jokes, terms, respected KOLs. 8) Don&apos;t expect $5k/day week one — you&apos;re vs people doing 12h/day for a year. 9) Income outside trading to redeposit if needed. 10) Don&apos;t send rugs with botted volume to chats — chart spikes unnatural, holders often have no SOL (ask your chat if unsure).</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Part 2 — Tools / fees / filters</strong>
-              <p>Don&apos;t overcrowd setup — X monitor + wallet tracker, keep simple. 10 great wallets &gt; 50 decent. Fees 0.001/0.001 OK on low port until MEV protection. Find wallets: graduated pairs &gt;250k → top traders → Cielo for daily/weekly/monthly PnL — consistent profit, low size traded = add + label style. Filters won&apos;t make you good overnight (author shares their filters in thread).</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Part 3 — Trading</strong>
-              <p>Watch liquidity sucks/PvP — second tab on pulse/memescope while in a coin. Narrative + ceiling vs similar coins = top skill. Cut losses fast on small port; more risk when bigger. 7/10+ people get the joke = good sign. TikTok animal coins often weak (many repeats). Split-second decisions matter. Betas/derivatives weaker — usually main runner (exceptions exist). Sub 100 SOL: always take initials; bigger port + great narrative = trim higher (situational, better with low entry). 5–30 selective bids/day can beat 500 forced bids. Stop forcing — sometimes nothing to buy.</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Part 4 — Mental</strong>
-              <p>Remove FOMO on missed entries — always another coin. Bad days/weeks happen — trust your ability. Bad day → step away; rage trading halves ports in days. Trade in the right mental state — loss streaks = 10x worse trading. Can&apos;t half-ass this; high screen time needed if you want to learn.</p>
-            </div>
-          </div>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>Hope this helped — ask in replies if you want any point expanded.</p>
           </div>
         </div>
       </div>
@@ -6195,16 +5012,6 @@ function Notes({
         </div>
       </div>
       <div className="note-card pullupso-card">
-        <div className="note-title">When you&apos;ve actually made it</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/ZssBecker" target="_blank" rel="noopener noreferrer">@ZssBecker on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>The goal is to become so rich that you actively feel the need to hide it and play it down — because it&apos;s too much for most people to comprehend.</p>
-            <p><strong>This is when you have actually made it.</strong></p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card">
         <div className="note-title">$500 → $270K — new pairs setup (m4rk3r)</div>
         <div className="note-body">
           Source: <a href="https://x.com/m4rk3r" target="_blank" rel="noopener noreferrer">@m4rk3r on X</a>
@@ -6216,98 +5023,6 @@ function Notes({
             <p>When new, you will lose — keep buys low vs port size. Never overtrade or you rinse.</p>
             <p>Identify a good narrative.</p>
             <p>Biggest problem: jeeting too early. Minimize by picking strong narrative (virality etc.), hold, slowly take profit from 2x onward.</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card travis-tip-4-card">
-        <div className="note-title">New method — about to grad filter</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/Saint_pablo123" target="_blank" rel="noopener noreferrer">@Saint_pablo123 on X</a>
-          <p className="travis-tip-4-lead">New method — game changing, change with it:</p>
-          <div className="travis-tip-4-checklist">
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><strong className="travis-tip-4-item-title">Change about-to-grad filters to 30 mins</strong></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><strong className="travis-tip-4-item-title">See what coins are still not dead (15k–35k)</strong></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><strong className="travis-tip-4-item-title">Check if community is good</strong></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><strong className="travis-tip-4-item-title">Wait for dip and ape with size</strong></div></div>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">Go where conditions are best — no chain bias</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/sonder_crypto" target="_blank" rel="noopener noreferrer">@sonder_crypto on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>As a trader, being overly loyal to one chain can hold you back.</p>
-            <p>Always be on the lookout for new opportunities. Your job is to go where the conditions are best — without bias.</p>
-            <p>Some of the best opportunities show up in places you least expect.</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">.4 SOL → 8 → 1.9 → 10 — comeback arc</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/inquixit" target="_blank" rel="noopener noreferrer">@inquixit on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>How I went .4 SOL → 8 SOL in 1 week → back to 1.9 in 2 days → back to 10 SOL in 1 day (thread).</p>
-            <p>Started at .4 SOL after emotionally trading away cycle profits. Rock bottom — but if you did it once you can do it again. Locked in. Took a break after the rinse to calm down before the comeback.</p>
-            <p>After the break: 14 hours on screen ~2 days, waited for what felt like a guaranteed runner. Faded many that ran to millions — didn&apos;t think they&apos;d go that high. Finally found the coin that would boost the port.</p>
-            <p>Full-ported .4 SOL into $GM early, sold 2x at $250k. Spidey senses: bigger than $250k topper. Full-ported .8 back in at $200k, trimmed from 3x up. Coin sent to $5M — avg exit ~$1.6M MC → just above 2 SOL (moonbag left, then nuked). Confidence boost — comeback is possible.</p>
-            <p>Found a thread by @pullupso — followed it, scalped to 8 SOL in a week. Scalping isn&apos;t scalable with shitty R/R: 1 SOL, three +10% wins = +.3, one -.5 trade = wiped progress and negative. Chased scalps down to 1.9 SOL.</p>
-            <p>Thanks to @pdadx and @fshmatt — stop scalping, wait for almost guaranteed runners. No unnecessary losses on shit scalps. Port back up in ONE day: patient all day, 2–5x trades, initials at 2x, trim higher.</p>
-            <p>How the one-day comeback happened — you can too: extremely patient, selective, THINK before dumb shit. Still far from full comeback but will make it. Follow rules, smart decisions. We all gonna make it Inshallah.</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">Learn how to think or stay poor</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/notthreadguy" target="_blank" rel="noopener noreferrer">@notthreadguy on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>Learn how to think or stay poor.</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">Not profit until it&apos;s cash</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/FlippingProfits" target="_blank" rel="noopener noreferrer">@FlippingProfits on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>Some of you are experiencing something like this — it&apos;s much needed. Trust me: every green trade after this will feel like a blessing and you will hold your profits close.</p>
-            <p>From my view it&apos;s always been: it&apos;s not profit until it&apos;s cash.</p>
-            <p>If you stop chasing your dreams when an obstacle appears, it wasn&apos;t meant for you. Keep dreaming and find a way to make it reality.</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">Take your life-changing money</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/FlippingProfits" target="_blank" rel="noopener noreferrer">@FlippingProfits on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>Stop being retarded and not taking your life-changing money, please. You truly don&apos;t want to stay in this casino forever.</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">You don&apos;t need to stare at memescope</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/notsxlty" target="_blank" rel="noopener noreferrer">@notsxlty on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>I feel like a lot of people think you need to actively stare at memescope to win/learn.</p>
-            <p>Honestly: memescope open + a Discord/TG tab with good trenchers is enough. Stare when vol is hot; when it&apos;s not, do other things — video games, build a product, literally anything.</p>
-            <p>Many trenchers do nothing else but stare at pump vision all day. Effective if you&apos;re actually learning + making money (maybe upper 1% of active traders) — but never worth throwing away the rest of your life, career, education, whatever for something as volatile and insane as this industry.</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">Alpha funnel — about to migrate (Feed_SOL)</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/Feed_SOL" target="_blank" rel="noopener noreferrer">@Feed_SOL on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>Feels like most coins topping at 150–200k MC rn. Wild million-runners getting rare — be real with conditions. So how do you find the ones that&apos;ll print?</p>
-            <p>Every ~3–4 minutes: check the about to migrate column. Then three things: 1) Community + who&apos;s in there — what they pushed before and ATH market cap 2) Wallet tracking 3) Narrative fit + virality. Lowkey this is the alpha funnel rn.</p>
-            <p><strong>Entry:</strong> matters more than ever. Ape around 40k–50k MC. Above that, risk climbs fast. Below that, still roulette unless conviction + data/insider.</p>
-            <p><strong>Exit:</strong> ruthless. Take profit at 3x–4x. Don&apos;t dream 20x unless it&apos;s obviously the next cult run. 150–200k MC feels like local top range.</p>
-            <p>Adapt or die poor. Don&apos;t cry about volume — use it. Slow cooks are annoying but the cook is in patience. Frontload research. Sell to chasers. Simple.</p>
           </div>
         </div>
       </div>
@@ -6378,19 +5093,6 @@ function Notes({
           </div>
         </div>
       </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">80–90% brain power on self-sabotage</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/xansnds" target="_blank" rel="noopener noreferrer">@xansnds on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>I&apos;m truly convinced 80–90% of my brain power is used for self-sabotage — and same with my actions. It&apos;s actually crazy thinking about it.</p>
-            <p>Like 90% of my actions sabotage myself in some way; 10% move me forward. I&apos;m so good at finding leverage I&apos;ve built several businesses and accomplished various small things in spite of that.</p>
-            <p>I once got a peek at not actively self-sabotaging for one goal only — getting a 6-pack in 60 days. That legit felt easy; I wasn&apos;t hungry. Harder to <em>not</em> get a 6-pack than to get it. Meanwhile the rest of my actions sabotaged other parts of life; only ~5% moved me forward.</p>
-            <p>Insane to imagine what I&apos;ll accomplish spending even 50% not sabotaging myself — let alone 90%. I legit could change the world.</p>
-            <p>I have to heal this trauma and live up to my potential. This is a requirement.</p>
-          </div>
-        </div>
-      </div>
       <div className="note-card pullupso-card travis-tip-15-card">
         <div className="note-title">On-chain — the first $100K</div>
         <div className="note-body">
@@ -6420,53 +5122,6 @@ function Notes({
           </div>
           <div className="pullupso-quote decu-advice-quote">
             <p>On-chain rewards discipline over emotion. Review wins and losses. Small smart trades stack to $100K faster than you think.</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">Fool&apos;s mentality vs Him&apos;s mentality</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/himgajria" target="_blank" rel="noopener noreferrer">@himgajria on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>&quot;The asset I decided not to invest in ended up being a runner. It&apos;s over for me&quot; — Fool&apos;s mentality.</p>
-            <p>Liquidity is always moving. As long as you&apos;re ahead of said liquidity, you&apos;ll win.</p>
-            <p>&quot;You&apos;re only as good as your next win, not your last one&quot; — Him&apos;s mentality.</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">Hold through dips — trust the process</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/bandeez" target="_blank" rel="noopener noreferrer">@bandeez on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>June has been my best month trading — last trade of the month was the cherry on top.</p>
-            <p>People ask: how do you hold through so many dips? Not scared of roundtripping? Crypto is all about risk — you have to be willing to take the risk of roundtripping / possibly losing. What do we have to lose? Opportunity is constant. Trust yourself — it will work eventually.</p>
-            <p>Study common narratives — shit gets easier to recognize, it will click. Taking enough profit where you&apos;re comfortable to roundtrip helps a lot. Just study this — it helps so much.</p>
-            <p>You are no different than anyone else. Keep pushing and you will see progress — I promise. Only gets better from here.</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">10 SOL challenge — skill diff, not gambling</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/kayz_ce" target="_blank" rel="noopener noreferrer">@kayz_ce on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>Started this wallet with 10 SOL at the start of the month to challenge myself — ground up again. Not my most profitable month (capped by bankroll early), but proves anyone can make it with any size portfolio.</p>
-            <p>It took me: 2.5 weeks for first 100 SOL · 1 week for second 100 SOL · 3 days for third 100 SOL.</p>
-            <p>Everyone says memecoins are &quot;gambling&quot; — it&apos;s genuinely a skill issue. Real skill you can master and become consistently profitable over a longer timeframe.</p>
-            <p>Going hard now without limiting myself (need to cook back 6-figure months). GL and keep grinding — it&apos;s always a skill diff; mindset is what&apos;s holding you back.</p>
-            <p>70–80% skill, 20–30% luck. Luck and variance play a part — but skill makes you profitable over the long run. Once you find a strategy that works and manage risk and emotions, you&apos;ll see how much of a skill diff it really is.</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">750 SOL in June — consistency is key</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/bandeez" target="_blank" rel="noopener noreferrer">@bandeez on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>750 SOL in June (~$115k) — best realized month. Cut trades in half, improved a lot. Still room to grow — you can always improve; never cut yourself short. Getting easier over time.</p>
-            <p>July goal: stay consistent, try not to have red days. Small wins add up fast. Sit on your hands, patience, limit trades. Don&apos;t force — no FOMO from KOLs on one coin that slow-bleeds to zero.</p>
-            <p>Stay in your lane, find your conviction — never let conviction rely on others. Nothing to something in 4 months. Anyone can do it. Put in time and effort. Never stop clicking.</p>
           </div>
         </div>
       </div>
@@ -6501,28 +5156,6 @@ function Notes({
             <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">5</span><div><p><strong>Use filters on about-to-graduate</strong> to remove almost all bundled coins — but also get a sense of what is graduating in the current market and what you&apos;re going to look for on new pairs.</p></div></div>
             <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">6</span><div><p><strong>Have zero emotion</strong> — even if this is a lot of money to ape into shitcoins ($500–$2,000), especially on a low cap. Any emotions will make you fumble the bag.</p></div></div>
             <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">7</span><div><p><strong>Always ask yourself:</strong> will someone buy this coin off me at $500k? At $2M? At $5M? If no one will buy your tokens off you at $500k and they&apos;re currently at $100k, lower your price targets to more reasonable levels.</p></div></div>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card travis-tip-15-card">
-        <div className="note-title">Sebastian trade recap (thread)</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/saint_pablo123" target="_blank" rel="noopener noreferrer">@saint_pablo123 on X</a>
-          <p className="travis-tip-15-lead">Being consistent is important — small wins add up. Breakdown of today&apos;s trades.</p>
-          <div className="travis-tip-15-sections">
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Biggest trade: $tinfoil</strong>
-              <p>Someone with motion tweeted it and changed their pfp — it was @mst1287</p>
-              <p>Narrative around conspiracy theories about the bonk cabal is strong and has lore</p>
-              <p>Object on head (tin hat) creates a cult with a good template for art</p>
-              <p>I aped post-migration for my biggest win.</p>
-              <p>Only possible with the right filters in final stretch and migrated — otherwise hidden gems like this go under the radar.</p>
-              <p>Explains all filters in latest YT vid — must watch: filter breakdown</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Another big win: $b_M</strong>
-              <p>Playing with size post-Ray seems better on bonk than new pairs. Token had Truth Terminal lore surrounding the BONK meta we&apos;re in. Top holders were rich and have hit big bonk plays in the past — thought maybe a cabal running the coin. Was right.</p>
-            </div>
           </div>
         </div>
       </div>
@@ -6588,69 +5221,6 @@ function Notes({
           </div>
         </div>
       </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">Narratives — what would a good trader do?</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/ecomsin" target="_blank" rel="noopener noreferrer">@ecomsin on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>Being able to understand narratives and figuring out why you think other people will buy has tremendously helped grow my port.</p>
-            <p><strong>Think to yourself before you enter...</strong></p>
-            <p>What would a good trader do?</p>
-            <p>vs. What would a bad trader do?</p>
-            <p>Just took this trade with huge conviction —</p>
-            <p><strong>ENTRY</strong> (27k → sold 55.3k) for 90% gains.</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card travis-tip-4-card">
-        <div className="note-title">Applicably — swing big, scenarios, learn</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/comfortablylong" target="_blank" rel="noopener noreferrer">@comfortablylong on X</a>
-          <p className="travis-tip-4-lead">Applicably:</p>
-          <div className="travis-tip-4-checklist">
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">1</span><div><p>Swing big when it&apos;s obvious</p></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">2</span><div><p>Draw overly conservative max upside scenarios, and overly aggressive max downside scenarios before entering</p></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">3</span><div><p>Spend most of your time learning and having fun when the above doesn&apos;t exist</p></div></div>
-          </div>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>Utterly pathetic that most struggle with pt 3.</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card travis-tip-15-card">
-        <div className="note-title">Wallet tracking — what it is &amp; how to make money (thread)</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/kunleofweb3" target="_blank" rel="noopener noreferrer">@kunleofweb3 on X</a>
-          <p className="travis-tip-15-lead">Wallet Tracking: What it is and How you can make money from it.</p>
-          <div className="travis-tip-15-sections">
-            <div className="travis-tip-15-section">
-              <p>Simplest form: tracking wallet activities — what they buy, sell, bridge, send, receive. Monitoring every on-chain transaction of a particular wallet.</p>
-              <p>Not solely for profit — insight on where smart money is going confirms bias on the next narrative. Can also be used as security. This thread narrows to how it can make you tons of money.</p>
-              <p>Some people are smarter — better understanding, access to info you don&apos;t. Wallet tracking lets you follow them and do what they do.</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Method 1 — Study on-chain activity of runners</strong>
-              <p>Runner at $10M MC — some bought sub $100k. Don&apos;t stress: track their wallet for a future cook. Filter to wallets who got in early, held their bag, and made good % PnL (not raw PnL alone — $50k at $5M vs $100 at $100k).</p>
-              <p><strong>Top Traders workflow:</strong></p>
-              <div className="travis-tip-4-checklist">
-                <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><p>Top Traders section — check amount bought/sold (sell supply must not exceed buy)</p></div></div>
-                <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><p>Pick good % PnL — copy wallet address</p></div></div>
-                <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><p>Cross-check W rate on @AxiomExchange — 60%+ is good</p></div></div>
-                <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><p>Study wallet&apos;s next 2–3 buys — if good, fine to copy. If many copytraders and every buy instantly pumps, copy with caution (dump risk)</p></div></div>
-              </div>
-              <p><strong>Example: $testicle</strong> (~$16M MC) — wallet bought $4,840 at ~$7.4M, sold same supply for $114.8k. Copy address, study next purchases, copytrade if good. Educational only — don&apos;t copy that wallet.</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Method 2 — Study clusters</strong>
-              <p>BSC trenches: found a core Binance team wallet, made good money copy trading — studied clusters. Good/insider traders use new wallets, don&apos;t repeat — study relative transfers/clusters. Have a CZ wallet? Check its cluster — wallets it interacted with. Funding wallet likely funds new wallets too; intra-wallet transfers. Real-time clusters on Solscan, BscScan, etc.</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Track wallets &amp; get realtime alerts</strong>
-              <p>Uses @ray_bronze_bot (TG link); add wallet, name it, activate — alerts on buy/sell/transfer. Saves manual tracking.</p>
-            </div>
-          </div>
-        </div>
-      </div>
       <div className="note-card pullupso-card travis-tip-15-card">
         <div className="note-title">Brain vs. instinct — why you keep hesitating (most important)</div>
         <div className="note-body">
@@ -6705,130 +5275,6 @@ function Notes({
         </div>
       </div>
       <div className="note-card pullupso-card travis-tip-15-card">
-        <div className="note-title">Actionable memecoin advice — 3 core pillars</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/millodos/status/2038750651342016862" target="_blank" rel="noopener noreferrer">@millodos on X</a>
-          <p className="travis-tip-15-lead">Actionable memecoin trading advice for your journal — 3 core pillars (from video)</p>
-          <div className="travis-tip-15-sections">
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">1. Be selective with entries</strong>
-              <p>Stop throwing darts at random coins. Quickly understand the narrative — what does this token represent? Why might it run? Only buy with immediate conviction from data (MCAP, volume, token age, community signals).</p>
-              <p><strong>Journal prompt:</strong> For every entry, write 1–2 sentences on the narrative and why this specific coin (not others).</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">2. Be concise in analysis</strong>
-              <p>Keep it simple and fast — don&apos;t overcomplicate with endless research. Use tools like Axiom Pro (Pulse dashboard) for real-time new pairs, migrated coins, volume, and filters. Focus on volume, market cap momentum, token age.</p>
-              <p><strong>Journal prompt:</strong> Note your exact filters/setup and how quickly you decided (aim under 1–2 minutes per scan).</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">3. Be confident (destroy hesitation)</strong>
-              <p>Biggest barrier is psychological — hesitation, FOMO, second-guessing. Treat every position as risk capital you&apos;re willing to lose. Once analysis checks out, execute without overthinking.</p>
-              <p><strong>Journal prompt:</strong> After each trade, rate confidence (1–10) and note hesitation moments. Review weekly to track improvement.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card travis-tip-15-card">
-        <div className="note-title">My 2025 memecoin journey — reflection workbook</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/elGodric/status/2004260002156974480" target="_blank" rel="noopener noreferrer">@elGodric on X</a>
-          <p className="travis-tip-15-lead"><strong>My 2025 Memecoin Journey — A Personal Reflection Workbook.</strong> Markets reveal patterns in us. Same mistakes repeat because we never slow down to examine why. Reflection surfaces emotional triggers, false beliefs, rationalizations, and habits. This isn&apos;t performance or optimization — it&apos;s awareness. Reflection is preparation for 2026.</p>
-          <p className="travis-tip-15-lead">How to use: Not one sitting. Pick a section, sit with it, write honestly. Obvious questions and uncomfortable ones both matter. Skip what doesn&apos;t apply; return to what keeps resurfacing. Blank PDF in thread replies.</p>
-          <div className="travis-tip-15-sections">
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Who I was at the start of 2025</strong>
-              <p><strong>My mindset walking in:</strong> What I believed about memecoin trading · My expectations vs reality · The trader I thought I&apos;d become · My relationship with money and risk</p>
-              <p><strong>Why I started:</strong> What drew me to memecoins · What I was running toward · What I was running from · The life change I hoped for</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">The psychological journey</strong>
-              <p><strong>Emotional patterns I discovered:</strong> When did greed take over? · When did fear paralyze me? · How did I handle winning streaks? · How did I cope with losing streaks? · What triggered my worst decisions?</p>
-              <p><strong>The lies I told myself:</strong> &quot;This time is different because...&quot; · &quot;I&apos;ll sell when it hits X...&quot; · &quot;Everyone else is making it, why not me?&quot; · &quot;Just one more trade...&quot; · Other delusions</p>
-              <p><strong>Moments of clarity:</strong> Times I saw myself clearly · When discipline felt impossible · When I broke my own rules · When I finally learned the lesson</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Strategy evolution</strong>
-              <p><strong>How my approach changed:</strong> January strategy · Mid-year adjustments · December reality · What forced me to adapt</p>
-              <p><strong>What I thought mattered vs what actually mattered:</strong> Thought: · Reality:</p>
-              <p><strong>My real edge (if I have one):</strong> What I&apos;m actually good at · What I&apos;m terrible at · What I pretend to know · Where I add alpha</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Mindset battles</strong>
-              <p><strong>The internal conflicts:</strong> Conviction vs doubt · FOMO vs patience · Holding vs selling · Learning vs earning</p>
-              <p><strong>Cognitive biases that wrecked me:</strong> Confirmation bias examples · Sunk cost fallacy moments · Anchoring to old prices · Survivorship bias</p>
-              <p><strong>When I was most rational:</strong> Conditions that brought out my best · Environment that kept me grounded · People who kept me honest</p>
-              <p><strong>When I lost my mind:</strong> Triggers that made me irrational · Warning signs I ignored · How I justified bad trades</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">The hardest truths</strong>
-              <p><strong>About myself:</strong> The uncomfortable truth about my discipline · What I value more than money · My actual risk tolerance vs stated · The type of trader I really am</p>
-              <p><strong>About the game:</strong> What no one tells you · The part that never gets easier · Why most fail · What success actually costs</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Personal growth markers</strong>
-              <p>Before 2025, I would have... / Now I... · Skills I actually developed (trading + life skills) · What changed in how I think · How I handle uncertainty now · My relationship with failure</p>
-              <p><strong>The person I&apos;m becoming:</strong> Positive changes I see · Negative patterns emerging · Values being tested · Identity shifts</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Relationships &amp; community</strong>
-              <p><strong>How trading changed my relationships:</strong> With family · With friends · With CT / community · With myself</p>
-              <p><strong>Who I listened to:</strong> Voices that helped · Voices that hurt · When I should&apos;ve trusted myself · When I should&apos;ve asked for help</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">The reckoning</strong>
-              <p><strong>Painful admissions:</strong> Money I lost that I couldn&apos;t afford · Promises I broke to myself · Times I was dishonest · Opportunities I wasted</p>
-              <p><strong>What I&apos;m proud of:</strong> Times I showed restraint · When I admitted I was wrong · Moments of genuine growth · Values I didn&apos;t compromise</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Looking inward for 2026</strong>
-              <p><strong>Questions I&apos;m sitting with:</strong> Am I trading my life away? · Is this sustainable? · What am I actually optimizing for? · Who do I want to become?</p>
-              <p><strong>Non-negotiables going forward:</strong> Lines I won&apos;t cross · Habits I won&apos;t break · Standards I&apos;ll maintain · People I&apos;ll protect</p>
-              <p><strong>What needs to change:</strong> In my strategy · In my mindset · In my environment · In my life</p>
-              <p><strong>What stays the same:</strong> Core principles · Support system · Why I&apos;m here · What grounds me</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">My promise to myself</strong>
-              <p>I will... · I won&apos;t... · I accept that...</p>
-              <p><strong>The one thing I need to remember</strong> — write your core truth here; if forgotten, it costs everything you&apos;ve learned.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card travis-tip-15-card">
-        <div className="note-title">Why you keep losing — mind &amp; brain in trading</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/degn34" target="_blank" rel="noopener noreferrer">@degn34 on X</a>
-          <p className="travis-tip-15-lead">Why You Keep Losing: The Truth About Your Mind and Brain in Trading. Small port or rebuilding — it&apos;s not because you&apos;re bad. Your brain is under pressure, and pressure changes how you think. When my account was small, every trade carried life weight: losses = sliding backward / not good enough; wins = validation. That emotional load destroyed decisions before I noticed.</p>
-          <div className="travis-tip-15-sections">
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">The war inside your head</strong>
-              <p>Your brain doesn&apos;t want you to trade well — it wants relief from boredom, fear, restlessness, sexual tension, the discomfort of sitting still while charts move. It whispers: take a trade, force something, anything but emptiness. Most &quot;intuition&quot; is your nervous system begging for dopamine. Slow days: hollow without stimulation → scan harder, lower standards, invent opportunity. Not discipline — emotional regulation. Low capital makes every trade matter too much — you trade outcomes, not setups (&quot;Can this save my day?&quot;). Patience and risk control walk out together.</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">What changed everything</strong>
-              <p>Letting go of needing confidence. Confidence is unstable (last trade, balance, mood). Neutrality helps: okay whether you trade, win, lose, or feel bored. Boring is where consistency lives.</p>
-              <p>Stopped relying on willpower — designed brain rules: trade limits, fixed risk %, walk away after losses, cap green days before excitement. Urgency = compromised. Excitement = biased. Tired, hungry, overstimulated, horny, restless — even good setups become bad trades. Your body knows before your mind admits it.</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">The one-minute rule</strong>
-              <p>Urge to enter → wait 60 seconds. Real setups stay; most vanish (internal pressure, not opportunity).</p>
-              <p>After red: &quot;make it back&quot; = pain avoidance, not a plan — less activity, not more. Sit with red days. After green: confidence inflates, caution drops — stopping while winning protects best decisions from becoming worst. Most losses = unmanaged internal pressure, not bad chart analysis.</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Mind vs brain</strong>
-              <p>Mind keeps score, compares your rebuild to someone&apos;s $50k day. Brain wants immediate relief: slow-day trade = dopamine; chase loss = erase pain; post-win rush = lower caution when you need it most. Urges disguise as intuition (&quot;this feels right,&quot; &quot;one more press&quot;).</p>
-              <p><strong>How to fix it:</strong> Before any trade — label the feeling (boredom, fear, excitement, impatience, ego). Ask: &quot;Am I responding to a setup, or reacting to a feeling?&quot; If feeling → don&apos;t trade. Build a system where weak mental moments can&apos;t destroy progress. Fixed risk, trade limits, step away after losses/wins, walk when physically/mentally off.</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Patience</strong>
-              <p>Trusting process when mind screams to do something now. Missing a trade ≠ failure; forcing one while panicked = failure. Slow-day itch with nothing clean → brain wants stimulation — close the app; no trade is valid.</p>
-              <p>Rules must be non-negotiable — exceptions become daily reasons to break them ($70 rebuild: bent rules almost always red). Respect how your brain works → trading becomes a process that compounds.</p>
-              <p>You&apos;re not broken — aware is the first requirement. Edge isn&apos;t better setups, intelligence, speed, or confidence — it&apos;s managing the person taking trades. Know when your mind lies and your brain begs for relief. Master that first; consistency becomes who you are. With love 💖 &gt; 34.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card travis-tip-15-card">
         <div className="note-title">The fish &amp; monkey methodology</div>
         <div className="note-body">
           Source: <a href="https://x.com/0xIT41" target="_blank" rel="noopener noreferrer">@0xIT41 on X</a>
@@ -6846,59 +5292,6 @@ function Notes({
           </div>
           <div className="pullupso-quote decu-advice-quote">
             <p>Fish cry on trees, monkeys scream in the ocean — keep loyal to your system or be raped by the cat.</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">Asymmetrical opportunities always exist</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/0xMerp" target="_blank" rel="noopener noreferrer">@0xMerp on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>Maybe I&apos;m delusional — but I think there will always be some sort of asymmetrical opportunities in our space. Anybody who thinks otherwise might be retarded.</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">Best coins often have the worst R/R</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/C1phervoyager" target="_blank" rel="noopener noreferrer">@C1phervoyager on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>Some thoughts: the &quot;best&quot; coins are often the worst R/R.</p>
-            <p>When something is obviously real — quality launch, working product, clean team, real users, revenue — safest capital shows first (funds, bigger accounts, slow money). Great if you want to park size. Not great if you&apos;re playing for asymmetry like most on CT.</p>
-            <p>Speculation has always run crypto — 24/7 attention market in a TikTok society. Nobody wants to sit 5 months for a clean 3–5x while 10 new narratives skyrocket in a week.</p>
-            <p>Highest R/R usually lives where uncertainty is highest: new metas, new distribution, messy narratives — can go to zero fast, can reprice 10x+ when coordination comes. The miner meme: no diamonds when everyone knows something is good. That&apos;s why people revive metas like AI — not because it&apos;s crazily good, because it&apos;s unpriceable.</p>
-            <p>How do you price a vibecode GitHub that could change how software gets built when the only liquid market is a token chart? Reflexive bids, social premiums, constant re-coordination attempts.</p>
-            <p>Good projects don&apos;t die — they become priced. Once priced, you&apos;re not hunting gems, you&apos;re underwriting a business.</p>
-            <p>Both views can coexist — but most people confuse them or midcurve the next thing because of it.</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card travis-tip-4-card">
-        <div className="note-title">The psychology of greed in day trading</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/elGodric" target="_blank" rel="noopener noreferrer">@elGodric on X</a>
-          <p className="travis-tip-4-lead">Greed isn&apos;t just wanting more money — it&apos;s a neurochemical hijack. Big green P&amp;L (yours or someone else&apos;s) triggers dopamine like a jackpot. Prefrontal cortex gets drowned by limbic &quot;NOW! MORE!&quot; — you abandon edge, oversize, revenge trade, chase setups that aren&apos;t there. Almost every blown retail account has greed (often + envy) at the crime scene.</p>
-          <p className="travis-tip-4-lead">3 practical steps the moment greed or envy hits:</p>
-          <div className="travis-tip-4-checklist">
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">1</span><div><p><strong>Ten-second physiological reset</strong> — chest tightness, heat, urge to click buy on something unplanned → stand up, look away. 5 slow nasal breaths (4s inhale, 6s exhale). Activates parasympathetic system; lowers cortisol/dopamine. Most impulsive trades happen within 30 seconds of the spike — break that window.</p></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">2</span><div><p><strong>Ask the &quot;funeral question&quot; out loud</strong> — &quot;If this trade blows up my account, can I look in the mirror tomorrow and say I followed my plan?&quot; Verbalizing engages language center + prefrontal cortex — shifts from short-term reward to long-term identity: I am a disciplined trader.</p></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">3</span><div><p><strong>Envy → data exercise (60 seconds max)</strong> — someone&apos;s massive green day → open notes and write: their posted win · their probable risk (?) · their screen time/experience (?) · sample size (1 day) · your edge today (actual setup or &quot;none&quot;). Turns emotion into rational audit — usually comparing your Chapter 3 to a highlight reel / survivorship bias.</p></div></div>
-          </div>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>Do all three every time greed/envy spikes — cut 80–90% of emotional mistakes. Remaining 10–20% = human; manage with position sizing and you still compound. Most traders won&apos;t survive long enough because nobody talks about psychology.</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">Finding rhythm — selective in slow markets</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/jijo_exe" target="_blank" rel="noopener noreferrer">@jijo_exe on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>Was out of rhythm the last 2 days but started finding it again today. Sidelined on some bigger narratives — trying new methods to stay in touch with different metas so they don&apos;t keep passing by.</p>
-            <p>Slower periods force you to find new edges.</p>
-            <p>Being selective is the edge right now.</p>
-            <p>If you aren&apos;t willing to stare at new pairs for long periods until the right coin is in front of you, you don&apos;t want it bad enough — you&apos;ll just zero your port. Current conditions give you no option but to improve in some capacity.</p>
-            <p>Still hopeful for the coming weeks.</p>
           </div>
         </div>
       </div>
@@ -6934,15 +5327,6 @@ function Notes({
           </div>
         </div>
       </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">Silence and boredom build something real</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/moadghajate" target="_blank" rel="noopener noreferrer">@moadghajate on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>People don&apos;t realize how much silence and boredom it takes to build something real.</p>
-          </div>
-        </div>
-      </div>
       <div className="note-card pullupso-card travis-tip-15-card">
         <div className="note-title">Trench skillset — master 3 of 4</div>
         <div className="note-body">
@@ -6970,109 +5354,6 @@ function Notes({
           <div className="pullupso-quote decu-advice-quote">
             <p><strong>Conclusion:</strong> Master at least 3 → probably high-skilled above the rest. Trade like the best → be like the best. Always a student; never let money build ego — confidence ≠ ego. Stay humble; bigger fish always exist.</p>
             <p>Shoutout @wallahitrader for the diagram in voice chat.</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">A hint of stupidity to pull it off</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/Powelltrades" target="_blank" rel="noopener noreferrer">@Powelltrades on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>Trading is one of those things where you need a hint of stupidity to pull it off.</p>
-            <p>Lost $13,000 over 9 months when I started — every month negative. Money I could not afford to lose; all my job income disappearing. Wanted to quit every month. Convinced the market knew my orders and hunted me. Felt stupid; it was draining.</p>
-            <p>Kept improving and maturing. Unshakable belief I could pull it off — knew when it first clicked, I could gain it all back in no time.</p>
-            <p>Found my model, found my rules, stuck to them — made it all back in 1 month. Most unreal feeling ever.</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card travis-tip-4-card">
-        <div className="note-title">Open letter — do something with your life</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/benroy" target="_blank" rel="noopener noreferrer">@benroy on X</a>
-          <p className="travis-tip-4-lead">If you&apos;re young and you make a lot of money this cycle — an open letter to actually go do something with your lives:</p>
-          <div className="travis-tip-4-checklist">
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><p>Pay off debt</p></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><p>Be intentional and hang out with your family</p></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><p>Use financial freedom to learn new skills</p></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><p>Pursue a cool career arc without worrying about salary</p></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><p>Invest in being a great friend to people that matter</p></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><p>Start a company or non-profit in an area you care about</p></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><p>Use capital to build an empire and extend reach (for good)</p></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><p>Be generous with your time</p></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><p>Get married &amp; start your own family</p></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><p>Fund people working on important projects</p></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><p>Make art</p></div></div>
-          </div>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>Whatever it is — don&apos;t fall for the psyops of lambos, watches, penthouses, first-class holidays, drugs, and the mostly vapor bullshit version of rich life sold to you. Nice things aren&apos;t morally wrong — go for it — but you won&apos;t find much meaning there. I know staggeringly rich people who hate their lives.</p>
-            <p>Instead: act, live, create, take risk, face your life, care, build — take advantage of being in the right place at the right time with crypto + work ethic to use the moment.</p>
-            <p>You&apos;ve been given a Super Mario invincibility star — life on easy mode. Framing shouldn&apos;t be &quot;hell yeah I can fuck off to the beach&quot; — it should be: &quot;Look at everything I&apos;ve been given — I wonder how much I could accomplish with this.&quot;</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card travis-tip-15-card">
-        <div className="note-title">$0–$10K again — low mcap playbook (thread)</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/ShrekCrypto_" target="_blank" rel="noopener noreferrer">@ShrekCrypto_ on X</a>
-          <p className="travis-tip-15-lead">Started with $20 — now 7 figures+. If starting $0–$10k again, trading only low mcap (5–10k). (4 years experience.) Skipping basics — use @AxiomExchange for trading (referral for lower fees).</p>
-          <div className="travis-tip-15-sections">
-            <div className="travis-tip-15-section">
-              <p>Stay under $20k mcap.</p>
-              <p>Before any trade ask: what pumps? what narrative can run? how high? exit plan?</p>
-              <p><strong>First 3 checks:</strong> holders, socials, relevancy. Buy in-meta — e.g. dog coin pumping 1–10M → chase new cat in same meta.</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <p>Always have holder tab open — stay away when multiple holders are linked (@AxiomExchange built-in). Check SOL balance, top 100 trades — hold long or sell at 2x? All holders holding similar 1–3 SOL = likely bundler/manipulated chart → <strong>STAY AWAY.</strong></p>
-              <p>Different criteria at different market caps.</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Volume</strong>
-              <p>— not indicators; personal observation after hours/day on memecoins (real vs fake). <strong>CHECK HOLDERS</strong> — chart can look primed and you still get rugged.</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <strong className="travis-tip-15-section-title">Entry &amp; exit</strong>
-              <p>Stick to strategy. Small port — don&apos;t chase 10–100x; go for 2–3x (more reps, almost always W). Sell 33% at 3x → initial back, rest moonbag or trim tops. Price impact: 2 SOL sell at $10k mcap can lose ~50% of profits.</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <p><strong>Bundled ≠ always bad</strong> — utilities/insiders shake charts; some biggest wins sneaking early insider plays. Don&apos;t 100% ignore bundles.</p>
-            </div>
-            <div className="travis-tip-15-section">
-              <p><strong>Quit copy trading Cupsey/streamers</strong> — lose 90% of the time. Do track wallets: early projects show volume — know where it came from. Cupsey/streamer copy-trader volume → usually fade unless high/consistent — then wait for those wallets to sell, then enter.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card travis-tip-4-card">
-        <div className="note-title">FI lessons — 10 things learned (thread)</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/CookerFlips" target="_blank" rel="noopener noreferrer">@CookerFlips on X</a>
-          <p className="travis-tip-4-lead">2016–2019: nearly every week on /r/Fire/. Achieved FI (RE if wanted) — things learned along the way:</p>
-          <div className="travis-tip-4-checklist">
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">1</span><div><strong className="travis-tip-4-item-title">Opportunities are endless</strong><p>if you know where to look — pitfall is doing too much at once. Hone one area/niche; great at one thing &gt; mediocre at many.</p></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">2</span><div><strong className="travis-tip-4-item-title">Rome wasn&apos;t built in a day</strong><p>— time, consistent work, smart choices, luck. People see results not the grind. OK to take 1–2 years to build a foundation.</p></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">3</span><div><strong className="travis-tip-4-item-title">Lose it as fast as you make it</strong><p>— especially in our space. No over-leverage, no all-in. Made $20k on options instantly, then lost $50k just as fast.</p></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">4</span><div><strong className="travis-tip-4-item-title">Diversify</strong><p>— ETFs/stocks, liquid cash, crypto. Know your brokerage (Fidelity/Schwab/Vanguard if American).</p></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">5</span><div><strong className="travis-tip-4-item-title">Multiple income streams</strong><p>— after niche, automate/passive enough to handle more. Aim passive &gt; average salary so active day-to-day failing doesn&apos;t leave you dry. SWE → crypto side → @PastelAlpha + FT job + sneakers → FBA → automated 95% FBA while running Pastel + job; plus dropshipping, FB ads, surveys, etc.</p></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">6</span><div><strong className="travis-tip-4-item-title">Sacrifices</strong><p>— you choose how to deal. 2021–2022 hardest mentally; gave up social life, health/time management wrecked. Something has to give — rebalance when it does.</p></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">7</span><div><strong className="travis-tip-4-item-title">No money replaces friendships, relationships, parents, health.</strong><p>Always more money to make — don&apos;t lose sight of what matters.</p></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">8</span><div><strong className="travis-tip-4-item-title">Find a mentor</strong><p>— learn from those who walked the path. You don&apos;t know everything; guidance makes it 10x easier.</p></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">9</span><div><strong className="travis-tip-4-item-title">Don&apos;t give up</strong><p>— resilient mindset &gt; work ethic alone. Fail a lot before you make it; fuck up → pick up, learn.</p></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">10</span><div><strong className="travis-tip-4-item-title">Enjoy the process</strong><p>— money/time mean nothing without fun. Treat yourself; celebrate small wins; make the journey exciting. Late night writing — good night frens.</p></div></div>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card travis-tip-4-card">
-        <div className="note-title">Things I wish I knew before trading memecoins</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/fomomofosol" target="_blank" rel="noopener noreferrer">@fomomofosol on X</a>
-          <p className="travis-tip-4-lead">Things I wish I knew before trading memecoins:</p>
-          <div className="travis-tip-4-checklist">
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><p>Buying the top feels worse than missing the pump</p></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><p>Devs can stealth dump on fresh wallets (bundles) — use tools to check bubble maps</p></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><p>2x &gt; 0x — always take profit</p></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><p>Wallet tracking + chart pattern recognition = massive edge</p></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><p>No volume = no exit</p></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><p>Alpha chats are mid. Friends &gt; followers. Print with people who actually care.</p></div></div>
           </div>
         </div>
       </div>
@@ -7124,19 +5405,6 @@ function Notes({
           </div>
         </div>
       </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">$10K — the gamble that could change everything</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/route2fi" target="_blank" rel="noopener noreferrer">@route2fi on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>Let&apos;s say you have $10k — everything you own after years at McDonald&apos;s. You live in your mother&apos;s basement. You&apos;re 28. Friends and classmates pass you by — good jobs, marriage, houses, cars. You want that too, but who wants a guy at home with a shitty job.</p>
-            <p>Fuck it — there must be a way out. Reddit: retire in 30 years via S&amp;P 500. Problem: you want change <strong>now</strong>. No 30 years; no education; McD won&apos;t save you fast.</p>
-            <p>More Reddit → crypto → Twitter CT. Something clicks. Losers like you gambling small net worths hoping to get rich extremely fast. You roll the dice.</p>
-            <p>Hooked on memecoins — <strong>10x or nothing</strong>. What do you have to lose? Life sucks anyway — gamble it all. Lose → try again next month with the $2k paycheck; life stays the same.</p>
-            <p>But if you win — you fucking change your life.</p>
-          </div>
-        </div>
-      </div>
       <div className="note-card pullupso-card travis-tip-4-card">
         <div className="note-title">0.1 SOL → ~150 SOL in 1 month (thread)</div>
         <div className="note-body">
@@ -7153,40 +5421,6 @@ function Notes({
           </div>
           <div className="pullupso-quote decu-advice-quote">
             <p><strong>End:</strong> Traders not community members — you don&apos;t have money to &quot;invest&quot; for fun. Make bread and move on.</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">Betting on yourself — consequence</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/thedulab" target="_blank" rel="noopener noreferrer">@thedulab on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>The consequence of betting on yourself: you&apos;ll never be able to apply for a job again. Not that nobody will hire you — it&apos;ll just feel like a humiliation ritual every time.</p>
-            <p>Self-belief becomes a spiritual drug that won&apos;t let you beg for validation. Convince us why we should acknowledge your existence. Let our little AI screener dictate your future? No — you should be telling me why I should join you.</p>
-            <p>Not an objective knock on employment — opportunities now come from referrals, introductions, serendipity with people who see you as you see yourself. You can no longer accept working for, only with.</p>
-            <p>When one big door opens, exit routes close behind you — fewer options, higher quality. Understand the psychological trade. Whether it&apos;s worth it is up to you; there&apos;s only one way to find out.</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card">
-        <div className="note-title">Locked in 2024 — memescope 18 hours</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/malikonchain" target="_blank" rel="noopener noreferrer">@malikonchain on X</a>
-          <div className="pullupso-quote decu-advice-quote">
-            <p>Shed a tear today thinking about how good it felt in 2024 — locked in all day in the trenches. Didn&apos;t check Instagram, didn&apos;t watch YouTube, nothing — just memescope 18 hours a day, averaging ~$50k/month throughout that year.</p>
-          </div>
-        </div>
-      </div>
-      <div className="note-card pullupso-card travis-tip-4-card">
-        <div className="note-title">If you can afford a nice car — buy it</div>
-        <div className="note-body">
-          Source: <a href="https://x.com/mrplentyhoes" target="_blank" rel="noopener noreferrer">@mrplentyhoes on X</a>
-          <p className="travis-tip-4-lead">If you can afford a nice car — buy it.</p>
-          <div className="travis-tip-4-checklist">
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><p>Girls love getting picked up in them</p></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><p>Super fun to own and drive</p></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><p>Flex on social media and get connections in your city</p></div></div>
-            <div className="travis-tip-4-item"><span className="travis-tip-4-num" aria-hidden="true">·</span><div><p>Doesn&apos;t have to be a Pagani — a Benz or BMW works. Buy it in your 20s.</p></div></div>
           </div>
         </div>
       </div>
@@ -7219,36 +5453,6 @@ function Notes({
               <p>New Pairs + Final Stretch</p>
             </div>
           </div>
-        </div>
-      </div>
-      <div className="note-card memecoin-mindset-card">
-        <div className="note-title memecoin-mindset-heading">Millionaire memecoin mindset</div>
-        <div className="note-body">
-          <p className="memecoin-mindset-subtitle">
-            30 lessons from Crypto Chris&apos;s mindset series — the mental edge most traders skip.
-          </p>
-          <PlaybookLessonGrid lessons={MEMECOIN_MINDSET_LESSONS} />
-          <p className="playbook-attribution">Based on Crypto Chris&apos;s Millionaire Memecoin Mindset Series</p>
-        </div>
-      </div>
-      <div className="note-card playbook-section-card">
-        <div className="note-title playbook-section-title">Strategy playbook</div>
-        <div className="note-body">
-          <p className="memecoin-mindset-subtitle">
-            Tactical breakdowns from Sebastian Orellana — filters, setups, and execution frameworks.
-          </p>
-          <PlaybookLessonGrid lessons={STRATEGY_PLAYBOOK_LESSONS} />
-          <p className="playbook-attribution">Based on Sebastian Orellana&apos;s YouTube strategy breakdowns</p>
-        </div>
-      </div>
-      <div className="note-card playbook-section-card">
-        <div className="note-title playbook-section-title">The alpha playbook</div>
-        <div className="note-body">
-          <p className="memecoin-mindset-subtitle">
-            Key frameworks from James Wang — the Alpha Filter, scalping systems, risk management, and narrative-driven execution.
-          </p>
-          <PlaybookLessonGrid lessons={ALPHA_PLAYBOOK_LESSONS} />
-          <p className="playbook-attribution">Based on James Wang&apos;s YouTube strategy breakdowns</p>
         </div>
       </div>
       <div className="note-card playbook-section-card">
