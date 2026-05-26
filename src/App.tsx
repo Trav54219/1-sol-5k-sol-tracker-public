@@ -22,10 +22,6 @@ import {
   type SizingMode,
   type TimeframeId,
 } from "./trackerData";
-import { FORTUNE_PLAYBOOK_LESSONS } from "./fortunePlaybookLessons";
-import { SOL_MAFIA_PLAYBOOK_LESSONS } from "./solMafiaPlaybookLessons";
-import { SOL_MAFIA_OBSERVATIONS } from "./solMafiaObservations";
-import type { MemecoinMindsetLesson } from "./memecoinMindsetLessons";
 const CHALLENGE_MODE_KEY = "sol_speedrun_challenge_mode";
 const SOL_CHALLENGE_START_KEY = "sol_speedrun_sol_start";
 const USDC_CHALLENGE_START_KEY = "sol_speedrun_usdc_start";
@@ -2156,28 +2152,6 @@ function FeeSettings() {
         ))}
       </div>
     </section>
-  );
-}
-
-function PlaybookLessonGrid({ lessons }: { lessons: readonly MemecoinMindsetLesson[] }) {
-  return (
-    <div className="memecoin-mindset-grid">
-      {lessons.map((lesson) => (
-        <article className="memecoin-mindset-lesson" key={lesson.num + lesson.title}>
-          <span className="memecoin-mindset-num" aria-hidden="true">
-            {lesson.num}
-          </span>
-          <div>
-            <strong className="memecoin-mindset-lesson-title">{lesson.title}</strong>
-            <ul>
-              {lesson.tips.map((tip) => (
-                <li key={tip}>{tip}</li>
-              ))}
-            </ul>
-          </div>
-        </article>
-      ))}
-    </div>
   );
 }
 
@@ -5451,53 +5425,6 @@ function Notes({
             <div className="trade-hours-styles-block">
               <strong className="trade-hours-styles-region">EU</strong>
               <p>New Pairs + Final Stretch</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="note-card playbook-section-card">
-        <div className="note-title playbook-section-title">The fortune playbook</div>
-        <div className="note-body">
-          <p className="memecoin-mindset-subtitle">
-            Narrative-driven strategies, risk frameworks, and execution systems broken down from Alex Choi&apos;s videos.
-          </p>
-          <PlaybookLessonGrid lessons={FORTUNE_PLAYBOOK_LESSONS} />
-          <p className="playbook-attribution">Based on Alex Choi&apos;s YouTube strategy breakdowns</p>
-        </div>
-      </div>
-      <div className="note-card playbook-section-card">
-        <div className="note-title playbook-section-title">Sol Mafia playbook</div>
-        <div className="note-body">
-          <p className="memecoin-mindset-subtitle">
-            Memecoin trading systems, tool setups, and daily execution from Ethan Prosper&apos;s videos.
-          </p>
-          <PlaybookLessonGrid lessons={SOL_MAFIA_PLAYBOOK_LESSONS} />
-          <p className="playbook-attribution">Based on Ethan Prosper&apos;s YouTube strategy breakdowns</p>
-          <div className="note-subsection playbook-observation">
-            <p className="note-subsection-title">Observation</p>
-            <p className="memecoin-mindset-subtitle">
-              <em>On slow cooks, liquidity, and sitting still in the trenches.</em>
-            </p>
-            <div className="playbook-observation-list">
-              {SOL_MAFIA_OBSERVATIONS.map((observation, index) => (
-                <div key={index} className="playbook-observation-item">
-                  <p>{observation.text}</p>
-                  {observation.xHandle ? (
-                    <p className="playbook-observation-source">
-                      <a
-                        href={`https://x.com/${observation.xHandle}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        @{observation.xHandle} on X
-                      </a>
-                    </p>
-                  ) : null}
-                  {observation.author ? (
-                    <p className="playbook-observation-source">{observation.author}</p>
-                  ) : null}
-                </div>
-              ))}
             </div>
           </div>
         </div>
